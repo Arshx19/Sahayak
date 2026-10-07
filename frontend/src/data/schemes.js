@@ -1,181 +1,217 @@
+// -----------------------------------------------------------------------------
+// Government Schemes Dataset for SAHAYAK
+// Structured to directly align with the incoming Excel ruleset:
+// - provided_by: 'Centre' | 'State'
+// - timeline: When citizens can apply
+// - required_documents: Document IDs required for eligibility
+// - eligibility_criteria: Deterministic demographic requirements
+// -----------------------------------------------------------------------------
+
 export const MOCK_SCHEMES = [
   {
     id: 'pm-kisan',
     name: 'PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)',
     hiName: 'पीएम-किसान (प्रधानमंत्री किसान सम्मान निधि)',
+    provided_by: 'Centre',
+    state: 'All States / UTs',
     category: 'Agriculture & Farmers',
     hiCategory: 'कृषि एवं किसान कल्याण',
-    level: 'Central',
-    hiLevel: 'केंद्रीय',
-    state: 'All States / UTs',
-    hiState: 'सभी राज्य / केंद्र शासित प्रदेश',
-    shortDesc: 'Income support of ₹6,000 per year in three equal installments to all landholding farmer families.',
-    hiShortDesc: 'सभी भूमिधारक किसान परिवारों को प्रति वर्ष ₹6,000 की वित्तीय सहायता तीन समान किश्तों में प्रदान की जाती है।',
-    fullDesc: 'Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) is a Central Sector scheme with 100% funding from Government of India. Under the scheme an income support of 6,000/- per year in three equal installments is provided to all landholding farmer families across the country.',
-    hiFullDesc: 'प्रधानमंत्री किसान सम्मान निधि (पीएम-किसान) भारत सरकार द्वारा 100% वित्त पोषित एक केंद्रीय योजना है। इसके तहत सभी पात्र भूमिधारक किसान परिवारों को ₹6,000 प्रति वर्ष की आय सहायता सीधे बैंक खाते में दी जाती है।',
+    timeline: 'Open All Year Round (Continuous Enrollment)',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Direct income support of ₹6,000 per year in three equal installments to cultivable landholding farmer families.',
+    fullDesc: 'Pradhan Mantri Kisan Samman Nidhi (PM-KISAN) is a Central Sector scheme with 100% funding from Government of India. Under the scheme, income support of ₹6,000/- per year in three equal installments is provided to all landholding farmer families across the country.',
     benefits: [
-      'Direct Financial Benefit of ₹6,000/year transferred directly to bank accounts',
-      '3 equal installments of ₹2,000 every 4 months',
-      'Direct Benefit Transfer (DBT) ensuring zero leakage'
+      'Direct cash transfer of ₹6,000/year in 3 installments of ₹2,000 every 4 months',
+      'Direct Benefit Transfer (DBT) directly into Aadhaar-linked bank accounts',
+      'Zero intermediaries and complete online transparency',
     ],
-    hiBenefits: [
-      '₹6,000/वर्ष का सीधा वित्तीय लाभ बैंक खाते में स्थानांतरित',
-      'हर 4 महीने में ₹2,000 की 3 समान किश्तें',
-      'प्रत्यक्ष लाभ अंतरण (DBT) से पारदर्शिता और कोई बिचौलिया नहीं'
-    ],
-    documents: [
-      'Aadhaar Card',
-      'Proof of Landholding / Khasra-Khatauni Record',
-      'Active Bank Account linked with Aadhaar',
-      'Mobile Number'
-    ],
-    hiDocuments: [
-      'आधार कार्ड',
-      'भूमि स्वामित्व प्रमाण / खसरा-खतौनी की प्रति',
-      'आधार से लिंक बैंक खाता विवरण',
-      'सक्रिय मोबाइल नंबर'
-    ]
+    required_documents: ['aadhaar', 'land_record', 'bank_passbook', 'photo'],
+    eligibility_criteria: {
+      occupation: 'farmer',
+      requires_land: true,
+      min_age: 18,
+    },
+    officialUrl: 'https://pmkisan.gov.in',
+    how_to_apply: 'Submit application on the PM-KISAN portal or via nearest Common Service Centre (CSC) with landholding records and Aadhaar eKYC.',
   },
   {
     id: 'pm-awas',
-    name: 'Pradhan Mantri Awas Yojana (PMAY-G)',
+    name: 'Pradhan Mantri Awas Yojana - Gramin (PMAY-G)',
     hiName: 'प्रधानमंत्री आवास योजना (ग्रामीण)',
+    provided_by: 'Centre',
+    state: 'All States / UTs',
     category: 'Housing & Shelter',
     hiCategory: 'आवास एवं शेल्टर',
-    level: 'Central',
-    hiLevel: 'केंद्रीय',
-    state: 'All States / UTs',
-    hiState: 'सभी राज्य / केंद्र शासित प्रदेश',
-    shortDesc: 'Financial assistance for construction of pucca house to rural houseless and living in kutcha houses.',
-    hiShortDesc: 'ग्रामीण बेघर और कच्चे मकानों में रहने वाले परिवारों को पक्का मकान बनाने के लिए वित्तीय सहायता।',
-    fullDesc: 'PMAY-G aims to provide a pucca house, with basic amenities, to all houseless householders and those households living in kutcha and dilapidated houses by providing financial assistance.',
-    hiFullDesc: 'प्रधानमंत्री आवास योजना (ग्रामीण) का उद्देश्य सभी बेघर और जर्जर कच्चे मकानों में रहने वाले ग्रामीण परिवारों को बुनियादी सुविधाओं के साथ पक्का मकान निर्माण हेतु वित्तीय सहायता देना है।',
+    timeline: 'Window Open: 01 April 2026 – 31 March 2027',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Financial assistance of up to ₹1.30 Lakh for construction of permanent pucca houses for rural houseless families.',
+    fullDesc: 'PMAY-G aims to provide a pucca house with basic amenities to all houseless householders and those households living in kutcha and dilapidated houses in rural areas.',
     benefits: [
-      'Financial assistance of ₹1.20 Lakh in plain areas and ₹1.30 Lakh in hilly/difficult areas',
-      '90/95 days of unskilled labor under MGNREGA',
-      'Assistance for toilet construction under Swachh Bharat Mission'
+      'Financial grant of ₹1.20 Lakh in plain areas and ₹1.30 Lakh in hilly/difficult areas',
+      '90 to 95 person-days of unskilled labor support under MGNREGA',
+      'Additional grant of ₹12,000 for toilet construction under Swachh Bharat Mission',
     ],
-    hiBenefits: [
-      'मैदानी क्षेत्रों में ₹1.20 लाख और पहाड़ी/दुर्गम क्षेत्रों में ₹1.30 लाख की वित्तीय सहायता',
-      'मनरेगा के तहत 90/95 दिनों की अकुशल मजदूरी का लाभ',
-      'स्वच्छ भारत मिशन के तहत शौचालय निर्माण हेतु अतिरिक्त सहायता'
-    ],
-    documents: [
-      'Aadhaar Card',
-      'Job Card Number (MGNREGA)',
-      'Bank Account details',
-      'Certificate of Houselessness / Kutcha house proof'
-    ],
-    hiDocuments: [
-      'आधार कार्ड',
-      'मनरेगा जॉब कार्ड संख्या',
-      'बैंक खाता पासबुक',
-      'कच्चे मकान / बेघर होने का प्रमाण पत्र'
-    ]
-  },
-  {
-    id: 'old-age-pension',
-    name: 'Indira Gandhi National Old Age Pension Scheme (IGNOAPS)',
-    hiName: 'इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना',
-    category: 'Social Welfare & Senior Citizens',
-    hiCategory: 'सामाजिक कल्याण एवं वरिष्ठ नागरिक',
-    level: 'Central & State',
-    hiLevel: 'केंद्र व राज्य',
-    state: 'All States',
-    hiState: 'सभी राज्य',
-    shortDesc: 'Monthly pension for senior citizens belonging to Below Poverty Line (BPL) households.',
-    hiShortDesc: 'गरीबी रेखा से नीचे (BPL) जीवन यापन करने वाले वरिष्ठ नागरिकों को मासिक वित्तीय सहायता।',
-    fullDesc: 'IGNOAPS provides monthly pension to senior citizens aged 60 years and above who belong to households below the poverty line as per government benchmarks.',
-    hiFullDesc: 'इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना के तहत 60 वर्ष या उससे अधिक आयु के BPL परिवारों के वृद्धजनों को प्रतिमाह पेंशन राशि सीधे उनके खातों में प्रदान की जाती है।',
-    benefits: [
-      '₹500 to ₹1,500 monthly pension (varies by age & state contribution)',
-      'Direct monthly deposit into beneficiary Aadhaar-linked bank account'
-    ],
-    hiBenefits: [
-      '₹500 से ₹1,500 मासिक पेंशन (आयु एवं राज्य के अंशदान अनुसार)',
-      'आधार-लिंक्ड बैंक खाते में प्रति माह सीधा जमा'
-    ],
-    documents: [
-      'Age Proof (Aadhaar Card / Birth Certificate)',
-      'BPL Ration Card',
-      'Bank Passbook Copy',
-      'Domicile Certificate'
-    ],
-    hiDocuments: [
-      'आयु प्रमाण पत्र (आधार कार्ड / जन्म प्रमाण पत्र)',
-      'बीपीएल (BPL) राशन कार्ड',
-      'बैंक पासबुक की छायाप्रति',
-      'मूल निवास प्रमाण पत्र'
-    ]
+    required_documents: ['aadhaar', 'income_cert', 'ration_card', 'bank_passbook', 'photo'],
+    eligibility_criteria: {
+      max_income: 300000,
+      area_type: 'rural',
+      min_age: 18,
+    },
+    officialUrl: 'https://pmayg.nic.in',
+    how_to_apply: 'Beneficiary selection is based on SECC 2011 list and verified by the Gram Sabha. Registration can be done through Gram Panchayat office.',
   },
   {
     id: 'ayushman-bharat',
-    name: 'Ayushman Bharat - PM Jan Arogya Yojana (PM-JAY)',
-    hiName: 'आयुष्मान भारत - पीएम जन आरोग्य योजना',
-    category: 'Healthcare & Insurance',
-    hiCategory: 'स्वास्थ्य सेवा एवं बीमा',
-    level: 'Central',
-    hiLevel: 'केंद्रीय',
+    name: 'Ayushman Bharat - PM-JAY (Pradhan Mantri Jan Arogya Yojana)',
+    hiName: 'आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना',
+    provided_by: 'Centre',
     state: 'All States / UTs',
-    hiState: 'सभी राज्य / केंद्र शासित प्रदेश',
-    shortDesc: 'Health cover of ₹5 Lakh per family per year for secondary and tertiary care hospitalization.',
-    hiShortDesc: 'प्रत्येक पात्र परिवार को द्वितीयक और तृतीयक अस्पताल में इलाज के लिए प्रति वर्ष ₹5 लाख का स्वास्थ्य बीमा।',
-    fullDesc: 'PM-JAY is the world largest health insurance scheme fully financed by the government. It provides a cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization across public and private empaneled hospitals.',
-    hiFullDesc: 'आयुष्मान भारत दुनिया की सबसे बड़ी सरकारी स्वास्थ्य बीमा योजना है। यह देश भर के सूचीबद्ध सरकारी व निजी अस्पतालों में प्रति परिवार ₹5 लाख तक का कैशलेस इलाज प्रदान करती है।',
+    category: 'Healthcare & Medical',
+    hiCategory: 'स्वास्थ्य एवं चिकित्सा',
+    timeline: 'Open All Year Round (Free Ayushman Card issuance)',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Health insurance coverage of up to ₹5 Lakh per family per year for secondary and tertiary care hospitalization.',
+    fullDesc: 'Ayushman Bharat PM-JAY is the world’s largest government-funded healthcare program. It provides a health cover of ₹5 Lakh per family per year for secondary and tertiary care hospitalization across public and empaneled private hospitals in India.',
     benefits: [
-      'Cashless & Paperless treatment at empaneled hospitals',
-      'Coverage up to ₹5,00,000 per family per year',
-      'Pre and post-hospitalization expense coverage'
+      'Cashless hospital care up to ₹5,00,000 per family annually',
+      'Coverage includes 3 days pre-hospitalization and 15 days post-hospitalization expenses',
+      'Over 27,000 empaneled hospitals nationwide with zero out-of-pocket costs',
     ],
-    hiBenefits: [
-      'सूचीबद्ध अस्पतालों में पूरी तरह कैशलेस और पेपरलेस इलाज',
-      'प्रति परिवार प्रति वर्ष ₹5,00,000 तक का मुफ़्त कवरेज',
-      'अस्पताल में भर्ती होने से पहले और बाद का खर्च शामिल'
-    ],
-    documents: [
-      'Aadhaar Card',
-      'Ration Card / SECC Data Verification',
-      'Mobile Number'
-    ],
-    hiDocuments: [
-      'आधार कार्ड',
-      'राशन कार्ड / SECC डेटा सूची में नाम',
-      'सक्रिय मोबाइल नंबर'
-    ]
+    required_documents: ['aadhaar', 'ration_card', 'photo'],
+    eligibility_criteria: {
+      max_income: 250000,
+      min_age: 0,
+    },
+    officialUrl: 'https://nha.gov.in',
+    how_to_apply: 'Verify entitlement at beneficiary.nha.gov.in using Ration Card / Aadhaar, or visit any empaneled government hospital or CSC to generate your Ayushman Card.',
   },
   {
-    id: 'ujjwala-yojana',
-    name: 'PM Ujjwala Yojana (PMUY 2.0)',
-    hiName: 'प्रधानमंत्री उज्ज्वला योजना (PMUY 2.0)',
-    category: 'Energy & Women Empowerment',
-    hiCategory: 'ऊर्जा एवं महिला सशक्तिकरण',
-    level: 'Central',
-    hiLevel: 'केंद्रीय',
+    id: 'sukanya-samriddhi',
+    name: 'Sukanya Samriddhi Yojana (SSY)',
+    hiName: 'सुकन्या समृद्धि योजना',
+    provided_by: 'Centre',
     state: 'All States / UTs',
-    hiState: 'सभी राज्य / केंद्र शासित प्रदेश',
-    shortDesc: 'Deposit-free LPG connection to adult women from poor households across India.',
-    hiShortDesc: 'देशभर के गरीब परिवारों की वयस्क महिलाओं को डिपाज़िट-मुक्त एलपीजी (LPG) कनेक्शन।',
-    fullDesc: 'PMUY 2.0 aims to provide deposit-free LPG connections to low-income families who could not be covered under the first phase of PMUY.',
-    hiFullDesc: 'प्रधानमंत्री उज्ज्वला योजना 2.0 का लक्ष्य आर्थिक रूप से कमजोर परिवारों की महिलाओं को निःशुल्क रसोई गैस कनेक्शन और पहला सिलिंडर व चूल्हा मुफ़्त प्रदान करना है।',
+    category: 'Women & Child',
+    hiCategory: 'महिला एवं बाल विकास',
+    timeline: 'Open All Year Round (Before girl child reaches 10 years of age)',
+    timelineStatus: 'OPEN',
+    shortDesc: 'High-interest tax-exempt government savings scheme for girl child education and marriage support.',
+    fullDesc: 'Sukanya Samriddhi Account is a Government of India backed savings scheme targeted at the parents of girl children. The scheme encourages parents to build a fund for the future education and marriage expenses for their female child.',
     benefits: [
-      'Deposit-free LPG connection (Cylinder + Regulator)',
-      'First refill and hotplate (stove) provided free of cost',
-      'Targeted subsidy on refill cylinders'
+      'High government guaranteed interest rate (8.2% per annum, compounded annually)',
+      'Triple tax exemption under Section 80C (Deposit, Interest, and Maturity)',
+      'Account matures 21 years from opening date with partial withdrawal allowed at age 18 for higher education',
     ],
-    hiBenefits: [
-      'डिपाज़िट-मुक्त एलपीजी कनेक्शन (सिलिंडर व रेगुलेटर मुफ़्त)',
-      'पहला सिलिंडर रिफिल और गैस चूल्हा पूरी तरह मुफ़्त',
-      'रिफिल सिलिंडर पर लक्षित सब्सिडी का लाभ'
+    required_documents: ['aadhaar', 'pan', 'photo', 'bank_passbook'],
+    eligibility_criteria: {
+      has_girl_child: true,
+      min_age: 18,
+    },
+    officialUrl: 'https://www.indiapost.gov.in',
+    how_to_apply: 'Open an account at any Post Office or authorized commercial bank branch with the birth certificate of the girl child and parent Aadhaar/PAN.',
+  },
+  {
+    id: 'pm-surya-ghar',
+    name: 'PM Surya Ghar - Muft Bijli Yojana',
+    hiName: 'पीएम सूर्य घर - मुफ्त बिजली योजना',
+    provided_by: 'Centre',
+    state: 'All States / UTs',
+    category: 'Energy & Solar',
+    hiCategory: 'ऊर्जा एवं सौर ऊर्जा',
+    timeline: 'Application Window Open: Ongoing Phase 2',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Direct capital subsidy of up to ₹78,000 for installing residential rooftop solar systems providing up to 300 units free electricity.',
+    fullDesc: 'PM Surya Ghar Muft Bijli Yojana aims to provide free electricity to 1 crore households in India by providing a substantial central subsidy for installing rooftop solar panels.',
+    benefits: [
+      'Central subsidy up to ₹30,000 for 1kW, ₹60,000 for 2kW, and ₹78,000 for 3kW+ rooftop solar systems',
+      'Free electricity up to 300 units per month, reducing monthly utility bills to zero',
+      'Net metering allows selling surplus solar energy back to the local DISCOM grid',
     ],
-    documents: [
-      'Aadhaar of Applicant (Adult Woman)',
-      'Ration Card / Family Composition Certificate',
-      'Bank Account Number & IFSC'
+    required_documents: ['aadhaar', 'pan', 'bank_passbook'],
+    eligibility_criteria: {
+      has_rooftop_property: true,
+      min_age: 18,
+    },
+    officialUrl: 'https://pmsuryaghar.gov.in',
+    how_to_apply: 'Register on the national portal pmsuryaghar.gov.in with electricity consumer number and upload latest electricity bill.',
+  },
+  {
+    id: 'maharashtra-shatkari-sanman',
+    name: 'Namo Shetkari Maha Samman Nidhi Yojana',
+    hiName: 'नमो शेतकरी महासन्मान निधी योजना',
+    provided_by: 'State',
+    state: 'Maharashtra',
+    category: 'Agriculture & Farmers',
+    hiCategory: 'कृषि एवं किसान कल्याण',
+    timeline: 'Open All Year Round for Maharashtra Farmers',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Additional ₹6,000 annual state assistance over and above PM-KISAN, giving Maharashtra farmers ₹12,000 total per year.',
+    fullDesc: 'Launched by the Government of Maharashtra to supplement PM-KISAN, providing an additional grant of ₹6,000 per year directly to eligible farmer families residing in Maharashtra.',
+    benefits: [
+      'Additional ₹6,000 direct cash benefit paid in 3 installments of ₹2,000',
+      'Combined with PM-KISAN, eligible farmers in Maharashtra receive ₹12,000 annually',
+      'Aadhaar-based direct benefit transfer to state-verified accounts',
     ],
-    hiDocuments: [
-      'आवेदक महिला का आधार कार्ड',
-      'राशन कार्ड / पारिवारिक सदस्यता प्रमाण पत्र',
-      'बैंक खाता संख्या एवं IFSC कोड'
-    ]
-  }
+    required_documents: ['aadhaar', 'land_record', 'domicile', 'bank_passbook'],
+    eligibility_criteria: {
+      occupation: 'farmer',
+      required_state: 'Maharashtra',
+      requires_land: true,
+      min_age: 18,
+    },
+    officialUrl: 'https://mahadbt.maharashtra.gov.in',
+    how_to_apply: 'Farmers already approved under PM-KISAN with Maharashtra domicile and 7/12 land records are automatically linked via MahaDBT.',
+  },
+  {
+    id: 'up-kanya-sumangala',
+    name: 'Mukhya Mantri Kanya Sumangala Yojana (UP)',
+    hiName: 'मुख्यमंत्री कन्या सुमंगला योजना (उत्तर प्रदेश)',
+    provided_by: 'State',
+    state: 'Uttar Pradesh',
+    category: 'Women & Child',
+    hiCategory: 'महिला एवं बाल विकास',
+    timeline: 'Open All Year Round',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Conditional cash grant of ₹25,000 across 6 stages from birth through degree graduation for girls in Uttar Pradesh.',
+    fullDesc: 'A flagship scheme by the Government of Uttar Pradesh to ensure security, healthcare, and higher education for girl children in families with annual income under ₹3 Lakh.',
+    benefits: [
+      'Total financial grant of ₹25,000 released in 6 milestone installments from birth to college degree',
+      'Direct credit into beneficiary bank account',
+      'Promotes female education and curtails female foeticide and child marriage',
+    ],
+    required_documents: ['aadhaar', 'income_cert', 'domicile', 'photo', 'bank_passbook'],
+    eligibility_criteria: {
+      required_state: 'Uttar Pradesh',
+      max_income: 300000,
+      has_girl_child: true,
+      min_age: 18,
+    },
+    officialUrl: 'https://mksy.up.gov.in',
+    how_to_apply: 'Apply online on mksy.up.gov.in with UP residence certificate, parent income certificate, and girl child birth proof.',
+  },
+  {
+    id: 'pm-svanidhi',
+    name: 'PM SVANidhi (Street Vendor Special Micro-Credit)',
+    hiName: 'पीएम स्वनिधि (स्ट्रीट वेंडर आत्मनिर्भर निधि)',
+    provided_by: 'Centre',
+    state: 'All States / UTs',
+    category: 'Financial Inclusion',
+    hiCategory: 'वित्तीय समावेशन',
+    timeline: 'Window Open till 31 Dec 2026',
+    timelineStatus: 'OPEN',
+    shortDesc: 'Collateral-free working capital micro-loans of ₹10,000, ₹20,000 and ₹50,000 with 7% interest subsidy for urban street vendors.',
+    fullDesc: 'PM SVANidhi is a Central Sector Scheme launched by Ministry of Housing and Urban Affairs to facilitate working capital loans to street vendors to restart their livelihoods.',
+    benefits: [
+      'Initial working capital loan of ₹10,000, progressing to ₹20,000 and ₹50,000 upon timely repayment',
+      '7% interest subsidy credited directly to bank account on quarterly basis',
+      'Cashback rewards up to ₹1,200 per year on digital transactions',
+    ],
+    required_documents: ['aadhaar', 'pan', 'bank_passbook', 'photo'],
+    eligibility_criteria: {
+      occupation: 'vendor',
+      min_age: 18,
+    },
+    officialUrl: 'https://pmsvanidhi.mohua.gov.in',
+    how_to_apply: 'Apply through the PM SVANidhi portal or through Urban Local Body (ULB) / Municipal representative with Certificate of Vending.',
+  },
 ];
