@@ -15,7 +15,6 @@ except ImportError:
     from crud.auth.dependencies import require_role
 
 from DB.connection import get_db
-from DB.config import COLLECTION_SCHEME_RULES
 import DB.crud as db_crud
 
 router = APIRouter(tags=["Rules"])
@@ -34,7 +33,6 @@ async def create_rule(
 ) -> Dict[str, Any]:
     """Admin-only: Define a deterministic rule criterion for a scheme."""
     rule_data = rule_in.model_dump()
-    normalized_id = scheme_id.strip().lower().replace("-", "_")
 
     try:
         rule_condition = {
@@ -44,14 +42,7 @@ async def create_rule(
             "explanation": rule_data["explanation"],
             "hindi_explanation": rule_data.get("hindi_explanation"),
         }
-        await db[COLLECTION_SCHEME_RULES].update_one(
-            {"scheme_id": normalized_id},
-            {
-                "$push": {"rules": rule_condition},
-                "$setOnInsert": {"version": "1.0", "logic": "AND"},
-            },
-            upsert=True,
-        )
+        await db_crud.add_scheme_rule_condition(db, scheme_id, rule_condition)
         return {
             "success": True,
             "message": f"Rule added to scheme '{scheme_id}' successfully",

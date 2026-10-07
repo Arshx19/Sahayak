@@ -20,14 +20,16 @@ except ImportError:
 
 # MongoDB Connection Configuration
 MONGODB_URI = os.getenv("MONGODB_URI") or os.getenv("MONGO_URI") or "mongodb://localhost:27017"
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sahayak_db")
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sahayak")
 
 # Standardized MongoDB Collection Names
 COLLECTION_USERS = "users"
 COLLECTION_CITIZEN_PROFILES = "citizen_profiles"
+COLLECTION_USER_DOCUMENTS = "user_documents"
 COLLECTION_SCHEMES = "schemes"
 COLLECTION_SCHEME_RULES = "scheme_rules"
 COLLECTION_ELIGIBILITY_CHECKS = "eligibility_checks"
+COLLECTION_NOTIFICATIONS = "notifications"
 COLLECTION_CONVERSATIONS = "conversations"
 COLLECTION_GRIEVANCES = "grievances"
 COLLECTION_GRIEVANCE_UPDATES = "grievance_updates"
@@ -41,9 +43,11 @@ def get_db_settings() -> dict:
         "collections": {
             "users": COLLECTION_USERS,
             "citizen_profiles": COLLECTION_CITIZEN_PROFILES,
+            "user_documents": COLLECTION_USER_DOCUMENTS,
             "schemes": COLLECTION_SCHEMES,
             "scheme_rules": COLLECTION_SCHEME_RULES,
             "eligibility_checks": COLLECTION_ELIGIBILITY_CHECKS,
+            "notifications": COLLECTION_NOTIFICATIONS,
             "conversations": COLLECTION_CONVERSATIONS,
             "grievances": COLLECTION_GRIEVANCES,
             "grievance_updates": COLLECTION_GRIEVANCE_UPDATES,

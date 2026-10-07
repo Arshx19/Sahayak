@@ -28,7 +28,6 @@ except ImportError:
     from crud.auth.dependencies import get_current_user, require_role, check_ownership
 
 from DB.connection import get_db
-from DB.config import COLLECTION_GRIEVANCES
 import DB.crud as db_crud
 
 router = APIRouter()
@@ -262,10 +261,12 @@ async def assign_grievance(
     db: Any = Depends(get_db),
 ) -> Dict[str, Any]:
     """Officer/Admin: Assign ticket to a specific resolution officer."""
+    updated_ticket = None
     try:
-        await db[COLLECTION_GRIEVANCES].update_one(
-            {"ticket_id": grievance_id},
-            {"$set": {"assigned_officer": assign_in.assigned_officer, "status": "ASSIGNED"}},
+        updated_ticket = await db_crud.assign_grievance_officer(
+            db,
+            ticket_id=grievance_id,
+            officer_id=assign_in.assigned_officer,
         )
     except Exception:
         pass
@@ -273,7 +274,7 @@ async def assign_grievance(
     return {
         "success": True,
         "message": f"Grievance {grievance_id} assigned to officer {assign_in.assigned_officer}",
-        "data": {
+        "data": updated_ticket if updated_ticket else {
             "ticket_id": grievance_id,
             "assigned_officer": assign_in.assigned_officer,
             "status": GrievanceStatus.ASSIGNED.value,

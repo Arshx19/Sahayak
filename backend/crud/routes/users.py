@@ -15,7 +15,7 @@ except ImportError:
     from crud.auth.dependencies import get_current_user
 
 from DB.connection import get_db
-from DB.config import COLLECTION_USERS
+import DB.crud as db_crud
 
 router = APIRouter()
 
@@ -33,9 +33,7 @@ async def get_my_user(
     user_id = current_user["user_id"]
 
     try:
-        user = await db[COLLECTION_USERS].find_one(
-            {"$or": [{"user_id": user_id}, {"_id": user_id}]}
-        )
+        user = await db_crud.get_user_by_id(db, user_id)
         if user:
             return {
                 "success": True,
@@ -85,11 +83,9 @@ async def update_my_user(
             detail={"success": False, "error": "No update fields provided"},
         )
 
+    updated_doc = None
     try:
-        await db[COLLECTION_USERS].update_one(
-            {"$or": [{"user_id": user_id}, {"_id": user_id}]},
-            {"$set": update_payload},
-        )
+        updated_doc = await db_crud.update_user(db, user_id, update_payload)
     except Exception:
         pass
 
@@ -99,7 +95,7 @@ async def update_my_user(
         "data": {
             "id": user_id,
             "user_id": user_id,
-            **update_payload,
+            **(updated_doc if updated_doc else update_payload),
         },
     }
 
@@ -117,10 +113,7 @@ async def delete_my_user(
     user_id = current_user["user_id"]
 
     try:
-        await db[COLLECTION_USERS].update_one(
-            {"$or": [{"user_id": user_id}, {"_id": user_id}]},
-            {"$set": {"is_active": False}},
-        )
+        await db_crud.delete_user(db, user_id, soft_delete=True)
     except Exception:
         pass
 

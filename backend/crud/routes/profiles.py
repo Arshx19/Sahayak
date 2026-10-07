@@ -15,7 +15,6 @@ except ImportError:
     from crud.auth.dependencies import get_current_user
 
 from DB.connection import get_db
-from DB.config import COLLECTION_CITIZEN_PROFILES
 import DB.crud as db_crud
 
 router = APIRouter()
@@ -141,7 +140,7 @@ async def delete_my_profile(
     user_id = current_user["user_id"]
 
     try:
-        await db[COLLECTION_CITIZEN_PROFILES].delete_one({"user_id": user_id})
+        await db_crud.delete_citizen_profile(db, user_id)
     except Exception:
         pass
 
