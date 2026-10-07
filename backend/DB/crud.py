@@ -9,9 +9,11 @@ from typing import Any, Dict, List, Optional
 from .config import (
     COLLECTION_USERS,
     COLLECTION_CITIZEN_PROFILES,
+    COLLECTION_USER_DOCUMENTS,
     COLLECTION_SCHEMES,
     COLLECTION_SCHEME_RULES,
     COLLECTION_ELIGIBILITY_CHECKS,
+    COLLECTION_NOTIFICATIONS,
     COLLECTION_GRIEVANCES,
     COLLECTION_AUDIT_LOGS,
 )
@@ -124,6 +126,134 @@ async def delete_user(db, user_id: str, soft_delete: bool = True) -> bool:
 
 
 # ============================================================================
+# User Documents Repositories (Document-Centric Dashboard Workflow)
+# ============================================================================
+
+async def create_or_update_user_document(
+    db, user_id: str, document_data: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Create or update a user document record.
+    Uniquely keyed by (user_id, document_type).
+    """
+    now = datetime.now(timezone.utc)
+    raw_doc_type = document_data.get("document_type", "").strip().lower()
+    if not raw_doc_type:
+        raise ValueError("document_type is required")
+
+    doc_id = document_data.get("document_id") or f"doc_{uuid.uuid4().hex[:12]}"
+    clean_data = {
+        k: v for k, v in document_data.items()
+        if k not in ("user_id", "document_type", "created_at", "_id")
+    }
+    clean_data["document_type"] = raw_doc_type
+    clean_data["user_id"] = user_id
+    clean_data["updated_at"] = now
+    if "verification_status" in clean_data and clean_data["verification_status"]:
+        clean_data["verification_status"] = _to_str(clean_data["verification_status"])
+
+    await db[COLLECTION_USER_DOCUMENTS].update_one(
+        {"user_id": user_id, "document_type": raw_doc_type},
+        {
+            "$set": clean_data,
+            "$setOnInsert": {
+                "document_id": doc_id,
+                "uploaded_at": now,
+                "status": clean_data.get("status", "active"),
+            },
+        },
+        upsert=True,
+    )
+    return await get_user_document_by_type(db, user_id, raw_doc_type)  # type: ignore
+
+
+async def get_user_documents(
+    db, user_id: str, status: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Retrieve all uploaded documents for a given citizen."""
+    query: Dict[str, Any] = {"user_id": user_id}
+    if status:
+        query["status"] = status
+    cursor = db[COLLECTION_USER_DOCUMENTS].find(query).sort("uploaded_at", -1)
+    docs = await cursor.to_list(length=100)
+    return _serialize_list(docs)
+
+
+async def get_user_document_by_type(
+    db, user_id: str, document_type: str
+) -> Optional[Dict[str, Any]]:
+    """Retrieve a specific document for a user by document_type."""
+    clean_type = document_type.strip().lower()
+    doc = await db[COLLECTION_USER_DOCUMENTS].find_one(
+        {"user_id": user_id, "document_type": clean_type}
+    )
+    return _serialize_doc(doc)
+
+
+async def get_user_verified_document_types(db, user_id: str) -> List[str]:
+    """Retrieve list of verified document types possessed by the user."""
+    cursor = db[COLLECTION_USER_DOCUMENTS].find(
+        {
+            "user_id": user_id,
+            "verification_status": "verified",
+            "status": {"$ne": "archived"},
+        },
+        {"document_type": 1},
+    )
+    docs = await cursor.to_list(length=100)
+    return [d["document_type"] for d in docs if "document_type" in d]
+
+
+async def update_user_document_verification(
+    db,
+    user_id: str,
+    document_type: str,
+    verification_status: Any,
+    admin_or_officer_id: Optional[str] = None,
+    note: Optional[str] = None,
+) -> Optional[Dict[str, Any]]:
+    """Admin / Officer function to verify, reject, or mark expired a citizen document."""
+    now = datetime.now(timezone.utc)
+    clean_type = document_type.strip().lower()
+    status_str = _to_str(verification_status)
+
+    update_fields: Dict[str, Any] = {
+        "verification_status": status_str,
+        "updated_at": now,
+    }
+    if admin_or_officer_id:
+        update_fields["verified_by"] = admin_or_officer_id
+    if note is not None:
+        update_fields["verification_note"] = note
+
+    res = await db[COLLECTION_USER_DOCUMENTS].update_one(
+        {"user_id": user_id, "document_type": clean_type},
+        {"$set": update_fields},
+    )
+    if res.matched_count == 0:
+        return None
+    return await get_user_document_by_type(db, user_id, clean_type)
+
+
+async def delete_user_document(
+    db, user_id: str, document_type: str, soft_delete: bool = True
+) -> bool:
+    """Soft delete (archive) or permanently remove a user document."""
+    clean_type = document_type.strip().lower()
+    filter_q = {"user_id": user_id, "document_type": clean_type}
+    if soft_delete:
+        now = datetime.now(timezone.utc)
+        res = await db[COLLECTION_USER_DOCUMENTS].update_one(
+            filter_q,
+            {"$set": {"status": "archived", "updated_at": now}},
+        )
+        return res.modified_count > 0
+    else:
+        res = await db[COLLECTION_USER_DOCUMENTS].delete_one(filter_q)
+        return res.deleted_count > 0
+
+
+# ============================================================================
 # Schemes & Rules Repositories
 # ============================================================================
 
@@ -131,16 +261,23 @@ async def get_all_schemes(
     db,
     category: Optional[str] = None,
     state: Optional[str] = None,
+    scheme_type: Optional[str] = None,
+    provider: Optional[str] = None,
     is_active: bool = True,
+    limit: int = 100,
 ) -> List[Dict[str, Any]]:
-    """Retrieve all schemes matching active status, optional category, and state applicability."""
+    """Retrieve all schemes matching active status, optional category, state applicability, type, and provider."""
     query: Dict[str, Any] = {"is_active": is_active}
     if category:
         query["category"] = category
     if state:
         query["applicable_states"] = {"$in": [state, "ALL"]}
-    cursor = db[COLLECTION_SCHEMES].find(query)
-    docs = await cursor.to_list(length=100)
+    if scheme_type:
+        query["$or"] = [{"scheme_type": scheme_type}, {"type": scheme_type}]
+    if provider:
+        query["provider"] = provider
+    cursor = db[COLLECTION_SCHEMES].find(query).limit(limit)
+    docs = await cursor.to_list(length=limit)
     return _serialize_list(docs)
 
 
@@ -352,6 +489,143 @@ async def get_user_eligibility_history(
     )
     docs = await cursor.to_list(length=limit)
     return _serialize_list(docs)
+
+
+async def get_latest_user_scheme_eligibility(
+    db, user_id: str, scheme_id: str
+) -> Optional[Dict[str, Any]]:
+    """Retrieve the most recent eligibility check for a specific user and scheme."""
+    normalized_id = scheme_id.strip()
+    alt_id = normalized_id.lower().replace("-", "_")
+    doc = await db[COLLECTION_ELIGIBILITY_CHECKS].find_one(
+        {
+            "user_id": user_id,
+            "$or": [{"scheme_id": normalized_id}, {"scheme_id": alt_id}],
+        },
+        sort=[("timestamp", -1)],
+    )
+    return _serialize_doc(doc)
+
+
+async def get_eligible_schemes_for_user(
+    db, user_id: str, limit: int = 50
+) -> List[Dict[str, Any]]:
+    """
+    Retrieve latest eligibility records where the user is eligible.
+    Groups by scheme_id to ensure only latest state per scheme is returned.
+    """
+    pipeline = [
+        {"$match": {"user_id": user_id}},
+        {"$sort": {"timestamp": -1}},
+        {
+            "$group": {
+                "_id": "$scheme_id",
+                "latest_check": {"$first": "$$ROOT"},
+            }
+        },
+        {"$replaceRoot": {"newRoot": "$latest_check"}},
+        {"$match": {"is_eligible": True}},
+        {"$limit": limit},
+    ]
+    cursor = db[COLLECTION_ELIGIBILITY_CHECKS].aggregate(pipeline)
+    docs = await cursor.to_list(length=limit)
+    return _serialize_list(docs)
+
+
+async def get_non_eligible_schemes_for_user(
+    db, user_id: str, limit: int = 50
+) -> List[Dict[str, Any]]:
+    """
+    Retrieve latest eligibility records where the user is NOT eligible,
+    preserving explainable failure reasons and missing criteria.
+    """
+    pipeline = [
+        {"$match": {"user_id": user_id}},
+        {"$sort": {"timestamp": -1}},
+        {
+            "$group": {
+                "_id": "$scheme_id",
+                "latest_check": {"$first": "$$ROOT"},
+            }
+        },
+        {"$replaceRoot": {"newRoot": "$latest_check"}},
+        {"$match": {"is_eligible": False}},
+        {"$limit": limit},
+    ]
+    cursor = db[COLLECTION_ELIGIBILITY_CHECKS].aggregate(pipeline)
+    docs = await cursor.to_list(length=limit)
+    return _serialize_list(docs)
+
+
+# ============================================================================
+# User Notifications Repositories
+# ============================================================================
+
+async def create_notification(
+    db, notification_data: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Create a persistent user notification."""
+    now = datetime.now(timezone.utc)
+    doc = dict(notification_data)
+    if "notification_id" not in doc or not doc["notification_id"]:
+        doc["notification_id"] = f"notif_{uuid.uuid4().hex[:12]}"
+    if "notification_type" in doc:
+        doc["notification_type"] = _to_str(doc["notification_type"])
+    doc["is_read"] = doc.get("is_read", False)
+    doc["created_at"] = now
+    doc["read_at"] = None
+
+    await db[COLLECTION_NOTIFICATIONS].insert_one(doc)
+    return _serialize_doc(doc)  # type: ignore
+
+
+async def get_user_notifications(
+    db, user_id: str, unread_only: bool = False, limit: int = 50
+) -> List[Dict[str, Any]]:
+    """Retrieve notifications for a user, newest first."""
+    query: Dict[str, Any] = {"user_id": user_id}
+    if unread_only:
+        query["is_read"] = False
+    cursor = (
+        db[COLLECTION_NOTIFICATIONS]
+        .find(query)
+        .sort("created_at", -1)
+        .limit(limit)
+    )
+    docs = await cursor.to_list(length=limit)
+    return _serialize_list(docs)
+
+
+async def mark_notification_as_read(
+    db, notification_id: str, user_id: str
+) -> bool:
+    """Mark a single notification as read with user isolation."""
+    now = datetime.now(timezone.utc)
+    res = await db[COLLECTION_NOTIFICATIONS].update_one(
+        {"notification_id": notification_id, "user_id": user_id},
+        {"$set": {"is_read": True, "read_at": now}},
+    )
+    return res.modified_count > 0
+
+
+async def mark_all_notifications_read(db, user_id: str) -> int:
+    """Mark all unread notifications as read for a citizen."""
+    now = datetime.now(timezone.utc)
+    res = await db[COLLECTION_NOTIFICATIONS].update_many(
+        {"user_id": user_id, "is_read": False},
+        {"$set": {"is_read": True, "read_at": now}},
+    )
+    return res.modified_count
+
+
+async def delete_notification(
+    db, notification_id: str, user_id: str
+) -> bool:
+    """Delete a user notification with user isolation."""
+    res = await db[COLLECTION_NOTIFICATIONS].delete_one(
+        {"notification_id": notification_id, "user_id": user_id}
+    )
+    return res.deleted_count > 0
 
 
 # ============================================================================
