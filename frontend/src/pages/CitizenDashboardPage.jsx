@@ -177,9 +177,9 @@ export default function CitizenDashboardPage({ language }) {
       <div className="space-y-4">
         <div className="border-b border-slate-300 pb-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h3 className="text-lg font-bold text-[#1b365d]">Government Scheme Eligibility</h3>
+            <h3 className="text-lg font-bold text-[#1b365d]">My Personal Scheme Entitlements & Applications</h3>
             <p className="text-xs text-slate-500">
-              Evaluated deterministically against your uploaded documents and socio-economic demographics.
+              Live eligibility calculated for {user?.name || 'you'} against your verified documents locker.
             </p>
           </div>
 
