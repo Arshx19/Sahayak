@@ -46,8 +46,10 @@ from .schemas import (
     GrievanceUpdateRecord,
     AuditLogRecord,
 )
+from . import crud
 
 __all__ = [
+    "crud",
     "MONGODB_URI",
     "MONGO_DB_NAME",
     "COLLECTION_USERS",

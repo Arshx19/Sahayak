@@ -189,6 +189,17 @@ def seed_demo_users(db):
             "created_at": now,
             "updated_at": now,
         },
+        {
+            "user_id": "usr_demo_admin",
+            "name": "System Administrator",
+            "email": "admin@sahayak.gov.in",
+            "phone": "9876543212",
+            "role": "admin",
+            "password_hash": "$2b$12$e80yqV8vWvh9gQxK.XlIke18t3N7jN3e8X7fV9x2Qy6.Jb0pW8f9S",
+            "is_active": True,
+            "created_at": now,
+            "updated_at": now,
+        },
     ]
 
     for u in demo_users:
@@ -197,7 +208,7 @@ def seed_demo_users(db):
             {"$set": u},
             upsert=True
         )
-    logger.info("  ✓ Successfully seeded demo citizen and officer accounts.")
+    logger.info("  ✓ Successfully seeded demo citizen, officer, and admin accounts.")
 
 
 def run_seeder():
