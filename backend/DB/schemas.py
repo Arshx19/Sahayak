@@ -144,7 +144,8 @@ class UserDocumentResponse(UserDocumentBase):
 
 
 # -------------------------------------------------------------
-# Citizen Profile Schemas (Retained for Backward Compatibility & Demographic Rules)
+# Citizen Profile Schemas (Deprecated / Maintained for Demographic Rules & Backward Compatibility)
+# Note: Citizen documents are now managed primarily via UserDocument models in `user_documents`.
 # -------------------------------------------------------------
 class CitizenProfileBase(BaseModel):
     user_id: Optional[str] = None
@@ -405,7 +406,9 @@ class NotificationResponse(NotificationBase):
 
 
 # -------------------------------------------------------------
-# Grievance Schemas
+# Grievance Schemas (Deferred / Maintained for Existing CRUD Routes)
+# Note: Grievance workflow is marked TBD in product specification.
+# Retained intact to prevent breaking backend/crud routes until grievance spec is defined.
 # -------------------------------------------------------------
 class GrievancePriority(str, Enum):
     LOW = "LOW"
