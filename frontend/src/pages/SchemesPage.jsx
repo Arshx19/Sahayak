@@ -10,12 +10,23 @@ import LoadingState from '../components/LoadingState.jsx';
 
 const CATEGORIES = [
   'All',
-  'Agriculture & Farmers',
-  'Housing & Shelter',
-  'Healthcare & Medical',
-  'Women & Child',
-  'Energy & Solar',
-  'Financial Inclusion',
+  'Farmer',
+  'Women',
+  'Healthcare',
+  'Housing',
+  'Employment',
+  'MSME',
+  'Education',
+  'Social Welfare',
+  'Financial Assistance',
+];
+
+const AVAILABLE_STATES = [
+  'All States',
+  'Uttar Pradesh',
+  'Maharashtra',
+  'Karnataka',
+  'Odisha',
 ];
 
 export default function SchemesPage({ language }) {
@@ -38,7 +49,7 @@ export default function SchemesPage({ language }) {
   // Filter States
   const [filterEligibility, setFilterEligibility] = useState('ALL'); // 'ALL' | 'ELIGIBLE' | 'NOT_ELIGIBLE'
   const [filterProvider, setFilterProvider] = useState('All');
-  const [filterState, setFilterState] = useState('All');
+  const [filterState, setFilterState] = useState('All States');
   const [filterCategory, setFilterCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -79,7 +90,7 @@ export default function SchemesPage({ language }) {
   const resetFilters = () => {
     setFilterEligibility('ALL');
     setFilterProvider('All');
-    setFilterState('All');
+    setFilterState('All States');
     setFilterCategory('All');
     setSearchQuery('');
   };
@@ -106,23 +117,34 @@ export default function SchemesPage({ language }) {
     if (filterEligibility === 'ELIGIBLE' && !s.isEligible) return false;
     if (filterEligibility === 'NOT_ELIGIBLE' && s.isEligible) return false;
 
-    // Provider filter
-    if (filterProvider !== 'All' && s.provided_by !== filterProvider) return false;
+    // Provider / Level filter
+    if (filterProvider !== 'All') {
+      const isCentral = s.provider === 'Central' || s.provided_by === 'Central' || s.provided_by === 'Centre' || s.level === 'Central';
+      const isState = s.provider === 'State' || s.provided_by === 'State' || s.level === 'State';
+      if (filterProvider === 'Central' && !isCentral) return false;
+      if (filterProvider === 'State' && !isState) return false;
+    }
 
     // State filter
-    const sState = (s.state || '').toLowerCase();
-    if (
-      filterState !== 'All' &&
-      !sState.includes('all states') &&
-      !sState.includes(filterState.toLowerCase())
-    ) {
-      return false;
+    if (filterState !== 'All States' && filterState !== 'All') {
+      const sState = (s.state || '').toLowerCase();
+      const targetState = filterState.toLowerCase();
+      const matchesState =
+        sState === targetState ||
+        sState.includes(targetState) ||
+        (Array.isArray(s.applicable_states) && !s.applicable_states.includes('ALL') && s.applicable_states.some((st) => st.toLowerCase() === targetState));
+      if (!matchesState) {
+        return false;
+      }
     }
 
     // Category filter
-    const sCat = (s.category || '').toLowerCase();
-    if (filterCategory !== 'All' && !sCat.includes(filterCategory.toLowerCase())) {
-      return false;
+    if (filterCategory !== 'All') {
+      const sCat = (s.category || '').toLowerCase();
+      const targetCat = filterCategory.toLowerCase();
+      if (!sCat.includes(targetCat) && !targetCat.includes(sCat)) {
+        return false;
+      }
     }
 
     // Search query
@@ -130,7 +152,7 @@ export default function SchemesPage({ language }) {
     if (
       q &&
       !s.name.toLowerCase().includes(q) &&
-      !s.shortDesc.toLowerCase().includes(q) &&
+      !(s.shortDesc || '').toLowerCase().includes(q) &&
       !s.id.toLowerCase().includes(q)
     ) {
       return false;
@@ -139,11 +161,10 @@ export default function SchemesPage({ language }) {
     return true;
   });
 
-  const availableStates = ['All', 'Maharashtra', 'Uttar Pradesh', 'Rajasthan', 'Bihar'];
   const isFiltered =
     filterEligibility !== 'ALL' ||
     filterProvider !== 'All' ||
-    filterState !== 'All' ||
+    (filterState !== 'All States' && filterState !== 'All') ||
     filterCategory !== 'All' ||
     searchQuery !== '';
 
@@ -239,9 +260,9 @@ export default function SchemesPage({ language }) {
               onChange={(e) => setFilterProvider(e.target.value)}
               className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#1b365d] bg-white font-medium"
             >
-              <option value="All">All Providers (Centre & State)</option>
-              <option value="Centre">🏛️ Central Government</option>
-              <option value="State">📍 State Government</option>
+              <option value="All">All Levels</option>
+              <option value="Central">Central Government</option>
+              <option value="State">State Government</option>
             </select>
           </div>
 
@@ -254,9 +275,9 @@ export default function SchemesPage({ language }) {
               onChange={(e) => setFilterState(e.target.value)}
               className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#1b365d] bg-white font-medium"
             >
-              {availableStates.map((st) => (
+              {AVAILABLE_STATES.map((st) => (
                 <option key={st} value={st}>
-                  {st === 'All' ? 'All States (Pan-India)' : st}
+                  {st}
                 </option>
               ))}
             </select>
@@ -273,7 +294,7 @@ export default function SchemesPage({ language }) {
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {c === 'All' ? 'All Sectors' : c}
+                  {c === 'All' ? 'All Categories' : c}
                 </option>
               ))}
             </select>

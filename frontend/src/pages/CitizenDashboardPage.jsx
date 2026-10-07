@@ -116,17 +116,22 @@ export default function CitizenDashboardPage({ language }) {
   // Multi-Criteria Filtering
   const filteredList = displayedSchemes.filter((s) => {
     // Provider filter
+    const isCentral = s.provider === 'Central' || s.provided_by === 'Central' || s.provided_by === 'Centre' || s.level === 'Central';
+    const isState = s.provider === 'State' || s.provided_by === 'State' || s.level === 'State';
     const matchesProvider =
       filterProvider === 'All' ||
-      (filterProvider === 'Centre' && s.provided_by === 'Centre') ||
-      (filterProvider === 'State' && s.provided_by === 'State');
+      ((filterProvider === 'Centre' || filterProvider === 'Central') && isCentral) ||
+      (filterProvider === 'State' && isState);
 
     // State filter
     const sState = (s.state || '').toLowerCase();
+    const targetState = filterState.toLowerCase();
     const matchesState =
       filterState === 'All' ||
-      sState.includes('all states') ||
-      sState.includes(filterState.toLowerCase());
+      filterState === 'All States' ||
+      sState === targetState ||
+      sState.includes(targetState) ||
+      (Array.isArray(s.applicable_states) && !s.applicable_states.includes('ALL') && s.applicable_states.some((st) => st.toLowerCase() === targetState));
 
     // Category filter
     const sCat = (s.category || '').toLowerCase();
@@ -137,15 +142,15 @@ export default function CitizenDashboardPage({ language }) {
     const q = searchQuery.trim().toLowerCase();
     const matchesQuery =
       !q ||
-      s.name.toLowerCase().includes(q) ||
-      s.shortDesc.toLowerCase().includes(q) ||
-      s.id.toLowerCase().includes(q);
+      (s.name || '').toLowerCase().includes(q) ||
+      (s.shortDesc || '').toLowerCase().includes(q) ||
+      (s.id || '').toLowerCase().includes(q);
 
     return matchesProvider && matchesState && matchesCategory && matchesQuery;
   });
 
-  const availableStates = ['All', 'Maharashtra', 'Uttar Pradesh', 'Rajasthan', 'Bihar'];
-  const categories = ['All', 'Agriculture', 'Housing', 'Healthcare', 'Women & Child', 'Energy', 'Financial'];
+  const availableStates = ['All States', 'Uttar Pradesh', 'Maharashtra', 'Karnataka', 'Odisha'];
+  const categories = ['All', 'Farmer', 'Women', 'Healthcare', 'Housing', 'Employment', 'MSME', 'Education', 'Social Welfare', 'Financial Assistance'];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -241,8 +246,8 @@ export default function CitizenDashboardPage({ language }) {
               onChange={(e) => setFilterProvider(e.target.value)}
               className="border border-slate-300 rounded px-2.5 py-1 text-xs focus:outline-none focus:border-[#1b365d] bg-white font-medium"
             >
-              <option value="All">All Providers (Centre & State)</option>
-              <option value="Centre">🏛️ Central Government</option>
+              <option value="All">All Levels</option>
+              <option value="Central">🏛️ Central Government</option>
               <option value="State">📍 State Government</option>
             </select>
 
@@ -254,7 +259,7 @@ export default function CitizenDashboardPage({ language }) {
             >
               {availableStates.map((st) => (
                 <option key={st} value={st}>
-                  State: {st === 'All' ? 'Pan-India (All States)' : st}
+                  {st}
                 </option>
               ))}
             </select>
@@ -267,7 +272,7 @@ export default function CitizenDashboardPage({ language }) {
             >
               {categories.map((c) => (
                 <option key={c} value={c}>
-                  Category: {c === 'All' ? 'All Sectors' : c}
+                  {c === 'All' ? 'All Categories' : c}
                 </option>
               ))}
             </select>

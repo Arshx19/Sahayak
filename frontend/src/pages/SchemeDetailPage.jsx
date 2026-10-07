@@ -76,23 +76,28 @@ export default function SchemeDetailPage({ language }) {
       {/* Main Header Card */}
       <div className="bg-white border border-slate-300 rounded-lg p-5 sm:p-6 space-y-3 shadow-2xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 text-xs font-bold">
-            <span
-              className={`px-2 py-0.5 rounded border ${
-                scheme.provided_by === 'State'
-                  ? 'bg-purple-50 text-purple-800 border-purple-200'
-                  : 'bg-blue-50 text-blue-800 border-blue-200'
-              }`}
-            >
-              🏛️ {scheme.provided_by === 'State' ? `State Scheme (${scheme.state})` : 'Central Scheme'}
-            </span>
-            <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
-              {scheme.category}
-            </span>
-          </div>
+          {(() => {
+            const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
+            return (
+              <div className="flex items-center gap-1.5 text-xs font-bold">
+                <span
+                  className={`px-2 py-0.5 rounded border ${
+                    isState
+                      ? 'bg-purple-50 text-purple-800 border-purple-200'
+                      : 'bg-blue-50 text-blue-800 border-blue-200'
+                  }`}
+                >
+                  🏛️ {isState ? `State Scheme (${scheme.state})` : 'Central Scheme'}
+                </span>
+                <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                  {scheme.category}
+                </span>
+              </div>
+            );
+          })()}
 
           <span className="bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 rounded text-xs font-semibold">
-            🗓️ {scheme.timeline || 'Open All Year Round'}
+            🗓️ {typeof scheme.timeline === 'object' ? (scheme.timeline?.application_status || scheme.timeline?.application_frequency || 'Continuous') : (scheme.timeline || 'Open All Year Round')}
           </span>
         </div>
 
@@ -159,7 +164,7 @@ export default function SchemeDetailPage({ language }) {
 
           {isEligible ? (
             <a
-              href={scheme.officialUrl || '#'}
+              href={scheme.officialUrl || scheme.application_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded text-xs transition shadow-xs flex items-center gap-1.5"

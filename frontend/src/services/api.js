@@ -115,7 +115,14 @@ export const getUserDocuments = async (userId = null) => {
 
 export const uploadUserDocument = async (docData) => {
   try {
-    const canonicalType = DOCUMENT_KEY_ALIASES[docData.document_type] || docData.document_type;
+    const CANONICAL_DOC_TYPES = {
+      bank_passbook: 'bank_account',
+      income_cert: 'income_certificate',
+      caste_cert: 'caste_certificate',
+      domicile: 'domicile_certificate',
+      photo: 'photograph',
+    };
+    const canonicalType = CANONICAL_DOC_TYPES[docData.document_type] || docData.document_type;
     const payload = {
       document_type: canonicalType,
       document_name: docData.document_name,
@@ -168,7 +175,7 @@ export const getSchemes = async (filters = {}) => {
     const qs = params.toString() ? `?${params.toString()}` : '';
 
     const res = await request(`/schemes${qs}`);
-    if (res && res.data && Array.isArray(res.data)) {
+    if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
       // Map backend/DB scheme models to standard UI format
       return res.data.map((s) => ({
         id: s.scheme_id || s.scheme_code || s.id,
@@ -177,19 +184,25 @@ export const getSchemes = async (filters = {}) => {
         hiName: s.hindi_name || s.hiName || s.name,
         category: s.category,
         hiCategory: s.hiCategory || s.category,
+        provider: s.provider || s.scheme_type || s.level || 'Central',
         level: s.provider || s.scheme_type || s.level || 'Central',
+        provided_by: s.provider || s.scheme_type || s.level || 'Central',
         state: Array.isArray(s.applicable_states) ? s.applicable_states.join(', ') : (s.state || 'All India'),
+        applicable_states: s.applicable_states || ['ALL'],
         applicableStates: s.applicable_states || ['ALL'],
         shortDesc: s.description || s.shortDesc,
         fullDesc: s.description,
         benefits: Array.isArray(s.benefits) ? s.benefits : [s.benefits].filter(Boolean),
         documents: Array.isArray(s.required_documents) ? s.required_documents : s.documents || [],
         required_documents: s.required_documents || [],
+        eligibility: s.eligibility_summary || s.eligibility || '',
+        eligibility_criteria: s.eligibility_criteria || {},
         timeline: s.timeline || {
           application_frequency: s.application_frequency || 'Continuous',
           application_status: s.application_status || 'Open',
         },
         officialUrl: s.official_url || s.official_source || s.application_url,
+        application_url: s.official_url || s.official_source || s.application_url,
       }));
     }
   } catch {
@@ -480,7 +493,7 @@ export const submitAssistantQuery = async (payload) => {
 export const getUserNotifications = async () => {
   try {
     const res = await request('/notifications');
-    if (res && res.data && Array.isArray(res.data)) {
+    if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
       return res.data.map((n) => ({
         id: n.notification_id || n.id,
         title: n.title,
@@ -494,6 +507,15 @@ export const getUserNotifications = async () => {
   } catch {
     // Fallback to localStorage or mock
   }
+
+  try {
+    const saved = localStorage.getItem('sahayak_notifications');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+
   return null;
 };
 

@@ -11,8 +11,9 @@ export default function SchemeEligibilityCard({
   const checks = evaluation ? evaluation.criteriaChecks : [];
   const missingDocs = evaluation ? evaluation.missingDocuments : [];
 
+  const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
   const providerLabel =
-    scheme.provided_by === 'State'
+    isState
       ? `State Scheme (${scheme.state})`
       : 'Central Government Scheme';
 
@@ -30,7 +31,7 @@ export default function SchemeEligibilityCard({
           <div className="flex items-center gap-1.5">
             <span
               className={`px-2 py-0.5 rounded border ${
-                scheme.provided_by === 'State'
+                isState
                   ? 'bg-purple-50 text-purple-800 border-purple-200'
                   : 'bg-blue-50 text-blue-800 border-blue-200'
               }`}
@@ -43,7 +44,7 @@ export default function SchemeEligibilityCard({
           </div>
 
           <span className="bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded">
-            🗓️ {scheme.timeline || 'Always Open'}
+            🗓️ {typeof scheme.timeline === 'object' ? (scheme.timeline?.application_status || scheme.timeline?.application_frequency || 'Continuous') : (scheme.timeline || 'Always Open')}
           </span>
         </div>
 

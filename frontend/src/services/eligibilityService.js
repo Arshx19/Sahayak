@@ -35,7 +35,7 @@ export function evaluateSchemeEligibility(scheme, citizenDocuments = {}, citizen
       });
     } else {
       missingDocuments.push(cleanId);
-      reasons.push(`${docDef.name} is not uploaded`);
+      reasons.push(`${docDef.name} has not been uploaded to your document locker.`);
       criteriaChecks.push({
         id: `doc_${cleanId}`,
         docId: cleanId,
@@ -52,8 +52,9 @@ export function evaluateSchemeEligibility(scheme, citizenDocuments = {}, citizen
   const criteria = scheme.eligibility_criteria || {};
 
   // State Applicability Check
-  if (scheme.provided_by === 'State' || (criteria.required_state && criteria.required_state !== 'All')) {
-    const requiredState = criteria.required_state || scheme.state;
+  const isStateScheme = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
+  if (isStateScheme) {
+    const requiredState = scheme.state;
     const userState = citizenProfile.state || 'Maharashtra';
     const isStateMatch = !requiredState || requiredState.includes('All') || userState.toLowerCase() === requiredState.toLowerCase();
 
@@ -67,7 +68,7 @@ export function evaluateSchemeEligibility(scheme, citizenDocuments = {}, citizen
         detail: `Citizen state matches (${userState})`,
       });
     } else {
-      reasons.push(`Scheme applies only to residents of ${requiredState} (Your profile state: ${userState})`);
+      reasons.push(`This scheme is only available to residents of ${requiredState}. (Your declared state: ${userState})`);
       criteriaChecks.push({
         id: 'crit_state',
         label: `State Domicile: ${requiredState}`,
