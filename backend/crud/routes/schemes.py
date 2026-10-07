@@ -15,7 +15,6 @@ except ImportError:
     from crud.auth.dependencies import require_role
 
 from DB.connection import get_db
-from DB.config import COLLECTION_SCHEMES
 import DB.crud as db_crud
 
 router = APIRouter()
@@ -35,7 +34,7 @@ async def list_schemes(
     """Retrieve list of schemes available in the system."""
     try:
         is_active = (status_filter.lower() == "active") if status_filter else True
-        schemes = await db_crud.get_all_schemes(db, category=category, is_active=is_active)
+        schemes = await db_crud.get_all_schemes(db, category=category, state=state, is_active=is_active)
         if schemes:
             return {"success": True, "data": schemes}
     except Exception:
@@ -169,10 +168,7 @@ async def delete_scheme(
 ) -> Dict[str, Any]:
     """Admin-only: remove or deactivate a scheme."""
     try:
-        await db[COLLECTION_SCHEMES].update_one(
-            {"$or": [{"scheme_id": scheme_id}, {"scheme_code": scheme_id}]},
-            {"$set": {"is_active": False}},
-        )
+        await db_crud.delete_scheme(db, scheme_id, soft_delete=True)
     except Exception:
         pass
 

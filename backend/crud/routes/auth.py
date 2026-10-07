@@ -19,7 +19,7 @@ except ImportError:
     from crud.auth.jwt import create_access_token
 
 from DB.connection import get_db
-from DB.config import COLLECTION_USERS
+import DB.crud as db_crud
 
 router = APIRouter()
 
@@ -36,7 +36,6 @@ async def register(
     """Register a new user account."""
     hashed_password = hash_password(payload.password)
     user_id = f"usr_{uuid.uuid4().hex[:12]}"
-    now = datetime.now(timezone.utc)
     email = payload.email.lower().strip()
 
     user_record = {
@@ -47,20 +46,25 @@ async def register(
         "password_hash": hashed_password,
         "role": payload.role if payload.role in {"citizen", "officer", "admin"} else "citizen",
         "is_active": True,
-        "created_at": now,
-        "updated_at": now,
     }
 
     try:
-        existing_user = await db[COLLECTION_USERS].find_one({"email": email})
-        if existing_user:
+        existing = await db_crud.get_user_by_email(db, payload.email)
+        if existing:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail={"success": False, "error": "Email is already registered"},
+                detail="Email is already registered",
             )
-        await db[COLLECTION_USERS].insert_one(user_record)
+        created_user = await db_crud.create_user(db, user_record)
+        if created_user and "user_id" in created_user:
+            user_id = created_user["user_id"]
     except HTTPException:
         raise
+    except ValueError as ve:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email is already registered",
+        )
     except Exception:
         # Development fallback when MongoDB is offline
         pass
@@ -92,7 +96,7 @@ async def login(
     user_doc = None
 
     try:
-        user_doc = await db[COLLECTION_USERS].find_one({"email": email})
+        user_doc = await db_crud.get_user_by_email(db, credentials.email)
     except Exception:
         pass
 
@@ -103,7 +107,7 @@ async def login(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail={"success": False, "error": "Invalid email or password"},
             )
-        user_id = user_doc.get("user_id") or str(user_doc.get("_id", "usr_demo"))
+        user_id = user_doc.get("user_id") or str(user_doc.get("id", user_doc.get("_id", "usr_demo")))
         user_role = user_doc.get("role", "citizen")
         user_name = user_doc.get("name", "User")
     else:
