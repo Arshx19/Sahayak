@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+node_modules
+dist
+.env
+=======
 # Dependencies
 node_modules/
 .pnp
@@ -57,3 +62,4 @@ htmlcov/
 .DS_Store
 Thumbs.db
 Desktop.ini
+>>>>>>> d93d2750c810783d15139e0fad1d58e1d664c951
