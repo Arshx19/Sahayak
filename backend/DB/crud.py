@@ -28,6 +28,15 @@ def _serialize_doc(doc: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     return res
 
 
+def _to_str(val: Any) -> Any:
+    """Helper to convert enum or object to clean string for MongoDB storage."""
+    if val is None:
+        return None
+    if hasattr(val, "value"):
+        return val.value
+    return str(val)
+
+
 def _serialize_list(docs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Serialize a list of MongoDB documents."""
     return [_serialize_doc(d) for d in docs if d]
@@ -50,16 +59,30 @@ async def get_all_schemes(
 
 
 async def get_scheme_by_id(db, scheme_id: str) -> Optional[Dict[str, Any]]:
-    """Get a single scheme by scheme_id or scheme_code."""
+    """Get a single scheme by scheme_id or scheme_code with case/format tolerance."""
+    normalized_id = scheme_id.strip()
+    alt_id = normalized_id.lower().replace("-", "_")
+    alt_code = normalized_id.upper().replace("_", "-")
+
     doc = await db[COLLECTION_SCHEMES].find_one(
-        {"$or": [{"scheme_id": scheme_id}, {"scheme_code": scheme_id}]}
+        {
+            "$or": [
+                {"scheme_id": normalized_id},
+                {"scheme_code": normalized_id},
+                {"scheme_id": alt_id},
+                {"scheme_code": alt_code},
+            ]
+        }
     )
     return _serialize_doc(doc)
 
 
 async def get_scheme_rules(db, scheme_id: str) -> Optional[Dict[str, Any]]:
     """Fetch deterministic eligibility rules for a specific scheme."""
-    doc = await db[COLLECTION_SCHEME_RULES].find_one({"scheme_id": scheme_id})
+    normalized_id = scheme_id.strip().lower().replace("-", "_")
+    doc = await db[COLLECTION_SCHEME_RULES].find_one(
+        {"$or": [{"scheme_id": scheme_id}, {"scheme_id": normalized_id}]}
+    )
     return _serialize_doc(doc)
 
 
@@ -75,11 +98,14 @@ async def create_or_update_scheme(db, scheme_data: Dict[str, Any]) -> Dict[str, 
     now = datetime.now(timezone.utc)
     scheme_id = scheme_data.get("scheme_id") or scheme_data.get("scheme_code", "").lower().replace("-", "_")
     scheme_data["scheme_id"] = scheme_id
-    scheme_data["updated_at"] = now
+
+    # Avoid MongoDB path conflict between $set and $setOnInsert for created_at
+    update_doc = {k: v for k, v in scheme_data.items() if k not in ("created_at", "_id")}
+    update_doc["updated_at"] = now
 
     await db[COLLECTION_SCHEMES].update_one(
         {"scheme_id": scheme_id},
-        {"$set": scheme_data, "$setOnInsert": {"created_at": now}},
+        {"$set": update_doc, "$setOnInsert": {"created_at": now}},
         upsert=True,
     )
     return await get_scheme_by_id(db, scheme_id)  # type: ignore
@@ -95,18 +121,35 @@ async def get_citizen_profile(db, user_id: str) -> Optional[Dict[str, Any]]:
     return _serialize_doc(doc)
 
 
-async def upsert_citizen_profile(db, user_id: str, profile_data: Dict[str, Any]) -> Dict[str, Any]:
+async def upsert_citizen_profile(
+    db, user_id: str, profile_data: Dict[str, Any], preserve_existing: bool = True
+) -> Dict[str, Any]:
     """
-    Save or update citizen profile (extracted by AI or submitted by user).
+    Save or incrementally update citizen profile (extracted by AI or submitted by user).
+    If preserve_existing is True, fields with None values in profile_data will not
+    overwrite previously extracted information (crucial for dynamic voice interviews).
     """
     now = datetime.now(timezone.utc)
-    profile_data["user_id"] = user_id
-    profile_data["updated_at"] = now
+
+    if preserve_existing:
+        # Ignore None fields so partial voice extractions don't overwrite known fields
+        update_doc = {
+            k: v for k, v in profile_data.items()
+            if v is not None and k not in ("user_id", "created_at", "profile_id", "_id")
+        }
+    else:
+        update_doc = {
+            k: v for k, v in profile_data.items()
+            if k not in ("user_id", "created_at", "profile_id", "_id")
+        }
+
+    update_doc["user_id"] = user_id
+    update_doc["updated_at"] = now
 
     await db[COLLECTION_CITIZEN_PROFILES].update_one(
         {"user_id": user_id},
         {
-            "$set": profile_data,
+            "$set": update_doc,
             "$setOnInsert": {
                 "profile_id": f"prof_{uuid.uuid4().hex[:10]}",
                 "created_at": now,
@@ -159,8 +202,8 @@ async def create_grievance(db, grievance_data: Dict[str, Any]) -> Dict[str, Any]
 
     doc = dict(grievance_data)
     doc["ticket_id"] = ticket_id
-    doc["status"] = doc.get("status", "OPEN")
-    doc["priority"] = doc.get("priority", "MEDIUM")
+    doc["status"] = _to_str(doc.get("status", "OPEN"))
+    doc["priority"] = _to_str(doc.get("priority", "MEDIUM"))
     doc["timeline"] = [
         {
             "update_id": f"upd_{uuid.uuid4().hex[:8]}",
@@ -201,11 +244,11 @@ async def get_all_grievances(
     """List grievances for Officer Dashboard with optional filters."""
     query: Dict[str, Any] = {}
     if status:
-        query["status"] = status
+        query["status"] = _to_str(status)
     if department:
         query["department"] = department
     if priority:
-        query["priority"] = priority
+        query["priority"] = _to_str(priority)
 
     cursor = db[COLLECTION_GRIEVANCES].find(query).sort("created_at", -1).limit(limit)
     docs = await cursor.to_list(length=limit)
@@ -213,7 +256,7 @@ async def get_all_grievances(
 
 
 async def update_grievance_status(
-    db, ticket_id: str, new_status: str, comment: str, updated_by: str
+    db, ticket_id: str, new_status: Any, comment: str, updated_by: str
 ) -> Optional[Dict[str, Any]]:
     """Officer workflow: update grievance status and append to timeline history."""
     now = datetime.now(timezone.utc)
@@ -221,11 +264,12 @@ async def update_grievance_status(
     if not existing:
         return None
 
+    str_new_status = _to_str(new_status)
     previous_status = existing.get("status")
     timeline_entry = {
         "update_id": f"upd_{uuid.uuid4().hex[:8]}",
         "previous_status": previous_status,
-        "new_status": new_status,
+        "new_status": str_new_status,
         "comment": comment,
         "updated_by": updated_by,
         "timestamp": now,
@@ -234,7 +278,7 @@ async def update_grievance_status(
     await db[COLLECTION_GRIEVANCES].update_one(
         {"ticket_id": ticket_id},
         {
-            "$set": {"status": new_status, "updated_at": now},
+            "$set": {"status": str_new_status, "updated_at": now},
             "$push": {"timeline": timeline_entry},
         },
     )

@@ -113,7 +113,7 @@ def test_config_and_collections():
 
 
 def test_module_imports():
-    print("[4/4] Testing module importability (connection, crud, router)...")
+    print("[4/5] Testing module importability (connection, crud, router)...")
     import DB.connection as conn
     import DB.crud as crud
     import DB.router as router
@@ -127,6 +127,27 @@ def test_module_imports():
     print("  ✓ All module exports, crud functions, and db_router imported cleanly.")
 
 
+def test_crud_helpers():
+    print("[5/5] Testing CRUD serialization and incremental update logic...")
+    import DB.crud as crud
+    from DB.schemas import GrievanceStatus, GrievancePriority
+
+    # Test Enum stringification helper
+    assert crud._to_str(GrievanceStatus.OPEN) == "OPEN"
+    assert crud._to_str(GrievancePriority.HIGH) == "HIGH"
+    assert crud._to_str("RAW_STRING") == "RAW_STRING"
+    assert crud._to_str(None) is None
+
+    # Test doc serialization removing _id
+    raw_doc = {"_id": "fake_mongo_object_id", "scheme_id": "pm_kisan", "name": "PM Kisan"}
+    serialized = crud._serialize_doc(raw_doc)
+    assert serialized is not None
+    assert "id" in serialized
+    assert "_id" not in serialized
+    assert serialized["scheme_id"] == "pm_kisan"
+    print("  ✓ Helper functions (_to_str, _serialize_doc) behaving correctly.")
+
+
 if __name__ == "__main__":
     print("=" * 60)
     print("Running SAHAYAK Database Layer Self-Verification Tests")
@@ -135,6 +156,7 @@ if __name__ == "__main__":
     test_pydantic_schemas()
     test_config_and_collections()
     test_module_imports()
+    test_crud_helpers()
     print("=" * 60)
-    print("🎉 ALL 4 DATABASE TESTS PASSED SUCCESSFULLY!")
+    print("🎉 ALL 5 DATABASE TESTS PASSED SUCCESSFULLY!")
     print("=" * 60)
