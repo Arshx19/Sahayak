@@ -128,12 +128,17 @@ async def delete_user(db, user_id: str, soft_delete: bool = True) -> bool:
 # ============================================================================
 
 async def get_all_schemes(
-    db, category: Optional[str] = None, is_active: bool = True
+    db,
+    category: Optional[str] = None,
+    state: Optional[str] = None,
+    is_active: bool = True,
 ) -> List[Dict[str, Any]]:
-    """Retrieve all schemes matching active status and optional category."""
+    """Retrieve all schemes matching active status, optional category, and state applicability."""
     query: Dict[str, Any] = {"is_active": is_active}
     if category:
         query["category"] = category
+    if state:
+        query["applicable_states"] = {"$in": [state, "ALL"]}
     cursor = db[COLLECTION_SCHEMES].find(query)
     docs = await cursor.to_list(length=100)
     return _serialize_list(docs)

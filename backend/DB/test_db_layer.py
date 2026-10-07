@@ -35,7 +35,7 @@ from DB.schemas import (
 
 
 def test_seed_json_integrity():
-    print("[1/4] Testing seed JSON files integrity...")
+    print("[1/6] Testing seed JSON files integrity...")
     seeds_dir = Path(__file__).resolve().parent / "seeds"
 
     with open(seeds_dir / "schemes_data.json", "r", encoding="utf-8") as f:
@@ -75,20 +75,42 @@ def test_pydantic_schemas():
         age=30,
         income=250000.0,
         occupation="unorganized_worker",
+        documents=["Aadhaar Card", "Ration Card"],
+        consent=True,
     )
     dumped2 = profile2.model_dump() if hasattr(profile2, "model_dump") else profile2.dict()
     assert dumped2["annual_income"] == 250000.0
     assert dumped2["income"] == 250000.0
+    assert dumped2["documents"] == ["Aadhaar Card", "Ration Card"]
+    assert dumped2["consent"] is True
 
-    # Test Grievance Create with optional intent defaulting to GENERAL_GRIEVANCE
+    # Test Grievance Create with 'complaint' alias and optional intent
     grievance = GrievanceCreate(
         user_id="usr_123",
         citizen_name="Ramesh Kumar",
-        complaint_text="My 3rd installment is delayed.",
+        complaint="My 3rd installment is delayed.",
+        voice_text="Mera installment nahi aaya",
     )
     dumped_grievance = grievance.model_dump() if hasattr(grievance, "model_dump") else grievance.dict()
     assert dumped_grievance["intent"] == "GENERAL_GRIEVANCE"
-    assert dumped_grievance["priority"] == "MEDIUM"
+    assert dumped_grievance["complaint_text"] == "My 3rd installment is delayed."
+    assert dumped_grievance["complaint"] == "My 3rd installment is delayed."
+    assert dumped_grievance["voice_text"] == "Mera installment nahi aaya"
+
+    # Test Scheme Base with 'code', 'type', and 'official_source' aliases
+    scheme = SchemeBase(
+        code="TEST-SCHEME",
+        name="Test Welfare Scheme",
+        category="Welfare",
+        type="Central",
+        description="A test scheme",
+        benefits="Financial assistance",
+        official_source="https://test.gov.in",
+    )
+    dumped_scheme = scheme.model_dump() if hasattr(scheme, "model_dump") else scheme.dict()
+    assert dumped_scheme["scheme_code"] == "TEST-SCHEME"
+    assert dumped_scheme["scheme_type"] == "Central"
+    assert dumped_scheme["official_url"] == "https://test.gov.in"
 
     # Test Eligibility Check Record
     criteria = CriteriaResult(
@@ -109,7 +131,7 @@ def test_pydantic_schemas():
     )
     dumped_check = check.model_dump() if hasattr(check, "model_dump") else check.dict()
     assert dumped_check["is_eligible"] is True
-    print("  ✓ Profile (income aliases), Grievance (default intent), and Eligibility schemas validated.")
+    print("  ✓ Profile (income, docs, consent), Grievance (complaint alias), and Scheme aliases validated.")
 
 
 def test_config_and_collections():

@@ -18,6 +18,22 @@ except ImportError:
                 data["annual_income"] = data["income"]
             elif "annual_income" in data and "income" not in data:
                 data["income"] = data["annual_income"]
+            if "complaint" in data and "complaint_text" not in data:
+                data["complaint_text"] = data["complaint"]
+            elif "complaint_text" in data and "complaint" not in data:
+                data["complaint"] = data["complaint_text"]
+            if "code" in data and "scheme_code" not in data:
+                data["scheme_code"] = data["code"]
+            elif "scheme_code" in data and "code" not in data:
+                data["code"] = data["scheme_code"]
+            if "type" in data and "scheme_type" not in data:
+                data["scheme_type"] = data["type"]
+            elif "scheme_type" in data and "type" not in data:
+                data["type"] = data["scheme_type"]
+            if "official_source" in data and "official_url" not in data:
+                data["official_url"] = data["official_source"]
+            elif "official_url" in data and "official_source" not in data:
+                data["official_source"] = data["official_url"]
             for k, v in data.items():
                 setattr(self, k, v)
         def model_dump(self, **kwargs):
@@ -84,6 +100,8 @@ class CitizenProfileBase(BaseModel):
     has_girl_child: Optional[bool] = False
     girl_child_age: Optional[int] = None
     marital_status: Optional[str] = None  # single, married, widowed, divorced
+    documents: List[str] = []  # List of verification documents possessed
+    consent: bool = True  # Consent for government scheme matching
     raw_voice_transcript: Optional[str] = None
 
     @model_validator(mode="before")
@@ -127,18 +145,41 @@ class SchemeRuleModel(BaseModel):
 
 class SchemeBase(BaseModel):
     scheme_code: str  # e.g. PM-KISAN, PM-JAY
+    code: Optional[str] = None  # alias for scheme_code
     name: str  # full official name
     hindi_name: Optional[str] = None
     category: str  # Agriculture, Healthcare, Housing, Social Security, Employment, Financial
     scheme_type: str = "Central"  # Central or State
+    type: Optional[str] = "Central"  # alias for scheme_type
     applicable_states: List[str] = ["ALL"]  # ["ALL"] or ["Uttar Pradesh", "Bihar"]
     description: str
     benefits: str
     required_documents: List[str] = []
     official_url: Optional[str] = None
+    official_source: Optional[str] = None  # alias for official_url
     helpline_number: Optional[str] = None
     is_active: bool = True
+    status: Optional[str] = "active"
     version: str = "1.0"
+    last_verified: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _sync_scheme_aliases(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "code" in data and ("scheme_code" not in data or not data["scheme_code"]):
+                data["scheme_code"] = data["code"]
+            elif "scheme_code" in data and ("code" not in data or not data["code"]):
+                data["code"] = data["scheme_code"]
+            if "type" in data and ("scheme_type" not in data or not data["scheme_type"]):
+                data["scheme_type"] = data["type"]
+            elif "scheme_type" in data and ("type" not in data or not data["type"]):
+                data["type"] = data["scheme_type"]
+            if "official_source" in data and ("official_url" not in data or not data["official_url"]):
+                data["official_url"] = data["official_source"]
+            elif "official_url" in data and ("official_source" not in data or not data["official_source"]):
+                data["official_source"] = data["official_url"]
+        return data
 
 
 class SchemeCreate(SchemeBase):
@@ -212,15 +253,28 @@ class GrievanceCreate(BaseModel):
     scheme_id: Optional[str] = None
     scheme_name: Optional[str] = None
     intent: Optional[str] = "GENERAL_GRIEVANCE"  # e.g., Payment Delay, Application Rejection, or general before AI analysis
-    complaint_text: str
+    complaint: Optional[str] = None  # alias for complaint_text
+    complaint_text: Optional[str] = None
     priority: GrievancePriority = GrievancePriority.MEDIUM
     department: str = "General Grievance Redressal"
+    voice_text: Optional[str] = None  # Original transcribed voice input
+
+    @model_validator(mode="before")
+    @classmethod
+    def _sync_complaint_fields(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "complaint" in data and ("complaint_text" not in data or not data["complaint_text"]):
+                data["complaint_text"] = data["complaint"]
+            elif "complaint_text" in data and ("complaint" not in data or not data["complaint"]):
+                data["complaint"] = data["complaint_text"]
+        return data
 
 
 class GrievanceInDB(GrievanceCreate):
     ticket_id: str
     status: GrievanceStatus = GrievanceStatus.OPEN
     assigned_officer: Optional[str] = None
+    ai_analysis: Optional[Dict[str, Any]] = None
     timeline: List[GrievanceUpdateRecord] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
