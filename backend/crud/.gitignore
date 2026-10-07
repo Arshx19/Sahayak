@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables
+.env
+*.env
+!.env.example
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE / Testing
+.vscode/
+.idea/
+.pytest_cache/
