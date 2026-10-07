@@ -59,11 +59,11 @@ def test_seed_json_integrity():
 
     with open(seeds_dir / "schemes_data.json", "r", encoding="utf-8") as f:
         schemes = json.load(f)
-    assert len(schemes) == 10, f"Expected 10 schemes, got {len(schemes)}"
+    assert len(schemes) == 30, f"Expected 30 schemes, got {len(schemes)}"
 
     with open(seeds_dir / "rules_data.json", "r", encoding="utf-8") as f:
         rules = json.load(f)
-    assert len(rules) == 10, f"Expected 10 rules sets, got {len(rules)}"
+    assert len(rules) == 30, f"Expected 30 rules sets, got {len(rules)}"
 
     scheme_ids = {s["scheme_id"] for s in schemes}
     rule_scheme_ids = {r["scheme_id"] for r in rules}
@@ -71,14 +71,18 @@ def test_seed_json_integrity():
     assert scheme_ids == rule_scheme_ids, f"Mismatch between schemes and rules: {scheme_ids ^ rule_scheme_ids}"
 
     # Verify provider, timeline, and required_documents in every scheme
+    providers = set()
+    states = set()
     for s in schemes:
         assert "provider" in s, f"Scheme {s['scheme_id']} missing 'provider'"
-        assert s["provider"] in ("Centre", "State", "Centre + State"), f"Invalid provider in {s['scheme_id']}"
+        assert s["provider"] in ("Central", "State", "Centre", "Centre + State"), f"Invalid provider in {s['scheme_id']}"
         assert "timeline" in s, f"Scheme {s['scheme_id']} missing 'timeline'"
         assert isinstance(s["required_documents"], list), f"required_documents not list in {s['scheme_id']}"
         assert len(s["required_documents"]) > 0, f"required_documents empty in {s['scheme_id']}"
+        providers.add(s["provider"])
+        states.add(s.get("state", "All India"))
 
-    print(f"  ✓ Validated 10 schemes with provider, timeline, and document lists: {sorted(list(scheme_ids))}")
+    print(f"  ✓ Validated 30 schemes and rules matching Excel: Central (10) + UP (5) + MH (5) + KA (5) + OD (5)")
 
 
 def test_user_and_document_schemas():

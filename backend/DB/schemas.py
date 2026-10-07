@@ -208,19 +208,31 @@ class SchemeRuleModel(BaseModel):
 
 
 class SchemeBase(BaseModel):
-    scheme_code: str  # e.g. PM-KISAN, PM-JAY
+    scheme_id: Optional[str] = None  # e.g. "CEN001", "UP001", "pm_kisan"
+    scheme_code: str = ""  # e.g. "PM-KISAN", "PM-JAY", "CEN001"
     code: Optional[str] = None  # alias for scheme_code
-    name: str  # full official name
+    scheme_name: Optional[str] = None  # Excel field name alias for name
+    name: str = ""  # full official name
     hindi_name: Optional[str] = None
-    category: str  # Agriculture, Healthcare, Housing, Social Security, Employment, Financial
+    category: str = "General"  # Agriculture, Healthcare, Housing, Farmer, Women, etc.
+    scheme_category: Optional[str] = None  # Excel field alias for category
     scheme_type: str = "Central"  # Central or State
     type: Optional[str] = "Central"  # alias for scheme_type
-    provider: str = "Centre"  # "Centre", "State", or "Centre + State"
-    timeline: Dict[str, Any] = Field(default_factory=dict)  # application period, start/end dates, validity
+    provider: str = "Central"  # "Central", "State", or "Centre + State"
+    state: Optional[str] = None  # State name (e.g. "Uttar Pradesh", "All India")
     applicable_states: List[str] = ["ALL"]  # ["ALL"] or ["Uttar Pradesh", "Bihar"]
-    description: str
-    benefits: str
+    description: str = ""
+    benefits: Optional[str] = ""
+    eligibility: Optional[str] = None  # Human-readable eligibility requirement statement from Excel
     required_documents: List[str] = []  # e.g. ["aadhaar", "pan", "income_certificate", "land_record"]
+    raw_required_documents: Optional[str] = None  # Original pipe-delimited string from Excel if imported
+    timeline: Dict[str, Any] = Field(default_factory=dict)  # application period, start/end dates, validity
+    application_start: Optional[str] = None  # Excel field
+    application_end: Optional[str] = None  # Excel field
+    application_frequency: Optional[str] = None  # Continuous, Annual, Periodic
+    application_status: Optional[str] = None  # Open, Closed, Continuous, Upcoming
+    application_process: Optional[str] = None  # Short step-by-step application walkthrough
+    application_url: Optional[str] = None  # Official citizen portal
     official_url: Optional[str] = None
     official_source: Optional[str] = None  # alias for official_url
     helpline_number: Optional[str] = None
@@ -234,18 +246,64 @@ class SchemeBase(BaseModel):
     @classmethod
     def _sync_scheme_aliases(cls, data: Any) -> Any:
         if isinstance(data, dict):
+            # Sync name <-> scheme_name
+            if "scheme_name" in data and ("name" not in data or not data["name"]):
+                data["name"] = data["scheme_name"]
+            elif "name" in data and ("scheme_name" not in data or not data["scheme_name"]):
+                data["scheme_name"] = data["name"]
+
+            # Sync category <-> scheme_category
+            if "scheme_category" in data and ("category" not in data or not data["category"]):
+                data["category"] = data["scheme_category"]
+            elif "category" in data and ("scheme_category" not in data or not data["scheme_category"]):
+                data["scheme_category"] = data["category"]
+
+            # Sync code <-> scheme_code <-> scheme_id
             if "code" in data and ("scheme_code" not in data or not data["scheme_code"]):
                 data["scheme_code"] = data["code"]
             elif "scheme_code" in data and ("code" not in data or not data["code"]):
                 data["code"] = data["scheme_code"]
+            if not data.get("scheme_code") and data.get("scheme_id"):
+                data["scheme_code"] = data["scheme_id"]
+                data["code"] = data["scheme_id"]
+
+            # Sync scheme_type <-> type <-> provider
             if "type" in data and ("scheme_type" not in data or not data["scheme_type"]):
                 data["scheme_type"] = data["type"]
             elif "scheme_type" in data and ("type" not in data or not data["type"]):
                 data["type"] = data["scheme_type"]
+            if "provider" in data and not data.get("scheme_type"):
+                data["scheme_type"] = data["provider"]
+                data["type"] = data["provider"]
+
+            # Sync URLs
             if "official_source" in data and ("official_url" not in data or not data["official_url"]):
                 data["official_url"] = data["official_source"]
             elif "official_url" in data and ("official_source" not in data or not data["official_source"]):
                 data["official_source"] = data["official_url"]
+            if "application_url" in data and ("official_url" not in data or not data["official_url"]):
+                data["official_url"] = data["application_url"]
+
+            # Sync state -> applicable_states
+            if "state" in data and data["state"]:
+                st = str(data["state"]).strip()
+                if st.lower() in ("all india", "all", "central"):
+                    data["applicable_states"] = ["ALL"]
+                elif "applicable_states" not in data or data["applicable_states"] == ["ALL"]:
+                    data["applicable_states"] = [st]
+
+            # Sync timeline dict with individual Excel timeline fields
+            if "timeline" not in data or not data["timeline"]:
+                t = {}
+                if data.get("application_start"):
+                    t["application_start"] = data["application_start"]
+                if data.get("application_end"):
+                    t["application_end"] = data["application_end"]
+                if data.get("application_frequency"):
+                    t["application_frequency"] = data["application_frequency"]
+                if data.get("application_status"):
+                    t["application_status"] = data["application_status"]
+                data["timeline"] = t
         return data
 
 

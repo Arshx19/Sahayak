@@ -116,17 +116,18 @@ When schemes are added or updated, affected users receive targeted notifications
 
 ---
 
-## 🏛️ Seeded Government Schemes (10 Total)
+## 🏛️ Government Schemes Dataset (30 Total — Simplified 2026 MVP)
 
-| ID | Scheme Code | Scheme Name | Category | Provider | Primary Required Documents |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | `pm_kisan` | Pradhan Mantri Kisan Samman Nidhi | Agriculture | Centre | `aadhaar`, `land_record`, `bank_account_passbook` |
-| 2 | `pm_jay` | Ayushman Bharat - PM-JAY | Healthcare | Centre + State | `aadhaar`, `ration_card`, `income_certificate` |
-| 3 | `pmay_g` | Pradhan Mantri Awaas Yojana - Gramin | Housing | Centre + State | `aadhaar`, `mgnrega_job_card`, `land_record` |
-| 4 | `pmuy` | Pradhan Mantri Ujjwala Yojana 2.0 | Clean Fuel | Centre | `aadhaar`, `ration_card`, `bank_account_passbook` |
-| 5 | `apy` | Atal Pension Yojana | Social Security | Centre | `aadhaar`, `bank_account_passbook`, `mobile_number` |
-| 6 | `ignoaps` | Indira Gandhi National Old Age Pension | Social Assistance | Centre + State | `aadhaar`, `age_proof`, `income_certificate` |
-| 7 | `ssy` | Sukanya Samriddhi Yojana | Savings | Centre | `birth_certificate`, `aadhaar`, `photograph` |
-| 8 | `mgnrega` | MGNREGA Rural Employment Guarantee | Employment | Centre + State | `aadhaar`, `photograph`, `bank_account_passbook` |
-| 9 | `pmmy` | Pradhan Mantri Mudra Yojana | MSME / Loans | Centre | `aadhaar`, `pan`, `bank_account_statement` |
-| 10 | `pmsvanidhi` | PM SVANidhi | Urban Livelihoods | Centre | `aadhaar`, `vending_certificate` |
+Directly compatible with `Government_Schemes_India_2026_SIMPLIFIED.xlsx`:
+
+| Provider / State | Count | Schemes |
+| :--- | :---: | :--- |
+| **Central Government** | 10 | PM-KISAN, AB-PMJAY, PMAY-G, PMUY, APY, PMMY, PM SVANidhi, PMMVY, MGNREGS, SSY |
+| **Uttar Pradesh** | 5 | MMYSY, Mukhyamantri Kanya Sumangala, ODOP Margin Money, UP Mukhyamantri Abhyudaya, Mukhyamantri Krishak Durghatna Kalyan |
+| **Maharashtra** | 5 | Mukhyamantri Majhi Ladki Bahin, MJPJAY, MSKVY 2.0, Mukhyamantri Vayoshri, RCSM Fee Reimbursement |
+| **Karnataka** | 5 | Gruha Lakshmi, Gruha Jyothi, Yuva Nidhi, Anna Bhagya, Shakti Scheme |
+| **Odisha** | 5 | Subhadra Yojana, KALIA, Gopabandhu Jan Arogya (GJAY), Madhu Babu Pension (MBPY), Biju Yuva Sashaktikaran |
+| **Total** | **30** | *10 Central + 5 UP + 5 MH + 5 KA + 5 OD* |
+
+### Excel-to-Database Seeder
+The database seeder in `backend/DB/seed.py` dynamically checks for `Government_Schemes_India_2026_SIMPLIFIED.xlsx` and normalizes canonical document requirements directly into the `schemes` and `scheme_rules` collections.

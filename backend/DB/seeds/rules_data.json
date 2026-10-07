@@ -1,6 +1,6 @@
 [
   {
-    "scheme_id": "pm_kisan",
+    "scheme_id": "CEN001",
     "version": "1.0",
     "logic": "AND",
     "rules": [
@@ -8,62 +8,111 @@
         "field": "occupation",
         "operator": "==",
         "value": "farmer",
-        "explanation": "Applicant must be a farmer with farming as primary occupation",
-        "hindi_explanation": "आवेदक का प्राथमिक पेशा किसान होना चाहिए"
+        "explanation": "Applicant must be an active farmer or landholder",
+        "hindi_explanation": "आवेदक किसान होना चाहिए"
       },
       {
-        "field": "land_acres",
-        "operator": ">",
-        "value": 0.0,
-        "explanation": "Applicant must own cultivable agricultural land",
-        "hindi_explanation": "आवेदक के पास कृषि योग्य भूमि होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "annual_income",
-        "operator": "<=",
-        "value": 250000,
-        "explanation": "Annual household income must not exceed ₹2,50,000",
-        "hindi_explanation": "वार्षिक पारिवारिक आय ₹2,50,000 से अधिक नहीं होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "land_record",
+        "explanation": "Required verification document: land_record",
+        "hindi_explanation": "अनिवार्य दस्तावेज: land_record"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
       }
     ]
   },
   {
-    "scheme_id": "pm_jay",
+    "scheme_id": "CEN002",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "annual_income",
-        "operator": "<=",
-        "value": 250000,
-        "explanation": "Annual family income must be within economically vulnerable limit (<= ₹2,50,000)",
-        "hindi_explanation": "वार्षिक पारिवारिक आय ₹2,50,000 से कम होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
       }
     ]
   },
   {
-    "scheme_id": "pmay_g",
+    "scheme_id": "CEN003",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "annual_income",
-        "operator": "<=",
-        "value": 300000,
-        "explanation": "Annual family income must not exceed ₹3,00,000 (EWS/LIG bracket)",
-        "hindi_explanation": "वार्षिक पारिवारिक आय ₹3,00,000 से अधिक नहीं होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "area_type",
-        "operator": "==",
-        "value": "rural",
-        "explanation": "Applicant must reside in a notified rural area",
-        "hindi_explanation": "आवेदक ग्रामीण क्षेत्र का निवासी होना चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mgnrega_job_card",
+        "explanation": "Required verification document: mgnrega_job_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mgnrega_job_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "land_record",
+        "explanation": "Required verification document: land_record",
+        "hindi_explanation": "अनिवार्य दस्तावेज: land_record"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
       }
     ]
   },
   {
-    "scheme_id": "pmuy",
+    "scheme_id": "CEN004",
     "version": "1.0",
     "logic": "AND",
     "rules": [
@@ -71,148 +120,1198 @@
         "field": "gender",
         "operator": "==",
         "value": "female",
-        "explanation": "LPG connection under Ujjwala is issued exclusively to adult women of the household",
-        "hindi_explanation": "उज्ज्वला योजना के तहत कनेक्शन परिवार की वयस्क महिला के नाम पर जारी होता है"
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
       },
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 18,
-        "explanation": "Applicant must be at least 18 years of age",
-        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "annual_income",
-        "operator": "<=",
-        "value": 200000,
-        "explanation": "Family annual income must be within BPL/EWS ceiling (<= ₹2,00,000)",
-        "hindi_explanation": "पारिवारिक वार्षिक आय ₹2,00,000 से कम होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
       }
     ]
   },
   {
-    "scheme_id": "apy",
+    "scheme_id": "CEN005",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 18,
-        "explanation": "Applicant must be at least 18 years old",
-        "hindi_explanation": "आवेदक की न्यूनतम आयु 18 वर्ष होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "age",
-        "operator": "<=",
-        "value": 40,
-        "explanation": "Applicant maximum entry age must not exceed 40 years",
-        "hindi_explanation": "आवेदक की अधिकतम आयु 40 वर्ष से अधिक नहीं होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
       }
     ]
   },
   {
-    "scheme_id": "ignoaps",
+    "scheme_id": "CEN006",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 60,
-        "explanation": "Applicant must be a senior citizen aged 60 years or above",
-        "hindi_explanation": "आवेदक की आयु 60 वर्ष या उससे अधिक होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "annual_income",
-        "operator": "<=",
-        "value": 150000,
-        "explanation": "Applicant must belong to Below Poverty Line (annual income <= ₹1,50,000)",
-        "hindi_explanation": "आवेदक बीपीएल श्रेणी से होना चाहिए (आय ₹1,50,000 से कम)"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "pan",
+        "explanation": "Required verification document: pan",
+        "hindi_explanation": "अनिवार्य दस्तावेज: pan"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "address_proof",
+        "explanation": "Required verification document: address_proof",
+        "hindi_explanation": "अनिवार्य दस्तावेज: address_proof"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "udyam_registration",
+        "explanation": "Required verification document: udyam_registration",
+        "hindi_explanation": "अनिवार्य दस्तावेज: udyam_registration"
       }
     ]
   },
   {
-    "scheme_id": "ssy",
+    "scheme_id": "CEN007",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "has_girl_child",
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "vending_certificate",
+        "explanation": "Required verification document: vending_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: vending_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
+      }
+    ]
+  },
+  {
+    "scheme_id": "CEN008",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "gender",
         "operator": "==",
-        "value": true,
-        "explanation": "Family must have at least one girl child",
-        "hindi_explanation": "परिवार में कम से कम एक बालिका होनी चाहिए"
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
       },
       {
-        "field": "girl_child_age",
-        "operator": "<=",
-        "value": 10,
-        "explanation": "Girl child must be 10 years of age or younger at time of opening account",
-        "hindi_explanation": "बालिका की आयु 10 वर्ष या उससे कम होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mcp_card",
+        "explanation": "Required verification document: mcp_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mcp_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
       }
     ]
   },
   {
-    "scheme_id": "mgnrega",
+    "scheme_id": "CEN009",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 18,
-        "explanation": "Applicant must be an adult aged 18 years or above",
-        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
       },
       {
-        "field": "area_type",
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "CEN010",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "birth_certificate",
+        "explanation": "Required verification document: birth_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: birth_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "address_proof",
+        "explanation": "Required verification document: address_proof",
+        "hindi_explanation": "अनिवार्य दस्तावेज: address_proof"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      }
+    ]
+  },
+  {
+    "scheme_id": "UP001",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
         "operator": "==",
-        "value": "rural",
-        "explanation": "Applicant household must reside in a rural area",
-        "hindi_explanation": "आवेदक ग्रामीण क्षेत्र का निवासी होना चाहिए"
+        "value": "Uttar Pradesh",
+        "explanation": "Applicant must be a resident of Uttar Pradesh",
+        "hindi_explanation": "आवेदक Uttar Pradesh का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "educational_certificate",
+        "explanation": "Required verification document: educational_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: educational_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "project_report",
+        "explanation": "Required verification document: project_report",
+        "hindi_explanation": "अनिवार्य दस्तावेज: project_report"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
       }
     ]
   },
   {
-    "scheme_id": "pmmy",
+    "scheme_id": "UP002",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 18,
-        "explanation": "Applicant must be 18 years of age or older",
-        "hindi_explanation": "आवेदक की आयु 18 वर्ष या उससे अधिक होनी चाहिए"
+        "field": "state",
+        "operator": "==",
+        "value": "Uttar Pradesh",
+        "explanation": "Applicant must be a resident of Uttar Pradesh",
+        "hindi_explanation": "आवेदक Uttar Pradesh का निवासी होना चाहिए"
+      },
+      {
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "birth_certificate",
+        "explanation": "Required verification document: birth_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: birth_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      }
+    ]
+  },
+  {
+    "scheme_id": "UP003",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Uttar Pradesh",
+        "explanation": "Applicant must be a resident of Uttar Pradesh",
+        "hindi_explanation": "आवेदक Uttar Pradesh का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "project_report",
+        "explanation": "Required verification document: project_report",
+        "hindi_explanation": "अनिवार्य दस्तावेज: project_report"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "caste_certificate",
+        "explanation": "Required verification document: caste_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: caste_certificate"
+      }
+    ]
+  },
+  {
+    "scheme_id": "UP004",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Uttar Pradesh",
+        "explanation": "Applicant must be a resident of Uttar Pradesh",
+        "hindi_explanation": "आवेदक Uttar Pradesh का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "educational_certificate",
+        "explanation": "Required verification document: educational_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: educational_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "photograph",
+        "explanation": "Required verification document: photograph",
+        "hindi_explanation": "अनिवार्य दस्तावेज: photograph"
+      }
+    ]
+  },
+  {
+    "scheme_id": "UP005",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Uttar Pradesh",
+        "explanation": "Applicant must be a resident of Uttar Pradesh",
+        "hindi_explanation": "आवेदक Uttar Pradesh का निवासी होना चाहिए"
       },
       {
         "field": "occupation",
-        "operator": "in",
-        "value": ["street_vendor", "unorganized_worker", "small_business", "artisan", "other"],
-        "explanation": "Must be engaged in micro/small business, vending, or enterprise activity",
-        "hindi_explanation": "सूक्ष्म व्यवसाय, वेंडर या कारीगर कार्य से जुड़ा होना चाहिए"
+        "operator": "==",
+        "value": "farmer",
+        "explanation": "Applicant must be an active farmer or landholder",
+        "hindi_explanation": "आवेदक किसान होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "land_record",
+        "explanation": "Required verification document: land_record",
+        "hindi_explanation": "अनिवार्य दस्तावेज: land_record"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "death_or_disability_certificate",
+        "explanation": "Required verification document: death_or_disability_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: death_or_disability_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "post_mortem_report",
+        "explanation": "Required verification document: post_mortem_report",
+        "hindi_explanation": "अनिवार्य दस्तावेज: post_mortem_report"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
       }
     ]
   },
   {
-    "scheme_id": "pmsvanidhi",
+    "scheme_id": "MH001",
     "version": "1.0",
     "logic": "AND",
     "rules": [
       {
-        "field": "occupation",
+        "field": "state",
         "operator": "==",
-        "value": "street_vendor",
-        "explanation": "Applicant must be engaged as an urban street vendor or hawker",
-        "hindi_explanation": "आवेदक रेहड़ी-पटरी या सड़क विक्रेता होना चाहिए"
+        "value": "Maharashtra",
+        "explanation": "Applicant must be a resident of Maharashtra",
+        "hindi_explanation": "आवेदक Maharashtra का निवासी होना चाहिए"
       },
       {
-        "field": "age",
-        "operator": ">=",
-        "value": 18,
-        "explanation": "Applicant must be at least 18 years of age",
-        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
+      }
+    ]
+  },
+  {
+    "scheme_id": "MH002",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Maharashtra",
+        "explanation": "Applicant must be a resident of Maharashtra",
+        "hindi_explanation": "आवेदक Maharashtra का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      }
+    ]
+  },
+  {
+    "scheme_id": "MH003",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Maharashtra",
+        "explanation": "Applicant must be a resident of Maharashtra",
+        "hindi_explanation": "आवेदक Maharashtra का निवासी होना चाहिए"
+      },
+      {
+        "field": "occupation",
+        "operator": "==",
+        "value": "farmer",
+        "explanation": "Applicant must be an active farmer or landholder",
+        "hindi_explanation": "आवेदक किसान होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "land_record",
+        "explanation": "Required verification document: land_record",
+        "hindi_explanation": "अनिवार्य दस्तावेज: land_record"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "pan",
+        "explanation": "Required verification document: pan",
+        "hindi_explanation": "अनिवार्य दस्तावेज: pan"
+      }
+    ]
+  },
+  {
+    "scheme_id": "MH004",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Maharashtra",
+        "explanation": "Applicant must be a resident of Maharashtra",
+        "hindi_explanation": "आवेदक Maharashtra का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "age_proof",
+        "explanation": "Required verification document: age_proof",
+        "hindi_explanation": "अनिवार्य दस्तावेज: age_proof"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "MH005",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Maharashtra",
+        "explanation": "Applicant must be a resident of Maharashtra",
+        "hindi_explanation": "आवेदक Maharashtra का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "cap_allotment_letter",
+        "explanation": "Required verification document: cap_allotment_letter",
+        "hindi_explanation": "अनिवार्य दस्तावेज: cap_allotment_letter"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "educational_certificate",
+        "explanation": "Required verification document: educational_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: educational_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "KA001",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Karnataka",
+        "explanation": "Applicant must be a resident of Karnataka",
+        "hindi_explanation": "आवेदक Karnataka का निवासी होना चाहिए"
+      },
+      {
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
+      }
+    ]
+  },
+  {
+    "scheme_id": "KA002",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Karnataka",
+        "explanation": "Applicant must be a resident of Karnataka",
+        "hindi_explanation": "आवेदक Karnataka का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "electricity_bill_id",
+        "explanation": "Required verification document: electricity_bill_id",
+        "hindi_explanation": "अनिवार्य दस्तावेज: electricity_bill_id"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "rental_agreement",
+        "explanation": "Required verification document: rental_agreement",
+        "hindi_explanation": "अनिवार्य दस्तावेज: rental_agreement"
+      }
+    ]
+  },
+  {
+    "scheme_id": "KA003",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Karnataka",
+        "explanation": "Applicant must be a resident of Karnataka",
+        "hindi_explanation": "आवेदक Karnataka का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "degree_or_diploma_certificate",
+        "explanation": "Required verification document: degree_or_diploma_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: degree_or_diploma_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "KA004",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Karnataka",
+        "explanation": "Applicant must be a resident of Karnataka",
+        "hindi_explanation": "आवेदक Karnataka का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "KA005",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Karnataka",
+        "explanation": "Applicant must be a resident of Karnataka",
+        "hindi_explanation": "आवेदक Karnataka का निवासी होना चाहिए"
+      },
+      {
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      }
+    ]
+  },
+  {
+    "scheme_id": "OD001",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Odisha",
+        "explanation": "Applicant must be a resident of Odisha",
+        "hindi_explanation": "आवेदक Odisha का निवासी होना चाहिए"
+      },
+      {
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "Scheme is applicable to female applicants",
+        "hindi_explanation": "यह योजना महिला आवेदकों के लिए है"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "mobile_number",
+        "explanation": "Required verification document: mobile_number",
+        "hindi_explanation": "अनिवार्य दस्तावेज: mobile_number"
+      }
+    ]
+  },
+  {
+    "scheme_id": "OD002",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Odisha",
+        "explanation": "Applicant must be a resident of Odisha",
+        "hindi_explanation": "आवेदक Odisha का निवासी होना चाहिए"
+      },
+      {
+        "field": "occupation",
+        "operator": "==",
+        "value": "farmer",
+        "explanation": "Applicant must be an active farmer or landholder",
+        "hindi_explanation": "आवेदक किसान होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "land_record",
+        "explanation": "Required verification document: land_record",
+        "hindi_explanation": "अनिवार्य दस्तावेज: land_record"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      }
+    ]
+  },
+  {
+    "scheme_id": "OD003",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Odisha",
+        "explanation": "Applicant must be a resident of Odisha",
+        "hindi_explanation": "आवेदक Odisha का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "ration_card",
+        "explanation": "Required verification document: ration_card",
+        "hindi_explanation": "अनिवार्य दस्तावेज: ration_card"
+      }
+    ]
+  },
+  {
+    "scheme_id": "OD004",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Odisha",
+        "explanation": "Applicant must be a resident of Odisha",
+        "hindi_explanation": "आवेदक Odisha का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "age_proof",
+        "explanation": "Required verification document: age_proof",
+        "hindi_explanation": "अनिवार्य दस्तावेज: age_proof"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "income_certificate",
+        "explanation": "Required verification document: income_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: income_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "disability_certificate",
+        "explanation": "Required verification document: disability_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: disability_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
+      }
+    ]
+  },
+  {
+    "scheme_id": "OD005",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "state",
+        "operator": "==",
+        "value": "Odisha",
+        "explanation": "Applicant must be a resident of Odisha",
+        "hindi_explanation": "आवेदक Odisha का निवासी होना चाहिए"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "aadhaar",
+        "explanation": "Required verification document: aadhaar",
+        "hindi_explanation": "अनिवार्य दस्तावेज: aadhaar"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "class_12_marksheet",
+        "explanation": "Required verification document: class_12_marksheet",
+        "hindi_explanation": "अनिवार्य दस्तावेज: class_12_marksheet"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "domicile_certificate",
+        "explanation": "Required verification document: domicile_certificate",
+        "hindi_explanation": "अनिवार्य दस्तावेज: domicile_certificate"
+      },
+      {
+        "field": "documents",
+        "operator": "has_document",
+        "value": "bank_account",
+        "explanation": "Required verification document: bank_account",
+        "hindi_explanation": "अनिवार्य दस्तावेज: bank_account"
       }
     ]
   }
