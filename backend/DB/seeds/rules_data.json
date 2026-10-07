@@ -1,0 +1,219 @@
+[
+  {
+    "scheme_id": "pm_kisan",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "occupation",
+        "operator": "==",
+        "value": "farmer",
+        "explanation": "Applicant must be a farmer with farming as primary occupation",
+        "hindi_explanation": "आवेदक का प्राथमिक पेशा किसान होना चाहिए"
+      },
+      {
+        "field": "land_acres",
+        "operator": ">",
+        "value": 0.0,
+        "explanation": "Applicant must own cultivable agricultural land",
+        "hindi_explanation": "आवेदक के पास कृषि योग्य भूमि होनी चाहिए"
+      },
+      {
+        "field": "annual_income",
+        "operator": "<=",
+        "value": 250000,
+        "explanation": "Annual household income must not exceed ₹2,50,000",
+        "hindi_explanation": "वार्षिक पारिवारिक आय ₹2,50,000 से अधिक नहीं होनी चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "pm_jay",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "annual_income",
+        "operator": "<=",
+        "value": 250000,
+        "explanation": "Annual family income must be within economically vulnerable limit (<= ₹2,50,000)",
+        "hindi_explanation": "वार्षिक पारिवारिक आय ₹2,50,000 से कम होनी चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "pmay_g",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "annual_income",
+        "operator": "<=",
+        "value": 300000,
+        "explanation": "Annual family income must not exceed ₹3,00,000 (EWS/LIG bracket)",
+        "hindi_explanation": "वार्षिक पारिवारिक आय ₹3,00,000 से अधिक नहीं होनी चाहिए"
+      },
+      {
+        "field": "area_type",
+        "operator": "==",
+        "value": "rural",
+        "explanation": "Applicant must reside in a notified rural area",
+        "hindi_explanation": "आवेदक ग्रामीण क्षेत्र का निवासी होना चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "pmuy",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "gender",
+        "operator": "==",
+        "value": "female",
+        "explanation": "LPG connection under Ujjwala is issued exclusively to adult women of the household",
+        "hindi_explanation": "उज्ज्वला योजना के तहत कनेक्शन परिवार की वयस्क महिला के नाम पर जारी होता है"
+      },
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "explanation": "Applicant must be at least 18 years of age",
+        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+      },
+      {
+        "field": "annual_income",
+        "operator": "<=",
+        "value": 200000,
+        "explanation": "Family annual income must be within BPL/EWS ceiling (<= ₹2,00,000)",
+        "hindi_explanation": "पारिवारिक वार्षिक आय ₹2,00,000 से कम होनी चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "apy",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "explanation": "Applicant must be at least 18 years old",
+        "hindi_explanation": "आवेदक की न्यूनतम आयु 18 वर्ष होनी चाहिए"
+      },
+      {
+        "field": "age",
+        "operator": "<=",
+        "value": 40,
+        "explanation": "Applicant maximum entry age must not exceed 40 years",
+        "hindi_explanation": "आवेदक की अधिकतम आयु 40 वर्ष से अधिक नहीं होनी चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "ignoaps",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 60,
+        "explanation": "Applicant must be a senior citizen aged 60 years or above",
+        "hindi_explanation": "आवेदक की आयु 60 वर्ष या उससे अधिक होनी चाहिए"
+      },
+      {
+        "field": "annual_income",
+        "operator": "<=",
+        "value": 150000,
+        "explanation": "Applicant must belong to Below Poverty Line (annual income <= ₹1,50,000)",
+        "hindi_explanation": "आवेदक बीपीएल श्रेणी से होना चाहिए (आय ₹1,50,000 से कम)"
+      }
+    ]
+  },
+  {
+    "scheme_id": "ssy",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "has_girl_child",
+        "operator": "==",
+        "value": true,
+        "explanation": "Family must have at least one girl child",
+        "hindi_explanation": "परिवार में कम से कम एक बालिका होनी चाहिए"
+      },
+      {
+        "field": "girl_child_age",
+        "operator": "<=",
+        "value": 10,
+        "explanation": "Girl child must be 10 years of age or younger at time of opening account",
+        "hindi_explanation": "बालिका की आयु 10 वर्ष या उससे कम होनी चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "mgnrega",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "explanation": "Applicant must be an adult aged 18 years or above",
+        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+      },
+      {
+        "field": "area_type",
+        "operator": "==",
+        "value": "rural",
+        "explanation": "Applicant household must reside in a rural area",
+        "hindi_explanation": "आवेदक ग्रामीण क्षेत्र का निवासी होना चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "pmmy",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "explanation": "Applicant must be 18 years of age or older",
+        "hindi_explanation": "आवेदक की आयु 18 वर्ष या उससे अधिक होनी चाहिए"
+      },
+      {
+        "field": "occupation",
+        "operator": "in",
+        "value": ["street_vendor", "unorganized_worker", "small_business", "artisan", "other"],
+        "explanation": "Must be engaged in micro/small business, vending, or enterprise activity",
+        "hindi_explanation": "सूक्ष्म व्यवसाय, वेंडर या कारीगर कार्य से जुड़ा होना चाहिए"
+      }
+    ]
+  },
+  {
+    "scheme_id": "pmsvanidhi",
+    "version": "1.0",
+    "logic": "AND",
+    "rules": [
+      {
+        "field": "occupation",
+        "operator": "==",
+        "value": "street_vendor",
+        "explanation": "Applicant must be engaged as an urban street vendor or hawker",
+        "hindi_explanation": "आवेदक रेहड़ी-पटरी या सड़क विक्रेता होना चाहिए"
+      },
+      {
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "explanation": "Applicant must be at least 18 years of age",
+        "hindi_explanation": "आवेदक की आयु कम से कम 18 वर्ष होनी चाहिए"
+      }
+    ]
+  }
+]
