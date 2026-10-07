@@ -2,11 +2,22 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 try:
-    from pydantic import BaseModel, Field, ConfigDict
+    from pydantic import BaseModel, Field, ConfigDict, model_validator
 except ImportError:
     # Minimal fallback mock for environments without pydantic installed yet
     class BaseModel:
         def __init__(self, **data):
+            # Populate class attribute defaults (for environments without pydantic installed)
+            for cls in reversed(self.__class__.__mro__):
+                for k, v in cls.__dict__.items():
+                    if not k.startswith("_") and not callable(v) and not isinstance(v, (classmethod, staticmethod)):
+                        # If default is a factory lambda or callable default
+                        val = v() if callable(v) else v
+                        setattr(self, k, val)
+            if "income" in data and "annual_income" not in data:
+                data["annual_income"] = data["income"]
+            elif "annual_income" in data and "income" not in data:
+                data["income"] = data["annual_income"]
             for k, v in data.items():
                 setattr(self, k, v)
         def model_dump(self, **kwargs):
@@ -15,6 +26,8 @@ except ImportError:
             return self.model_dump(**kwargs)
     def Field(default=None, **kwargs):
         return default
+    def model_validator(mode="before"):
+        return lambda f: f
     ConfigDict = None
 
 
@@ -60,6 +73,7 @@ class CitizenProfileBase(BaseModel):
     gender: Optional[str] = None  # male, female, transgender, other
     occupation: Optional[str] = None  # farmer, unorganized_worker, street_vendor, daily_wage_laborer, student, unemployed, homemaker, other
     annual_income: Optional[float] = None  # in INR
+    income: Optional[float] = None  # alias for annual_income
     land_acres: Optional[float] = 0.0  # Agricultural land in acres
     state: Optional[str] = None
     district: Optional[str] = None
@@ -71,6 +85,16 @@ class CitizenProfileBase(BaseModel):
     girl_child_age: Optional[int] = None
     marital_status: Optional[str] = None  # single, married, widowed, divorced
     raw_voice_transcript: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _sync_income_fields(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "income" in data and ("annual_income" not in data or data["annual_income"] is None):
+                data["annual_income"] = data["income"]
+            elif "annual_income" in data and ("income" not in data or data["income"] is None):
+                data["income"] = data["annual_income"]
+        return data
 
 
 class CitizenProfileCreate(CitizenProfileBase):
@@ -187,7 +211,7 @@ class GrievanceCreate(BaseModel):
     citizen_phone: Optional[str] = None
     scheme_id: Optional[str] = None
     scheme_name: Optional[str] = None
-    intent: str  # e.g., Payment Delay, Application Rejection, Document Verification
+    intent: Optional[str] = "GENERAL_GRIEVANCE"  # e.g., Payment Delay, Application Rejection, or general before AI analysis
     complaint_text: str
     priority: GrievancePriority = GrievancePriority.MEDIUM
     department: str = "General Grievance Redressal"

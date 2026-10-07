@@ -20,7 +20,7 @@ except ImportError:
 
 # MongoDB Connection Configuration
 MONGODB_URI = os.getenv("MONGODB_URI") or os.getenv("MONGO_URI") or "mongodb://localhost:27017"
-MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sahayak_db")
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "sahayak")
 
 # Standardized MongoDB Collection Names
 COLLECTION_USERS = "users"

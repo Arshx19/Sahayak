@@ -43,6 +43,87 @@ def _serialize_list(docs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 # ============================================================================
+# Users Repositories (Used by Auth & User Management)
+# ============================================================================
+
+async def create_user(db, user_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Create a new user account with unique email enforcement."""
+    now = datetime.now(timezone.utc)
+    email = user_data.get("email", "").strip().lower() if user_data.get("email") else ""
+
+    if email:
+        existing = await get_user_by_email(db, email)
+        if existing:
+            raise ValueError(f"User with email '{email}' already exists")
+
+    user_id = user_data.get("user_id") or f"usr_{uuid.uuid4().hex[:12]}"
+    doc = dict(user_data)
+    doc["user_id"] = user_id
+    if email:
+        doc["email"] = email
+    doc["role"] = _to_str(doc.get("role", "citizen"))
+    doc["is_active"] = doc.get("is_active", True)
+    doc["created_at"] = now
+    doc["updated_at"] = now
+
+    await db[COLLECTION_USERS].insert_one(doc)
+    return _serialize_doc(doc)  # type: ignore
+
+
+async def get_user_by_email(db, email: str) -> Optional[Dict[str, Any]]:
+    """Retrieve user by email address (case-insensitive)."""
+    clean_email = email.strip().lower()
+    doc = await db[COLLECTION_USERS].find_one({"email": clean_email})
+    return _serialize_doc(doc)
+
+
+async def get_user_by_id(db, user_id: str) -> Optional[Dict[str, Any]]:
+    """Retrieve user by user_id or _id."""
+    doc = await db[COLLECTION_USERS].find_one(
+        {"$or": [{"user_id": user_id}, {"_id": user_id}]}
+    )
+    return _serialize_doc(doc)
+
+
+async def update_user(
+    db, user_id: str, update_data: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
+    """Update user account attributes."""
+    now = datetime.now(timezone.utc)
+    clean_update = {
+        k: v for k, v in update_data.items()
+        if k not in ("user_id", "created_at", "_id")
+    }
+    if "email" in clean_update and clean_update["email"]:
+        clean_update["email"] = clean_update["email"].strip().lower()
+    if "role" in clean_update and clean_update["role"]:
+        clean_update["role"] = _to_str(clean_update["role"])
+    clean_update["updated_at"] = now
+
+    await db[COLLECTION_USERS].update_one(
+        {"$or": [{"user_id": user_id}, {"_id": user_id}]},
+        {"$set": clean_update},
+    )
+    return await get_user_by_id(db, user_id)
+
+
+async def delete_user(db, user_id: str, soft_delete: bool = True) -> bool:
+    """Deactivate (soft delete) or remove user account."""
+    if soft_delete:
+        now = datetime.now(timezone.utc)
+        res = await db[COLLECTION_USERS].update_one(
+            {"$or": [{"user_id": user_id}, {"_id": user_id}]},
+            {"$set": {"is_active": False, "updated_at": now}},
+        )
+        return res.modified_count > 0
+    else:
+        res = await db[COLLECTION_USERS].delete_one(
+            {"$or": [{"user_id": user_id}, {"_id": user_id}]}
+        )
+        return res.deleted_count > 0
+
+
+# ============================================================================
 # Schemes & Rules Repositories
 # ============================================================================
 
@@ -111,6 +192,77 @@ async def create_or_update_scheme(db, scheme_data: Dict[str, Any]) -> Dict[str, 
     return await get_scheme_by_id(db, scheme_id)  # type: ignore
 
 
+async def delete_scheme(db, scheme_id: str, soft_delete: bool = True) -> bool:
+    """Deactivate (soft delete) or remove a government scheme."""
+    normalized_id = scheme_id.strip()
+    alt_id = normalized_id.lower().replace("-", "_")
+    alt_code = normalized_id.upper().replace("_", "-")
+    filter_query = {
+        "$or": [
+            {"scheme_id": normalized_id},
+            {"scheme_code": normalized_id},
+            {"scheme_id": alt_id},
+            {"scheme_code": alt_code},
+        ]
+    }
+    if soft_delete:
+        now = datetime.now(timezone.utc)
+        res = await db[COLLECTION_SCHEMES].update_one(
+            filter_query,
+            {"$set": {"is_active": False, "updated_at": now}},
+        )
+        return res.modified_count > 0
+    else:
+        res = await db[COLLECTION_SCHEMES].delete_one(filter_query)
+        return res.deleted_count > 0
+
+
+async def create_or_update_scheme_rules(
+    db, scheme_id: str, rules_data: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Create or replace full eligibility rule set for a scheme."""
+    now = datetime.now(timezone.utc)
+    normalized_id = scheme_id.strip().lower().replace("-", "_")
+    doc = dict(rules_data)
+    doc["scheme_id"] = normalized_id
+    doc["updated_at"] = now
+
+    update_doc = {k: v for k, v in doc.items() if k not in ("created_at", "_id")}
+
+    await db[COLLECTION_SCHEME_RULES].update_one(
+        {"scheme_id": normalized_id},
+        {"$set": update_doc, "$setOnInsert": {"created_at": now, "version": "1.0", "logic": "AND"}},
+        upsert=True,
+    )
+    return await get_scheme_rules(db, normalized_id)  # type: ignore
+
+
+async def add_scheme_rule_condition(
+    db, scheme_id: str, rule_condition: Dict[str, Any]
+) -> Optional[Dict[str, Any]]:
+    """Append a single rule condition to a scheme's rules list."""
+    now = datetime.now(timezone.utc)
+    normalized_id = scheme_id.strip().lower().replace("-", "_")
+
+    await db[COLLECTION_SCHEME_RULES].update_one(
+        {"scheme_id": normalized_id},
+        {
+            "$push": {"rules": rule_condition},
+            "$set": {"updated_at": now},
+            "$setOnInsert": {"version": "1.0", "logic": "AND", "created_at": now},
+        },
+        upsert=True,
+    )
+    return await get_scheme_rules(db, normalized_id)
+
+
+async def delete_scheme_rules(db, scheme_id: str) -> bool:
+    """Delete all rules associated with a scheme."""
+    normalized_id = scheme_id.strip().lower().replace("-", "_")
+    res = await db[COLLECTION_SCHEME_RULES].delete_one({"scheme_id": normalized_id})
+    return res.deleted_count > 0
+
+
 # ============================================================================
 # Citizen Profiles Repositories (Used by AI Extraction & User Profile)
 # ============================================================================
@@ -159,6 +311,12 @@ async def upsert_citizen_profile(
     )
     updated = await db[COLLECTION_CITIZEN_PROFILES].find_one({"user_id": user_id})
     return _serialize_doc(updated)  # type: ignore
+
+
+async def delete_citizen_profile(db, user_id: str) -> bool:
+    """Delete a citizen demographic profile for the given user_id."""
+    res = await db[COLLECTION_CITIZEN_PROFILES].delete_one({"user_id": user_id})
+    return res.deleted_count > 0
 
 
 # ============================================================================
@@ -279,6 +437,38 @@ async def update_grievance_status(
         {"ticket_id": ticket_id},
         {
             "$set": {"status": str_new_status, "updated_at": now},
+            "$push": {"timeline": timeline_entry},
+        },
+    )
+    return await get_grievance_by_ticket_id(db, ticket_id)
+
+
+async def assign_grievance_officer(
+    db, ticket_id: str, officer_id: str, comment: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """Assign grievance ticket to an officer, update status to ASSIGNED, and append to timeline."""
+    now = datetime.now(timezone.utc)
+    existing = await db[COLLECTION_GRIEVANCES].find_one({"ticket_id": ticket_id})
+    if not existing:
+        return None
+
+    timeline_entry = {
+        "update_id": f"upd_{uuid.uuid4().hex[:8]}",
+        "previous_status": existing.get("status"),
+        "new_status": "ASSIGNED",
+        "comment": comment or f"Assigned to officer {officer_id}",
+        "updated_by": officer_id,
+        "timestamp": now,
+    }
+
+    await db[COLLECTION_GRIEVANCES].update_one(
+        {"ticket_id": ticket_id},
+        {
+            "$set": {
+                "assigned_officer": officer_id,
+                "status": "ASSIGNED",
+                "updated_at": now,
+            },
             "$push": {"timeline": timeline_entry},
         },
     )
