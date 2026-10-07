@@ -1,6 +1,6 @@
 # Database Layer — SAHAYAK
 
-MongoDB configurations, Pydantic data schemas, async repository CRUD helpers, seed datasets, and ready-to-mount FastAPI router for the **SAHAYAK** platform.
+MongoDB configurations, Pydantic data schemas, async repository CRUD helpers, and seed datasets for the **SAHAYAK** platform.
 
 ---
 
@@ -12,8 +12,7 @@ backend/DB/
 ├── config.py             # MongoDB URI & collection name constants
 ├── connection.py         # Async Motor and Sync PyMongo connection clients
 ├── schemas.py            # Pydantic data models & contracts (Users, Profiles, Schemes, Rules, Grievances)
-├── crud.py               # Async CRUD helper repository for Backend & AI
-├── router.py             # Ready-to-mount FastAPI router with full CRUD endpoints
+├── crud.py               # Async CRUD helper repository for Backend (CRUD-API) & AI
 ├── seed.py               # Database seeder & index generation script
 ├── requirements.txt      # Python dependencies for MongoDB & Pydantic
 └── seeds/
@@ -71,38 +70,19 @@ When your voice / LLM pipeline extracts citizen parameters from natural speech, 
 }
 ```
 
-### ⚙️ For Backend Developers: 2 Ways to Connect
+### ⚙️ For Backend Developers: Connecting to DB Layer
+Import repository helpers and the database session dependency into your routes:
 
-#### Option 1: Instant Router Mount (Fastest)
-Include the ready-to-mount router into your FastAPI `main.py`:
 ```python
-from fastapi import FastAPI
-from DB.router import db_router
-
-app = FastAPI(title="SAHAYAK API")
-app.include_router(db_router)
-```
-This instantly exposes:
-- `GET  /api/db/health` — MongoDB health check
-- `GET  /api/schemes` — List all active schemes
-- `GET  /api/schemes/{id}` — Get scheme details & required documents
-- `GET  /api/schemes/{id}/rules` — Get scheme rules for evaluation
-- `GET  /api/profiles/{user_id}` — Get citizen profile
-- `POST /api/profiles/{user_id}` — Save extracted profile
-- `POST /api/grievances` — Submit grievance ticket
-- `GET  /api/officer/dashboard` — Officer analytics metrics
-- `PUT  /api/officer/grievances/{ticket_id}/status` — Officer status update
-
-#### Option 2: Use Async CRUD Functions Directly
-Import repository helpers directly in your service layer:
-```python
+from fastapi import APIRouter, Depends
 from DB.connection import get_db
-from DB import crud
+import DB.crud as db_crud
 
-# In your FastAPI route:
-@app.get("/my-schemes")
-async def get_my_schemes(db = Depends(get_db)):
-    schemes = await crud.get_all_schemes(db)
+router = APIRouter(prefix="/schemes", tags=["Schemes"])
+
+@router.get("/")
+async def list_schemes(db = Depends(get_db)):
+    schemes = await db_crud.get_all_schemes(db, is_active=True)
     return schemes
 ```
 

@@ -146,11 +146,10 @@ def test_config_and_collections():
 
 
 def test_module_imports():
-    print("[4/6] Testing module importability (connection, crud, router, package exports)...")
+    print("[4/6] Testing module importability (connection, crud, package exports)...")
     import DB
     import DB.connection as conn
     import DB.crud as crud
-    import DB.router as router
 
     # Test top-level package export
     assert hasattr(DB, "crud")
@@ -182,8 +181,7 @@ def test_module_imports():
     assert hasattr(crud, "delete_citizen_profile")
     assert hasattr(crud, "assign_grievance_officer")
     assert hasattr(crud, "get_officer_dashboard_stats")
-    assert hasattr(router, "db_router")
-    print("  ✓ All module exports, crud functions, and db_router imported cleanly.")
+    print("  ✓ All module exports and crud functions imported cleanly.")
 
 
 def test_crud_helpers():
