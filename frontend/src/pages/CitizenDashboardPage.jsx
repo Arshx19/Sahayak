@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNotifications } from '../context/NotificationContext.jsx';
-import { getProfile, getSchemes } from '../services/api.js';
+import { getProfile, getSchemes, getUserDocuments, uploadUserDocument } from '../services/api.js';
 import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
 import { evaluateAllSchemes } from '../services/eligibilityService.js';
 import DocumentManager from '../components/DocumentManager.jsx';
@@ -39,10 +39,13 @@ export default function CitizenDashboardPage({ language }) {
   const [targetDocId, setTargetDocId] = useState('pan');
 
   useEffect(() => {
-    Promise.all([getProfile(), getSchemes()])
-      .then(([prof, scm]) => {
+    Promise.all([getProfile(), getSchemes(), getUserDocuments()])
+      .then(([prof, scm, docs]) => {
         setProfile(prof);
         setSchemes(scm || []);
+        if (docs && Object.keys(docs).length > 0) {
+          setDocuments((prev) => ({ ...prev, ...docs }));
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -56,6 +59,15 @@ export default function CitizenDashboardPage({ language }) {
     setDocuments(updatedDocs);
     localStorage.setItem('sahayak_citizen_docs', JSON.stringify(updatedDocs));
 
+    // Asynchronously sync with backend if running
+    uploadUserDocument({
+      document_type: docId,
+      document_name: filePayload.fileName,
+      document_number: filePayload.number,
+      file_name: filePayload.fileName,
+      verification_status: filePayload.status?.toLowerCase() || 'verified',
+    }).catch(() => {});
+
     // Evaluate new eligibility impact
     const oldEval = evaluateAllSchemes(schemes, documents, profile || {});
     const newEval = evaluateAllSchemes(schemes, updatedDocs, profile || {});
@@ -66,7 +78,7 @@ export default function CitizenDashboardPage({ language }) {
       addNotification({
         title: `🎉 ${newlyEligible} New Scheme(s) Unlocked!`,
         message: `Uploading ${filePayload.fileName || docId.toUpperCase()} unlocked eligibility for new schemes. You can now apply!`,
-        type: 'ELIGIBILITY_UNLOCK',
+        type: 'SCHEME_NEW',
       });
     } else {
       addNotification({

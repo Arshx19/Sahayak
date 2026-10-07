@@ -5,27 +5,28 @@
 // against scheme requirements and produces a transparent visual checklist.
 // -----------------------------------------------------------------------------
 
-import { SUPPORTED_DOCUMENTS } from '../data/documentsData.js';
+import { SUPPORTED_DOCUMENTS, getDocumentDefinition, DOCUMENT_KEY_ALIASES } from '../data/documentsData.js';
 
 export function evaluateSchemeEligibility(scheme, citizenDocuments = {}, citizenProfile = {}) {
   const criteriaChecks = [];
   const missingDocuments = [];
   const reasons = [];
 
-  // Map of supported document definitions for easy lookup
-  const docMap = new Map(SUPPORTED_DOCUMENTS.map((d) => [d.id, d]));
-
   // 1. Evaluate Document Requirements
   const requiredDocs = scheme.required_documents || [];
   requiredDocs.forEach((docId) => {
-    const docDef = docMap.get(docId) || { name: docId.toUpperCase() };
-    const userDoc = citizenDocuments[docId];
+    const cleanId = String(docId).trim().toLowerCase();
+    const docDef = getDocumentDefinition(cleanId) || { name: cleanId.toUpperCase() };
+    const aliasKey = DOCUMENT_KEY_ALIASES[cleanId];
+    
+    // Look up either canonical key or alias in citizen documents
+    const userDoc = citizenDocuments[cleanId] || (aliasKey ? citizenDocuments[aliasKey] : null);
     const isUploaded = userDoc && (userDoc.status === 'VERIFIED' || userDoc.status === 'UPLOADED');
 
     if (isUploaded) {
       criteriaChecks.push({
-        id: `doc_${docId}`,
-        docId,
+        id: `doc_${cleanId}`,
+        docId: cleanId,
         label: docDef.name,
         type: 'DOCUMENT',
         required: true,
@@ -33,11 +34,11 @@ export function evaluateSchemeEligibility(scheme, citizenDocuments = {}, citizen
         detail: userDoc.status === 'VERIFIED' ? 'Uploaded & Verified' : 'Uploaded (Pending Review)',
       });
     } else {
-      missingDocuments.push(docId);
+      missingDocuments.push(cleanId);
       reasons.push(`${docDef.name} is not uploaded`);
       criteriaChecks.push({
-        id: `doc_${docId}`,
-        docId,
+        id: `doc_${cleanId}`,
+        docId: cleanId,
         label: docDef.name,
         type: 'DOCUMENT',
         required: true,

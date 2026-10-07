@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { getUserNotifications, markNotificationAsRead as apiMarkRead, markAllNotificationsRead as apiMarkAllRead } from '../services/api.js';
 
 const NotificationContext = createContext(null);
 
@@ -6,8 +7,8 @@ const DEFAULT_NOTIFICATIONS = [
   {
     id: 'notif_welcome',
     title: 'Welcome to SAHAYAK Scheme Portal',
-    message: 'Your Aadhaar Card, Photo ID, and Bank Passbook have been verified. Upload your Land Records to unlock PM-KISAN eligibility!',
-    type: 'SYSTEM',
+    message: 'Your Aadhaar Card, Photo ID, and Bank Account details have been verified. Upload your Land Records to unlock PM-KISAN eligibility!',
+    type: 'DOCUMENT_VERIFIED',
     timestamp: 'Just now',
     read: false,
   },
@@ -15,8 +16,8 @@ const DEFAULT_NOTIFICATIONS = [
     id: 'notif_solar',
     title: 'New Scheme Open: PM Surya Ghar Muft Bijli',
     message: 'Central Government has opened Phase 2 rooftop solar subsidies up to ₹78,000 for residential households.',
-    type: 'SCHEME_UPDATE',
-    schemeId: 'pm-surya-ghar',
+    type: 'SCHEME_NEW',
+    schemeId: 'CEN001',
     timestamp: '2 hours ago',
     read: false,
   },
@@ -33,10 +34,22 @@ export function NotificationProvider({ children }) {
   });
 
   useEffect(() => {
-    localStorage.setItem('sahayak_notifications', JSON.stringify(notifications));
+    let isMounted = true;
+    getUserNotifications().then((remoteNotifs) => {
+      if (isMounted && remoteNotifs && remoteNotifs.length > 0) {
+        setNotifications(remoteNotifs);
+      }
+    }).catch(() => {});
+    return () => { isMounted = false; };
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('sahayak_notifications', JSON.stringify(notifications));
+    } catch {}
   }, [notifications]);
 
-  const addNotification = ({ title, message, type = 'ELIGIBILITY_UNLOCK', schemeId = null }) => {
+  const addNotification = ({ title, message, type = 'SCHEME_NEW', schemeId = null }) => {
     const newNotif = {
       id: `notif_${Date.now()}`,
       title,
@@ -53,10 +66,12 @@ export function NotificationProvider({ children }) {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, read: true } : n))
     );
+    apiMarkRead(id).catch(() => {});
   };
 
   const markAllAsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    apiMarkAllRead().catch(() => {});
   };
 
   const clearAll = () => {

@@ -7,6 +7,7 @@
 import { MOCK_SCHEMES } from '../data/schemes.js';
 import { MOCK_GRIEVANCES } from '../data/grievances.js';
 import { MOCK_PROFILE } from '../data/profile.js';
+import { INITIAL_CITIZEN_DOCUMENTS, DOCUMENT_KEY_ALIASES } from '../data/documentsData.js';
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -79,29 +80,116 @@ export const getCurrentUser = async () => {
 };
 
 // =============================================================================
-// GOVERNMENT SCHEMES
+// CITIZEN DOCUMENT LOCKER (Matches backend/DB user_documents collection)
+// =============================================================================
+export const getUserDocuments = async (userId = null) => {
+  try {
+    const res = await request('/documents');
+    if (res && res.data && Array.isArray(res.data)) {
+      // Map MongoDB user_documents list into a lookup object keyed by document_type
+      const docsMap = {};
+      res.data.forEach((d) => {
+        const docKey = d.document_type?.toLowerCase();
+        docsMap[docKey] = {
+          status: (d.verification_status || 'verified').toUpperCase(),
+          uploadedAt: d.uploaded_at ? new Date(d.uploaded_at).toISOString().split('T')[0] : '2026-10-01',
+          fileName: d.file_name || `${docKey}_verified.pdf`,
+          fileSize: d.file_size_bytes ? `${Math.round(d.file_size_bytes / 1024)} KB` : '1.2 MB',
+          number: d.document_number || 'Verified Record',
+          fileUrl: d.file_url || null,
+        };
+      });
+      return docsMap;
+    }
+  } catch {
+    // Fallback to local storage or demo documents
+  }
+
+  try {
+    const saved = localStorage.getItem('sahayak_citizen_docs');
+    if (saved) return JSON.parse(saved);
+  } catch {}
+
+  return INITIAL_CITIZEN_DOCUMENTS;
+};
+
+export const uploadUserDocument = async (docData) => {
+  try {
+    const canonicalType = DOCUMENT_KEY_ALIASES[docData.document_type] || docData.document_type;
+    const payload = {
+      document_type: canonicalType,
+      document_name: docData.document_name,
+      document_number: docData.document_number,
+      file_name: docData.file_name,
+      verification_status: docData.verification_status || 'verified',
+      status: 'active',
+      metadata: docData.metadata || {},
+    };
+
+    const res = await request('/documents/upload', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    return res.data || res;
+  } catch {
+    // Local offline storage fallback
+    await delay(200);
+    return {
+      success: true,
+      document_type: docData.document_type,
+      verification_status: 'verified',
+      message: 'Document saved in local citizen locker (Offline mode)',
+    };
+  }
+};
+
+export const deleteUserDocument = async (docType) => {
+  try {
+    const canonicalType = DOCUMENT_KEY_ALIASES[docType] || docType;
+    return await request(`/documents/${canonicalType}`, {
+      method: 'DELETE',
+    });
+  } catch {
+    await delay(100);
+    return { success: true };
+  }
+};
+
+// =============================================================================
+// GOVERNMENT SCHEMES (Matches backend/DB schemes collection)
 // =============================================================================
 export const getSchemes = async (filters = {}) => {
   try {
     const params = new URLSearchParams();
     if (filters.category && filters.category !== 'All') params.append('category', filters.category);
+    if (filters.state && filters.state !== 'All') params.append('state', filters.state);
+    if (filters.level && filters.level !== 'All') params.append('scheme_type', filters.level);
     if (filters.status) params.append('status', filters.status);
     const qs = params.toString() ? `?${params.toString()}` : '';
+
     const res = await request(`/schemes${qs}`);
     if (res && res.data && Array.isArray(res.data)) {
-      // Map API fields to UI format if needed
+      // Map backend/DB scheme models to standard UI format
       return res.data.map((s) => ({
-        id: s.scheme_id || s.id || s.scheme_code?.toLowerCase(),
+        id: s.scheme_id || s.scheme_code || s.id,
+        schemeCode: s.scheme_code || s.scheme_id,
         name: s.name,
         hiName: s.hindi_name || s.hiName || s.name,
         category: s.category,
         hiCategory: s.hiCategory || s.category,
-        level: s.scheme_type || s.level || 'Central',
-        state: s.applicable_states ? s.applicable_states.join(', ') : 'All States / UTs',
+        level: s.provider || s.scheme_type || s.level || 'Central',
+        state: Array.isArray(s.applicable_states) ? s.applicable_states.join(', ') : (s.state || 'All India'),
+        applicableStates: s.applicable_states || ['ALL'],
         shortDesc: s.description || s.shortDesc,
+        fullDesc: s.description,
         benefits: Array.isArray(s.benefits) ? s.benefits : [s.benefits].filter(Boolean),
         documents: Array.isArray(s.required_documents) ? s.required_documents : s.documents || [],
-        officialUrl: s.official_url,
+        required_documents: s.required_documents || [],
+        timeline: s.timeline || {
+          application_frequency: s.application_frequency || 'Continuous',
+          application_status: s.application_status || 'Open',
+        },
+        officialUrl: s.official_url || s.official_source || s.application_url,
       }));
     }
   } catch {
@@ -118,18 +206,22 @@ export const getSchemeById = async (id) => {
     if (res && res.data) {
       const s = res.data;
       return {
-        id: s.scheme_id || s.id || id,
+        id: s.scheme_id || s.scheme_code || s.id || id,
+        schemeCode: s.scheme_code || s.scheme_id,
         name: s.name,
         hiName: s.hindi_name || s.hiName || s.name,
         category: s.category,
         hiCategory: s.hiCategory || s.category,
-        level: s.scheme_type || s.level || 'Central',
-        state: s.applicable_states ? s.applicable_states.join(', ') : 'All States / UTs',
+        level: s.provider || s.scheme_type || s.level || 'Central',
+        state: Array.isArray(s.applicable_states) ? s.applicable_states.join(', ') : (s.state || 'All India'),
+        applicableStates: s.applicable_states || ['ALL'],
         shortDesc: s.description,
         fullDesc: s.description,
         benefits: Array.isArray(s.benefits) ? s.benefits : [s.benefits].filter(Boolean),
         documents: Array.isArray(s.required_documents) ? s.required_documents : s.documents || [],
-        officialUrl: s.official_url,
+        required_documents: s.required_documents || [],
+        timeline: s.timeline || {},
+        officialUrl: s.official_url || s.official_source,
       };
     }
   } catch {
@@ -137,7 +229,7 @@ export const getSchemeById = async (id) => {
   }
 
   await delay();
-  return MOCK_SCHEMES.find((s) => s.id === id || s.id.replace('-', '_') === id.replace('-', '_')) || MOCK_SCHEMES[0];
+  return MOCK_SCHEMES.find((s) => s.id === id || s.id.replace('-', '_') === id.replace('-', '_') || s.id.toLowerCase() === id.toLowerCase()) || MOCK_SCHEMES[0];
 };
 
 export const createScheme = async (schemeData) => {
@@ -380,4 +472,47 @@ export const getAdminStats = async () => {
 export const submitAssistantQuery = async (payload) => {
   await delay();
   return { matchedSchemeId: 'pm-kisan', payload };
+};
+
+// =============================================================================
+// NOTIFICATIONS (Matches backend/DB notifications collection)
+// =============================================================================
+export const getUserNotifications = async () => {
+  try {
+    const res = await request('/notifications');
+    if (res && res.data && Array.isArray(res.data)) {
+      return res.data.map((n) => ({
+        id: n.notification_id || n.id,
+        title: n.title,
+        message: n.message,
+        type: n.notification_type || 'GENERAL',
+        schemeId: n.scheme_id || null,
+        timestamp: n.created_at ? new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently',
+        read: Boolean(n.is_read),
+      }));
+    }
+  } catch {
+    // Fallback to localStorage or mock
+  }
+  return null;
+};
+
+export const markNotificationAsRead = async (notificationId) => {
+  try {
+    return await request(`/notifications/${notificationId}/read`, {
+      method: 'PUT',
+    });
+  } catch {
+    return { success: true };
+  }
+};
+
+export const markAllNotificationsRead = async () => {
+  try {
+    return await request('/notifications/read-all', {
+      method: 'PUT',
+    });
+  } catch {
+    return { success: true };
+  }
 };

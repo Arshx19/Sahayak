@@ -95,7 +95,92 @@ export const SUPPORTED_DOCUMENTS = [
     sampleNumberFormat: 'Issued by District Magistrate/Tehsildar',
     icon: '🏠',
   },
+  {
+    id: 'mobile_number',
+    name: 'Aadhaar-Linked Mobile Number',
+    hiName: 'आधार लिंक मोबाइल नंबर',
+    category: 'Authentication',
+    acceptedFormats: 'SMS OTP Verification',
+    description: 'Active mobile number linked with Aadhaar and bank account for DBT alerts.',
+    sampleNumberFormat: '+91 98XXX XXXXX',
+    icon: '📱',
+  },
+  {
+    id: 'age_proof',
+    name: 'Age Proof / Birth Certificate',
+    hiName: 'आयु प्रमाण पत्र',
+    category: 'Identity Proof',
+    acceptedFormats: 'PDF, JPG (Max 5MB)',
+    description: 'Birth Certificate, School Leaving Certificate, or Matriculation Marksheet.',
+    sampleNumberFormat: 'Official Issuing Authority',
+    icon: '📅',
+  },
+  {
+    id: 'electricity_bill_id',
+    name: 'Electricity Bill / Account ID',
+    hiName: 'बिजली बिल / उपभोक्ता आईडी',
+    category: 'Utility & Residence',
+    acceptedFormats: 'PDF, JPG (Max 5MB)',
+    description: 'Recent electricity utility bill showing consumer account ID and residential address.',
+    sampleNumberFormat: 'DISCOM Consumer ID',
+    icon: '⚡',
+  },
+  {
+    id: 'educational_certificate',
+    name: 'Educational Qualification Certificate',
+    hiName: 'शैक्षणिक योग्यता प्रमाण पत्र',
+    category: 'Education Proof',
+    acceptedFormats: 'PDF (Max 5MB)',
+    description: 'Degree, Diploma, or 10th/12th passing marksheets issued by recognized board/university.',
+    sampleNumberFormat: 'Roll / Registration Number',
+    icon: '🎓',
+  },
+  {
+    id: 'disability_certificate',
+    name: 'Disability Certificate (UDID)',
+    hiName: 'दिव्यांगता प्रमाण पत्र / UDID',
+    category: 'Special Category',
+    acceptedFormats: 'PDF, JPG (Max 5MB)',
+    description: 'Unique Disability ID (UDID) or certificate issued by Medical Board certifying 40%+ disability.',
+    sampleNumberFormat: 'UDID Card No.',
+    icon: '♿',
+  },
 ];
+
+// Bidirectional aliases mapping between MongoDB seed data and frontend keys
+export const DOCUMENT_KEY_ALIASES = {
+  // DB key -> Frontend key
+  bank_account: 'bank_passbook',
+  income_certificate: 'income_cert',
+  caste_certificate: 'caste_cert',
+  domicile_certificate: 'domicile',
+  // Frontend key -> DB key
+  bank_passbook: 'bank_account',
+  income_cert: 'income_certificate',
+  caste_cert: 'caste_certificate',
+  domicile: 'domicile_certificate',
+};
+
+/**
+ * Returns the resolved document definition by ID or canonical DB alias
+ */
+export function getDocumentDefinition(docKey) {
+  if (!docKey) return null;
+  const clean = docKey.toLowerCase().trim();
+  const direct = SUPPORTED_DOCUMENTS.find((d) => d.id === clean);
+  if (direct) return direct;
+  const alias = DOCUMENT_KEY_ALIASES[clean];
+  if (alias) {
+    return SUPPORTED_DOCUMENTS.find((d) => d.id === alias) || null;
+  }
+  return {
+    id: clean,
+    name: clean.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    hiName: clean,
+    category: 'General Verification',
+    icon: '📄',
+  };
+}
 
 // Initial mock document state for newly registered citizen demo
 export const INITIAL_CITIZEN_DOCUMENTS = {
@@ -119,6 +204,13 @@ export const INITIAL_CITIZEN_DOCUMENTS = {
     fileName: 'rameshwar_photo.jpg',
     fileSize: '420 KB',
     number: 'Photo ID Verified',
+  },
+  mobile_number: {
+    status: 'VERIFIED',
+    uploadedAt: '2026-09-20',
+    fileName: 'Aadhaar-OTP Verified',
+    fileSize: 'N/A',
+    number: '+91 98765 43210',
   },
   pan: {
     status: 'NOT_UPLOADED',
@@ -156,6 +248,34 @@ export const INITIAL_CITIZEN_DOCUMENTS = {
     number: null,
   },
   domicile: {
+    status: 'NOT_UPLOADED',
+    uploadedAt: null,
+    fileName: null,
+    fileSize: null,
+    number: null,
+  },
+  age_proof: {
+    status: 'NOT_UPLOADED',
+    uploadedAt: null,
+    fileName: null,
+    fileSize: null,
+    number: null,
+  },
+  electricity_bill_id: {
+    status: 'NOT_UPLOADED',
+    uploadedAt: null,
+    fileName: null,
+    fileSize: null,
+    number: null,
+  },
+  educational_certificate: {
+    status: 'NOT_UPLOADED',
+    uploadedAt: null,
+    fileName: null,
+    fileSize: null,
+    number: null,
+  },
+  disability_certificate: {
     status: 'NOT_UPLOADED',
     uploadedAt: null,
     fileName: null,
