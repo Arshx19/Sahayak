@@ -23,9 +23,11 @@ if str(parent_dir) not in sys.path:
 from DB.config import (
     COLLECTION_USERS,
     COLLECTION_CITIZEN_PROFILES,
+    COLLECTION_USER_DOCUMENTS,
     COLLECTION_SCHEMES,
     COLLECTION_SCHEME_RULES,
     COLLECTION_ELIGIBILITY_CHECKS,
+    COLLECTION_NOTIFICATIONS,
     COLLECTION_GRIEVANCES,
     COLLECTION_AUDIT_LOGS,
     MONGO_DB_NAME,
@@ -68,12 +70,23 @@ def setup_indexes(db):
     except Exception as e:
         logger.warning(f"  ! Citizen Profiles index creation note: {e}")
 
-    # Schemes Indexes
+    # User Documents Indexes (Document-centric dashboard queries)
+    try:
+        db[COLLECTION_USER_DOCUMENTS].create_index([("user_id", 1), ("document_type", 1)], unique=True)
+        db[COLLECTION_USER_DOCUMENTS].create_index("user_id")
+        db[COLLECTION_USER_DOCUMENTS].create_index("verification_status")
+        db[COLLECTION_USER_DOCUMENTS].create_index("uploaded_at")
+        logger.info("  ✓ User Documents indexes created.")
+    except Exception as e:
+        logger.warning(f"  ! User Documents index creation note: {e}")
+
+    # Schemes Indexes (Filtering by state, category, type, provider, active status)
     try:
         db[COLLECTION_SCHEMES].create_index("scheme_id", unique=True)
         db[COLLECTION_SCHEMES].create_index("scheme_code", unique=True)
-        db[COLLECTION_SCHEMES].create_index("category")
-        db[COLLECTION_SCHEMES].create_index("is_active")
+        db[COLLECTION_SCHEMES].create_index([("is_active", 1), ("category", 1)])
+        db[COLLECTION_SCHEMES].create_index([("is_active", 1), ("provider", 1)])
+        db[COLLECTION_SCHEMES].create_index("applicable_states")
         logger.info("  ✓ Schemes indexes created.")
     except Exception as e:
         logger.warning(f"  ! Schemes index creation note: {e}")
@@ -85,14 +98,22 @@ def setup_indexes(db):
     except Exception as e:
         logger.warning(f"  ! Scheme Rules index creation note: {e}")
 
-    # Eligibility Checks Indexes
+    # Eligibility Checks Indexes (User queries, explainable failures)
     try:
-        db[COLLECTION_ELIGIBILITY_CHECKS].create_index("user_id")
-        db[COLLECTION_ELIGIBILITY_CHECKS].create_index("scheme_id")
+        db[COLLECTION_ELIGIBILITY_CHECKS].create_index([("user_id", 1), ("scheme_id", 1)])
+        db[COLLECTION_ELIGIBILITY_CHECKS].create_index([("user_id", 1), ("is_eligible", 1)])
         db[COLLECTION_ELIGIBILITY_CHECKS].create_index("timestamp")
         logger.info("  ✓ Eligibility Checks indexes created.")
     except Exception as e:
         logger.warning(f"  ! Eligibility Checks index creation note: {e}")
+
+    # Notifications Indexes (User notifications, unread queries)
+    try:
+        db[COLLECTION_NOTIFICATIONS].create_index([("user_id", 1), ("is_read", 1)])
+        db[COLLECTION_NOTIFICATIONS].create_index("created_at")
+        logger.info("  ✓ Notifications indexes created.")
+    except Exception as e:
+        logger.warning(f"  ! Notifications index creation note: {e}")
 
     # Grievances Indexes
     try:

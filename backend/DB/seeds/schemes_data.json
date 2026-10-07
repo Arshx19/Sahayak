@@ -6,14 +6,20 @@
     "hindi_name": "प्रधानमंत्री किसान सम्मान निधि",
     "category": "Agriculture",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "Ongoing / Open year-round",
+      "validity_years": 5,
+      "disbursement_frequency": "Every 4 months (3 cycles per fiscal year)"
+    },
     "applicable_states": ["ALL"],
     "description": "Income support scheme providing ₹6,000 per year in 3 equal installments of ₹2,000 each directly into the bank accounts of landholding farmer families across India.",
     "benefits": "₹6,000 per year in three direct bank transfers (₹2,000 every 4 months)",
     "required_documents": [
-      "Aadhaar Card",
-      "Land Ownership Record (Khatauni / Jamabandi / RoR)",
-      "Bank Account Passbook (Aadhaar-seeded)",
-      "Active Mobile Number linked to Aadhaar"
+      "aadhaar",
+      "land_record",
+      "bank_account_passbook",
+      "mobile_number"
     ],
     "official_url": "https://pmkisan.gov.in",
     "helpline_number": "155261 / 011-24300606",
@@ -27,14 +33,19 @@
     "hindi_name": "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना",
     "category": "Healthcare",
     "scheme_type": "Central",
+    "provider": "Centre + State",
+    "timeline": {
+      "application_window": "Ongoing / Continuous enrollment",
+      "validity_years": 1,
+      "renewal": "Annual policy period"
+    },
     "applicable_states": ["ALL"],
     "description": "The world's largest health assurance scheme providing comprehensive secondary and tertiary care hospitalization coverage to poor and vulnerable families.",
     "benefits": "Cashless health cover up to ₹5,00,000 per family per year in all empanelled government and private hospitals",
     "required_documents": [
-      "Aadhaar Card",
-      "Ration Card",
-      "Income Certificate / SECC 2011 Verification",
-      "Active Mobile Number"
+      "aadhaar",
+      "ration_card",
+      "income_certificate"
     ],
     "official_url": "https://pmjay.gov.in",
     "helpline_number": "14555",
@@ -48,14 +59,19 @@
     "hindi_name": "प्रधानमंत्री आवास योजना - ग्रामीण",
     "category": "Housing",
     "scheme_type": "Central",
+    "provider": "Centre + State",
+    "timeline": {
+      "application_window": "Phased Gram Panchayat campaigns",
+      "construction_completion_months": 12
+    },
     "applicable_states": ["ALL"],
     "description": "Flagship social welfare initiative providing financial grant assistance to rural families living in kutcha or dilapidated houses for building safe, permanent pucca homes.",
     "benefits": "Financial grant of ₹1,20,000 (plain areas) or ₹1,30,000 (hilly/difficult areas) plus ₹12,000 for toilet construction",
     "required_documents": [
-      "Aadhaar Card",
-      "MGNREGA Job Card",
-      "Bank Account Details (DBT enabled)",
-      "Land Record / Proof of plot for house"
+      "aadhaar",
+      "mgnrega_job_card",
+      "bank_account_passbook",
+      "land_record"
     ],
     "official_url": "https://pmayg.nic.in",
     "helpline_number": "1800-11-6446",
@@ -69,14 +85,19 @@
     "hindi_name": "प्रधानमंत्री उज्ज्वला योजना 2.0",
     "category": "Clean Cooking Fuel",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "Open nationwide",
+      "release_period_days": 15
+    },
     "applicable_states": ["ALL"],
     "description": "Provides deposit-free LPG connections along with a free first cylinder refill and stove to women belonging to below-poverty-line and disadvantaged rural households.",
     "benefits": "Free LPG gas connection with subsidized cylinder, free first refill, and gas stove",
     "required_documents": [
-      "Aadhaar Card of Adult Female Applicant",
-      "Ration Card / BPL Document showing family composition",
-      "Bank Account Passbook",
-      "Self-declaration of residential address"
+      "aadhaar",
+      "ration_card",
+      "bank_account_passbook",
+      "photograph"
     ],
     "official_url": "https://www.pmuy.gov.in",
     "helpline_number": "1800-266-6696",
@@ -90,13 +111,19 @@
     "hindi_name": "अटल पेंशन योजना",
     "category": "Social Security",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "Open year-round",
+      "vesting_age": 60,
+      "contribution_period_years": 20
+    },
     "applicable_states": ["ALL"],
     "description": "Government guaranteed monthly pension scheme for citizens working in the unorganized sector, ensuring dignified financial stability after retirement.",
     "benefits": "Guaranteed monthly pension of ₹1,000 to ₹5,000 after 60 years of age, depending on contribution",
     "required_documents": [
-      "Aadhaar Card",
-      "Savings Bank Account / Post Office Account",
-      "Mobile Number"
+      "aadhaar",
+      "bank_account_passbook",
+      "mobile_number"
     ],
     "official_url": "https://www.npscra.nsdl.co.in",
     "helpline_number": "1800-110-069",
@@ -110,14 +137,19 @@
     "hindi_name": "इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना",
     "category": "Social Assistance",
     "scheme_type": "Central",
+    "provider": "Centre + State",
+    "timeline": {
+      "application_window": "Continuous enrolment",
+      "disbursement_frequency": "Monthly"
+    },
     "applicable_states": ["ALL"],
     "description": "Part of the National Social Assistance Programme (NSAP) providing non-contributory monthly pensions to destitute senior citizens living below poverty line.",
     "benefits": "Monthly financial pension assistance of ₹200 to ₹500 (plus state top-up up to ₹1,000 - ₹2,500 depending on state) transferred to bank",
     "required_documents": [
-      "Aadhaar Card",
-      "Age Proof (Voter ID / Birth Certificate / Medical Certificate)",
-      "BPL Ration Card / Income Certificate",
-      "Bank Account Passbook"
+      "aadhaar",
+      "age_proof",
+      "income_certificate",
+      "bank_account_passbook"
     ],
     "official_url": "https://nsap.nic.in",
     "helpline_number": "1800-111-555",
@@ -131,14 +163,18 @@
     "hindi_name": "सुकन्या समृद्धि योजना",
     "category": "Financial Savings",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "From birth up to 10 years of girl child",
+      "maturity_years": 21
+    },
     "applicable_states": ["ALL"],
     "description": "High-interest, government-backed savings scheme launched under 'Beti Bachao Beti Padhao' to build a secure financial corpus for girl child education and marriage.",
     "benefits": "Government-backed 8.2% annual compound interest, tax deduction under 80C, and completely tax-free maturity amount",
     "required_documents": [
-      "Birth Certificate of Girl Child",
-      "Aadhaar Card / ID Proof of Parent/Guardian",
-      "Address Proof of Guardian",
-      "Passport Size Photographs"
+      "birth_certificate",
+      "aadhaar",
+      "photograph"
     ],
     "official_url": "https://www.india.gov.in/sukanya-samriddhi-yojna",
     "helpline_number": "1800-266-6868",
@@ -152,14 +188,18 @@
     "hindi_name": "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी योजना",
     "category": "Employment",
     "scheme_type": "Central",
+    "provider": "Centre + State",
+    "timeline": {
+      "application_window": "Open round the year",
+      "work_allocation_days": 15
+    },
     "applicable_states": ["ALL"],
     "description": "Legal employment guarantee providing at least 100 days of guaranteed wage employment in a financial year to every rural adult who volunteers for unskilled manual work.",
     "benefits": "Guaranteed 100 days wage employment per household per year at statutory state minimum wage rates with DBT payment within 15 days",
     "required_documents": [
-      "Aadhaar Card",
-      "MGNREGA Job Card Application Form",
-      "Passport Size Photos of adult family members",
-      "Bank or Post Office Passbook"
+      "aadhaar",
+      "photograph",
+      "bank_account_passbook"
     ],
     "official_url": "https://nrega.nic.in",
     "helpline_number": "1800-345-6789",
@@ -173,14 +213,19 @@
     "hindi_name": "प्रधानमंत्री मुद्रा योजना",
     "category": "Financial & MSME",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "Open via banks & NBFCs",
+      "loan_tenure_years": 5
+    },
     "applicable_states": ["ALL"],
     "description": "Provides collateral-free loans up to ₹10 lakh to non-corporate, non-farm small and micro enterprises to encourage self-employment and small business growth.",
     "benefits": "Collateral-free business loans up to ₹10 Lakh in 3 categories: Shishu (up to ₹50k), Kishore (₹50k-₹5L), Tarun (₹5L-₹10L) at low interest",
     "required_documents": [
-      "Aadhaar Card / Voter ID / PAN Card",
-      "Business Address Proof / Registration Certificate",
-      "Past 6 months Bank Account Statement",
-      "Quotation / Business Project Plan"
+      "aadhaar",
+      "pan",
+      "bank_account_statement",
+      "business_proof"
     ],
     "official_url": "https://www.mudra.org.in",
     "helpline_number": "1800-180-1111",
@@ -194,13 +239,18 @@
     "hindi_name": "पीएम स्ट्रीट वेंडर्स आत्मनिर्भर निधि",
     "category": "Urban Livelihoods",
     "scheme_type": "Central",
+    "provider": "Centre",
+    "timeline": {
+      "application_window": "Continuous portal onboarding",
+      "tenure_months": 12
+    },
     "applicable_states": ["ALL"],
     "description": "Special micro-credit facility providing affordable, collateral-free working capital loans to urban street vendors to resume and scale livelihoods.",
     "benefits": "Collateral-free working capital loan of ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) with 7% interest subsidy and cashback on digital transactions",
     "required_documents": [
-      "Aadhaar Card",
-      "Vending Certificate / Identity Card issued by Urban Local Body (ULB) / Letter of Recommendation",
-      "Bank Account Details"
+      "aadhaar",
+      "vending_certificate",
+      "bank_account_passbook"
     ],
     "official_url": "https://pmsvanidhi.mohua.gov.in",
     "helpline_number": "1800-11-1979",
