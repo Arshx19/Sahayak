@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { getTranslation } from '../utils/translations.js';
+import { Landmark, Zap, User, Briefcase, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage({ language }) {
   const [isRegister, setIsRegister] = useState(false);
@@ -9,7 +10,6 @@ export default function LoginPage({ language }) {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [role, setRole] = useState('citizen');
   const [localError, setLocalError] = useState('');
 
   const { login, register, demoLogin, loading, authError, setAuthError } = useAuth();
@@ -60,10 +60,10 @@ export default function LoginPage({ language }) {
       <div className="max-w-md w-full space-y-6 bg-white p-6 sm:p-8 rounded-lg border border-slate-300 shadow-sm">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-[#1b365d] text-amber-400 rounded-md flex items-center justify-center mx-auto text-xl font-bold shadow-xs">
-            🇮🇳
+          <div className="w-12 h-12 bg-[#0f2942] text-amber-400 rounded-md flex items-center justify-center mx-auto shadow-xs border border-slate-700">
+            <Landmark className="w-6 h-6 text-amber-400" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-[#1b365d]">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-[#0f2942]">
             {isRegister ? 'Citizen Registration' : 'Government Services Login'}
           </h2>
           <p className="text-xs text-slate-500">
@@ -76,10 +76,11 @@ export default function LoginPage({ language }) {
         {/* 1-Click Demo Profiles for Rapid Testing / Evaluators */}
         <div className="bg-slate-50 border border-slate-200 rounded-md p-3 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
-              ⚡ Quick Demo Login (1-Click)
-            </span>
-            <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-semibold border border-amber-300">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 uppercase tracking-wide">
+              <Zap className="w-3.5 h-3.5 text-amber-600" />
+              <span>Quick Test Access</span>
+            </div>
+            <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold border border-amber-300">
               Evaluator Mode
             </span>
           </div>
@@ -87,23 +88,26 @@ export default function LoginPage({ language }) {
             <button
               type="button"
               onClick={() => handleQuickDemo('citizen')}
-              className="bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs"
+              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1"
             >
-              👤 Citizen
+              <User className="w-3.5 h-3.5 text-slate-600" />
+              <span>Citizen</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickDemo('officer')}
-              className="bg-white hover:bg-blue-50 text-blue-800 border border-blue-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs"
+              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1"
             >
-              👮 Officer
+              <Briefcase className="w-3.5 h-3.5 text-slate-600" />
+              <span>Officer</span>
             </button>
             <button
               type="button"
               onClick={() => handleQuickDemo('admin')}
-              className="bg-white hover:bg-purple-50 text-purple-800 border border-purple-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs"
+              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1"
             >
-              ⚙️ Admin
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
+              <span>Admin</span>
             </button>
           </div>
         </div>
@@ -111,7 +115,7 @@ export default function LoginPage({ language }) {
         {/* Error Alert */}
         {(localError || authError) && (
           <div className="bg-rose-50 border border-rose-300 text-rose-800 px-3.5 py-2.5 rounded text-xs flex items-center gap-2">
-            <span>⚠️</span>
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{localError || authError}</span>
           </div>
         )}
@@ -128,7 +132,7 @@ export default function LoginPage({ language }) {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Rameshwar Patil"
-                  className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1b365d]"
+                  className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0f2942]"
                 />
               </div>
 
@@ -139,7 +143,7 @@ export default function LoginPage({ language }) {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="e.g. 9876543210"
-                  className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1b365d]"
+                  className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0f2942]"
                 />
               </div>
             </>
@@ -152,8 +156,8 @@ export default function LoginPage({ language }) {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. citizen@example.in"
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1b365d]"
+              placeholder="e.g. citizen@sahayak.gov.in"
+              className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0f2942]"
             />
           </div>
 
@@ -166,16 +170,16 @@ export default function LoginPage({ language }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#1b365d]"
+              className="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:outline-none focus:border-[#0f2942]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#1b365d] hover:bg-[#122440] text-white font-bold py-2.5 rounded text-xs shadow-xs transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-[#0f2942] hover:bg-[#1a3b5c] text-white font-semibold py-2.5 rounded text-xs shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
-            {loading && <span className="animate-spin">⏳</span>}
+            {loading && <Loader2 className="w-4 h-4 animate-spin text-white" />}
             <span>{isRegister ? 'Create Citizen Account' : 'Sign In to Portal'}</span>
           </button>
         </form>
@@ -192,7 +196,7 @@ export default function LoginPage({ language }) {
                   setLocalError('');
                   setAuthError(null);
                 }}
-                className="font-bold text-[#1b365d] hover:underline"
+                className="font-bold text-[#0f2942] hover:underline"
               >
                 Sign In here
               </button>
@@ -207,7 +211,7 @@ export default function LoginPage({ language }) {
                   setLocalError('');
                   setAuthError(null);
                 }}
-                className="font-bold text-[#1b365d] hover:underline"
+                className="font-bold text-[#0f2942] hover:underline"
               >
                 Register for an account
               </button>

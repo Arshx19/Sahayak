@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNotifications } from '../context/NotificationContext.jsx';
-import { getSchemes, getProfile } from '../services/api.js';
+import { getSchemes, getProfile, getUserDocuments } from '../services/api.js';
 import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
 import { evaluateAllSchemes } from '../services/eligibilityService.js';
 import SchemeEligibilityCard from '../components/SchemeEligibilityCard.jsx';
 import DocumentUploadModal from '../components/DocumentUploadModal.jsx';
 import LoadingState from '../components/LoadingState.jsx';
+import { Search, CheckCircle2, AlertCircle, X } from 'lucide-react';
 
 const CATEGORIES = [
   'All',
@@ -58,10 +59,13 @@ export default function SchemesPage({ language }) {
   const [targetDocId, setTargetDocId] = useState('pan');
 
   useEffect(() => {
-    Promise.all([getSchemes(), getProfile()])
-      .then(([sc, pr]) => {
+    Promise.all([getSchemes(), getProfile(), getUserDocuments()])
+      .then(([sc, pr, docs]) => {
         setSchemes(sc || []);
         setProfile(pr);
+        if (docs && Object.keys(docs).length > 0) {
+          setDocuments((prev) => ({ ...prev, ...docs }));
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -171,12 +175,12 @@ export default function SchemesPage({ language }) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
       {/* Page Title & Search Header */}
-      <div className="border-b border-slate-300 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-[#1b365d] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             Government Scheme Directory
           </h1>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-slate-600 mt-0.5">
             Browse all Central and State schemes with live eligibility checks based on your verified documents.
           </p>
         </div>
@@ -187,31 +191,31 @@ export default function SchemesPage({ language }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search schemes by name or code..."
-            className="w-full border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#1b365d] pl-8 shadow-2xs"
+            className="w-full border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#0f2942] pl-8 shadow-2xs"
           />
-          <span className="absolute left-2.5 top-2 text-slate-400 text-xs">🔍</span>
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+              className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
             >
-              ✕
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
       </div>
 
       {/* Advanced Filter Toolbar */}
-      <div className="bg-white border border-slate-300 rounded-lg p-4 space-y-3.5 shadow-2xs">
+      <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3.5 shadow-2xs">
         {/* Eligibility Status Chips */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold">
+          <div className="flex items-center gap-1.5 text-xs font-semibold">
             <span className="text-slate-500 text-[11px] uppercase mr-1">Eligibility:</span>
             <button
               onClick={() => setFilterEligibility('ALL')}
-              className={`px-3 py-1 rounded-full border transition ${
+              className={`px-3 py-1 rounded-full border transition cursor-pointer ${
                 filterEligibility === 'ALL'
-                  ? 'bg-[#1b365d] text-white border-[#1b365d]'
+                  ? 'bg-[#0f2942] text-white border-[#0f2942]'
                   : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
@@ -219,32 +223,35 @@ export default function SchemesPage({ language }) {
             </button>
             <button
               onClick={() => setFilterEligibility('ELIGIBLE')}
-              className={`px-3 py-1 rounded-full border transition ${
+              className={`px-3 py-1 rounded-full border transition cursor-pointer flex items-center gap-1 ${
                 filterEligibility === 'ELIGIBLE'
                   ? 'bg-emerald-700 text-white border-emerald-700'
                   : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
-              ✓ Eligible to Apply ({eligibleSchemes.length})
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              <span>Eligible to Apply ({eligibleSchemes.length})</span>
             </button>
             <button
               onClick={() => setFilterEligibility('NOT_ELIGIBLE')}
-              className={`px-3 py-1 rounded-full border transition ${
+              className={`px-3 py-1 rounded-full border transition cursor-pointer flex items-center gap-1 ${
                 filterEligibility === 'NOT_ELIGIBLE'
-                  ? 'bg-rose-700 text-white border-rose-700'
+                  ? 'bg-slate-700 text-white border-slate-700'
                   : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
-              ✕ Needs Documents ({ineligibleSchemes.length})
+              <AlertCircle className="w-3 h-3 text-slate-400" />
+              <span>Action Required ({ineligibleSchemes.length})</span>
             </button>
           </div>
 
           {isFiltered && (
             <button
               onClick={resetFilters}
-              className="text-[11px] text-rose-700 hover:text-rose-900 font-bold hover:underline"
+              className="text-[11px] text-rose-700 hover:text-rose-900 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             >
-              Clear All Filters ✕
+              <span>Clear All Filters</span>
+              <X className="w-3 h-3" />
             </button>
           )}
         </div>
@@ -252,13 +259,13 @@ export default function SchemesPage({ language }) {
         {/* Dropdowns Row: Provider, State, Category */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
               Provided By
             </label>
             <select
               value={filterProvider}
               onChange={(e) => setFilterProvider(e.target.value)}
-              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#1b365d] bg-white font-medium"
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
             >
               <option value="All">All Levels</option>
               <option value="Central">Central Government</option>
@@ -267,13 +274,13 @@ export default function SchemesPage({ language }) {
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
               Applicable State
             </label>
             <select
               value={filterState}
               onChange={(e) => setFilterState(e.target.value)}
-              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#1b365d] bg-white font-medium"
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
             >
               {AVAILABLE_STATES.map((st) => (
                 <option key={st} value={st}>
@@ -284,13 +291,13 @@ export default function SchemesPage({ language }) {
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-600 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
               Category
             </label>
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#1b365d] bg-white font-medium"
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -303,7 +310,7 @@ export default function SchemesPage({ language }) {
           <div className="flex items-end">
             <div className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 w-full text-slate-600 text-xs flex items-center justify-between">
               <span>Matching Schemes:</span>
-              <strong className="text-[#1b365d] font-bold text-sm">
+              <strong className="text-[#0f2942] font-bold text-sm">
                 {filteredSchemes.length}
               </strong>
             </div>
@@ -313,15 +320,15 @@ export default function SchemesPage({ language }) {
 
       {/* Schemes Grid */}
       {filteredSchemes.length === 0 ? (
-        <div className="bg-white border border-slate-300 rounded-lg p-10 text-center space-y-3">
-          <span className="text-3xl block">🔍</span>
+        <div className="bg-white border border-slate-200 rounded-lg p-10 text-center space-y-3">
+          <Search className="w-8 h-8 text-slate-300 mx-auto" />
           <h3 className="text-base font-bold text-slate-800">No schemes found matching criteria</h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
             Try adjusting your provider, state, or category filter to discover more government welfare schemes.
           </p>
           <button
             onClick={resetFilters}
-            className="bg-[#1b365d] text-white px-4 py-1.5 rounded text-xs font-bold hover:bg-[#122440]"
+            className="bg-[#0f2942] text-white px-4 py-1.5 rounded text-xs font-semibold hover:bg-[#1e3a5f] cursor-pointer"
           >
             Reset All Filters
           </button>

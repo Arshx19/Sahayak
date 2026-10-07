@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { Landmark, ArrowRight, ShieldCheck, CheckCircle2, FileText, Bell, Search } from 'lucide-react';
 
 export default function HomePage({ language }) {
   const { isAuthenticated } = useAuth();
@@ -7,14 +8,14 @@ export default function HomePage({ language }) {
   return (
     <div className="space-y-10 pb-16">
       {/* Official Government Hero Banner */}
-      <section className="bg-gradient-to-b from-slate-100 to-slate-200/60 border-b border-slate-300 py-12 px-4 sm:px-8">
+      <section className="bg-slate-100/90 border-b border-slate-300 py-12 px-4 sm:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-1.5 bg-amber-100 border border-amber-300 text-amber-900 px-3 py-0.5 rounded-full text-xs font-semibold">
-            <span>🇮🇳</span>
-            <span>Government of India • Citizen Entitlement Initiative</span>
+          <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-300/80 text-amber-950 px-3.5 py-1 rounded-full text-xs font-semibold shadow-2xs">
+            <Landmark className="w-3.5 h-3.5 text-amber-800 shrink-0" />
+            <span>Government of India &bull; Citizen Entitlement Initiative</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-[#1b365d] tracking-tight leading-snug">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-[#0f2942] tracking-tight leading-snug">
             Discover Government Schemes You Qualify For Based on Your Documents
           </h1>
           <p className="text-slate-700 text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
@@ -24,16 +25,17 @@ export default function HomePage({ language }) {
           <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to={isAuthenticated ? '/citizen' : '/login'}
-              className="w-full sm:w-auto bg-[#1b365d] hover:bg-[#122440] text-white font-bold px-7 py-3 rounded text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 transition"
+              className="w-full sm:w-auto bg-[#0f2942] hover:bg-[#1a3b5c] text-white font-semibold px-7 py-3 rounded text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 transition"
             >
-              <span>🗂️</span>
+              <FileText className="w-4 h-4 text-amber-400" />
               <span>{isAuthenticated ? 'Go to My Document Dashboard' : 'Sign In / Register as Citizen'}</span>
             </Link>
             <Link
               to="/schemes"
-              className="w-full sm:w-auto text-center bg-white hover:bg-slate-50 text-slate-800 font-semibold px-6 py-3 rounded text-xs sm:text-sm border border-slate-300 shadow-2xs transition"
+              className="w-full sm:w-auto text-center bg-white hover:bg-slate-50 text-slate-800 font-semibold px-6 py-3 rounded text-xs sm:text-sm border border-slate-300 shadow-2xs transition flex items-center justify-center gap-1.5"
             >
-              Browse All Government Schemes →
+              <span>Browse All Government Schemes</span>
+              <ArrowRight className="w-4 h-4 text-slate-500" />
             </Link>
           </div>
         </div>
@@ -42,7 +44,7 @@ export default function HomePage({ language }) {
       {/* 3-Step Core User Workflow */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center space-y-1 max-w-xl mx-auto">
-          <h2 className="text-xl font-bold text-[#1b365d]">How SAHAYAK Works</h2>
+          <h2 className="text-xl font-bold text-[#0f2942]">How SAHAYAK Works</h2>
           <p className="text-xs text-slate-600">
             A transparent, deterministic eligibility verification journey with zero guesswork.
           </p>
@@ -50,28 +52,28 @@ export default function HomePage({ language }) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div className="bg-white border border-slate-300 p-5 rounded-lg space-y-3 shadow-2xs">
-            <div className="w-10 h-10 bg-blue-100 text-[#1b365d] rounded-lg flex items-center justify-center text-xl font-bold">
-              1
+            <div className="w-10 h-10 bg-slate-100 text-[#0f2942] rounded-lg flex items-center justify-center text-sm font-bold border border-slate-200">
+              01
             </div>
             <h3 className="font-bold text-sm text-slate-900">Upload Your Documents</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Add your Aadhaar Card, PAN Card, Land Records, or Income Certificate to your digital document locker. Each file is verified instantly.
+              Add your Aadhaar Card, PAN Card, Land Records, or Income Certificate to your digital document locker. Each credential is authenticated for scheme criteria matching.
             </p>
           </div>
 
           <div className="bg-white border border-slate-300 p-5 rounded-lg space-y-3 shadow-2xs">
-            <div className="w-10 h-10 bg-amber-100 text-amber-900 rounded-lg flex items-center justify-center text-xl font-bold">
-              2
+            <div className="w-10 h-10 bg-amber-50 text-amber-900 rounded-lg flex items-center justify-center text-sm font-bold border border-amber-200">
+              02
             </div>
             <h3 className="font-bold text-sm text-slate-900">Deterministic Eligibility</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              The platform compares your verified documents and demographics with Central and State rules. If you cannot apply, you see exact visual reasons (e.g. Land Records missing ✕).
+              The platform compares your verified documents and demographics with Central and State rules. If you cannot apply, you see exact criteria items with clear missing document checklists.
             </p>
           </div>
 
           <div className="bg-white border border-slate-300 p-5 rounded-lg space-y-3 shadow-2xs">
-            <div className="w-10 h-10 bg-emerald-100 text-emerald-900 rounded-lg flex items-center justify-center text-xl font-bold">
-              3
+            <div className="w-10 h-10 bg-emerald-50 text-emerald-900 rounded-lg flex items-center justify-center text-sm font-bold border border-emerald-200">
+              03
             </div>
             <h3 className="font-bold text-sm text-slate-900">Real-Time Notifications</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
@@ -83,7 +85,7 @@ export default function HomePage({ language }) {
 
       {/* Primary Call to Action */}
       <section className="max-w-4xl mx-auto px-4">
-        <div className="bg-gradient-to-r from-[#1b365d] to-[#2b4c7e] text-white rounded-lg p-6 sm:p-8 text-center space-y-4 shadow-xs">
+        <div className="bg-[#0f2942] text-white rounded-lg p-6 sm:p-8 text-center space-y-4 shadow-sm border-t-2 border-amber-400">
           <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
             Ready to Verify Your Scheme Entitlements?
           </h2>
@@ -93,9 +95,10 @@ export default function HomePage({ language }) {
           <div className="pt-2">
             <Link
               to={isAuthenticated ? '/citizen' : '/login'}
-              className="inline-block bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-2.5 rounded text-xs shadow-xs transition"
+              className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-6 py-2.5 rounded text-xs shadow-xs transition"
             >
-              Open Citizen Dashboard →
+              <span>Open Citizen Dashboard</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>

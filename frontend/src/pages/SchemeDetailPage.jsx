@@ -8,6 +8,7 @@ import { evaluateSchemeEligibility } from '../services/eligibilityService.js';
 import EligibilityChecklist from '../components/EligibilityChecklist.jsx';
 import DocumentUploadModal from '../components/DocumentUploadModal.jsx';
 import LoadingState from '../components/LoadingState.jsx';
+import { Building2, Calendar, Check, X, ExternalLink, ArrowLeft, UploadCloud } from 'lucide-react';
 
 export default function SchemeDetailPage({ language }) {
   const { schemeId } = useParams();
@@ -68,9 +69,10 @@ export default function SchemeDetailPage({ language }) {
       {/* Back button */}
       <Link
         to="/schemes"
-        className="text-xs font-bold text-[#1b365d] hover:underline flex items-center gap-1"
+        className="text-xs font-semibold text-[#0f2942] hover:underline inline-flex items-center gap-1.5"
       >
-        ← Back to All Schemes
+        <ArrowLeft className="w-3.5 h-3.5" />
+        <span>Back to All Schemes</span>
       </Link>
 
       {/* Main Header Card */}
@@ -79,15 +81,16 @@ export default function SchemeDetailPage({ language }) {
           {(() => {
             const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
             return (
-              <div className="flex items-center gap-1.5 text-xs font-bold">
+              <div className="flex items-center gap-1.5 text-xs font-semibold">
                 <span
-                  className={`px-2 py-0.5 rounded border ${
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border ${
                     isState
-                      ? 'bg-purple-50 text-purple-800 border-purple-200'
-                      : 'bg-blue-50 text-blue-800 border-blue-200'
+                      ? 'bg-slate-100 text-slate-800 border-slate-300'
+                      : 'bg-blue-50 text-blue-900 border-blue-200'
                   }`}
                 >
-                  🏛️ {isState ? `State Scheme (${scheme.state})` : 'Central Scheme'}
+                  <Building2 className="w-3.5 h-3.5 text-slate-600" />
+                  <span>{isState ? `State Scheme (${scheme.state})` : 'Central Scheme'}</span>
                 </span>
                 <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
                   {scheme.category}
@@ -96,12 +99,13 @@ export default function SchemeDetailPage({ language }) {
             );
           })()}
 
-          <span className="bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 rounded text-xs font-semibold">
-            🗓️ {typeof scheme.timeline === 'object' ? (scheme.timeline?.application_status || scheme.timeline?.application_frequency || 'Continuous') : (scheme.timeline || 'Open All Year Round')}
+          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-950 border border-amber-200 px-2.5 py-0.5 rounded text-xs font-medium">
+            <Calendar className="w-3.5 h-3.5 text-amber-800" />
+            <span>{typeof scheme.timeline === 'object' ? (scheme.timeline?.application_status || scheme.timeline?.application_frequency || 'Continuous') : (scheme.timeline || 'Open All Year Round')}</span>
           </span>
         </div>
 
-        <h1 className="text-xl sm:text-2xl font-extrabold text-[#1b365d] leading-snug">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-[#0f2942] leading-snug">
           {scheme.name}
         </h1>
         <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -118,13 +122,13 @@ export default function SchemeDetailPage({ language }) {
         }`}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <span
-              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm text-white ${
+              className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-sm text-white shrink-0 ${
                 isEligible ? 'bg-emerald-600' : 'bg-rose-600'
               }`}
             >
-              {isEligible ? '✓' : '✕'}
+              {isEligible ? <Check className="w-3.5 h-3.5 text-white" /> : <X className="w-3.5 h-3.5 text-white" />}
             </span>
             <div>
               <h2 className="text-base font-extrabold text-slate-900">
@@ -140,7 +144,7 @@ export default function SchemeDetailPage({ language }) {
             </div>
           </div>
 
-          <span className="text-xs font-mono font-bold text-slate-600 bg-white/80 px-2.5 py-1 rounded border border-slate-200">
+          <span className="text-xs font-mono font-bold text-slate-700 bg-white px-2.5 py-1 rounded border border-slate-300">
             {evaluation.passedCount} / {evaluation.totalCount} Conditions Met
           </span>
         </div>
@@ -167,19 +171,20 @@ export default function SchemeDetailPage({ language }) {
               href={scheme.officialUrl || scheme.application_url || '#'}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded text-xs transition shadow-xs flex items-center gap-1.5"
+              className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-4 py-2 rounded text-xs transition shadow-xs inline-flex items-center gap-1.5"
             >
               <span>Apply on Official Portal</span>
-              <span>↗</span>
+              <ExternalLink className="w-3.5 h-3.5" />
             </a>
           ) : (
             evaluation.missingDocuments.length > 0 && (
               <button
                 type="button"
                 onClick={() => handleUploadMissing(evaluation.missingDocuments[0])}
-                className="bg-rose-700 hover:bg-rose-800 text-white font-bold px-4 py-2 rounded text-xs transition shadow-xs"
+                className="bg-[#0f2942] hover:bg-[#1a3b5c] text-white font-semibold px-4 py-2 rounded text-xs transition shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
               >
-                + Upload Missing Documents Now
+                <UploadCloud className="w-3.5 h-3.5" />
+                <span>Upload Missing Documents Now</span>
               </button>
             )
           )}
@@ -188,13 +193,13 @@ export default function SchemeDetailPage({ language }) {
 
       {/* Scheme Key Benefits */}
       <div className="bg-white border border-slate-300 rounded-lg p-5 space-y-3 shadow-2xs">
-        <h3 className="text-xs font-bold text-[#1b365d] uppercase tracking-wider border-b border-slate-200 pb-2">
+        <h3 className="text-xs font-bold text-[#0f2942] uppercase tracking-wider border-b border-slate-200 pb-2">
           Key Entitlements & Benefits
         </h3>
         <ul className="space-y-2 text-xs text-slate-700">
           {(scheme.benefits || []).map((benefit, idx) => (
             <li key={idx} className="flex items-start gap-2">
-              <span className="text-emerald-600 font-bold mt-0.5">✓</span>
+              <Check className="w-3.5 h-3.5 text-emerald-700 mt-0.5 shrink-0" />
               <span>{benefit}</span>
             </li>
           ))}
@@ -204,7 +209,7 @@ export default function SchemeDetailPage({ language }) {
       {/* How to Apply */}
       {scheme.how_to_apply && (
         <div className="bg-white border border-slate-300 rounded-lg p-5 space-y-2 shadow-2xs">
-          <h3 className="text-xs font-bold text-[#1b365d] uppercase tracking-wider border-b border-slate-200 pb-2">
+          <h3 className="text-xs font-bold text-[#0f2942] uppercase tracking-wider border-b border-slate-200 pb-2">
             Application Procedure
           </h3>
           <p className="text-xs text-slate-700 leading-relaxed">
@@ -216,9 +221,10 @@ export default function SchemeDetailPage({ language }) {
                 href={scheme.officialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-bold text-[#1b365d] hover:underline"
+                className="text-xs font-semibold text-[#0f2942] hover:underline inline-flex items-center gap-1"
               >
-                Visit Official Government Portal ({scheme.officialUrl}) ↗
+                <span>Visit Official Government Portal</span>
+                <ExternalLink className="w-3 h-3 text-slate-600" />
               </a>
             </div>
           )}

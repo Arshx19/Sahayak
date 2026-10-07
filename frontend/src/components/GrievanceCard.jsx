@@ -21,7 +21,7 @@ export default function GrievanceCard({ grievance: item, language, onView }) {
 
       <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
         <span>{t('department')} <strong className="text-slate-800">{hi ? item.hiDepartment : item.department}</strong></span>
-        <button onClick={() => onView(item.id)} className="font-bold text-[#1b365d] hover:underline">
+        <button onClick={() => onView(item.id)} className="font-bold text-[#0f2942] hover:underline cursor-pointer">
           {t('trackStatus')}
         </button>
       </div>

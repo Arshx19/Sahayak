@@ -13,7 +13,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG, PNG (Max 5MB)',
     description: 'Unique 12-digit biometric identity issued by UIDAI.',
     sampleNumberFormat: 'XXXX-XXXX-1234',
-    icon: '🪪',
   },
   {
     id: 'pan',
@@ -23,7 +22,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG, PNG (Max 5MB)',
     description: 'Permanent Account Number issued by Income Tax Department.',
     sampleNumberFormat: 'ABCDE1234F',
-    icon: '💳',
   },
   {
     id: 'photo',
@@ -33,7 +31,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'JPG, PNG (Max 2MB)',
     description: 'Recent color photograph with white or light background.',
     sampleNumberFormat: 'Recent 3.5cm x 4.5cm',
-    icon: '📷',
   },
   {
     id: 'income_cert',
@@ -43,7 +40,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Issued by Tehsildar or Revenue Authority declaring annual family income.',
     sampleNumberFormat: 'Valid for current financial year',
-    icon: '📜',
   },
   {
     id: 'caste_cert',
@@ -53,7 +49,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Official certificate for SC, ST, OBC, or EWS categories.',
     sampleNumberFormat: 'Issued by Competent Authority',
-    icon: '📋',
   },
   {
     id: 'land_record',
@@ -63,7 +58,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 10MB)',
     description: 'Proof of cultivable landholding, 7/12 extract, or Jamabandi/Khatauni record.',
     sampleNumberFormat: 'Survey / Khasra Number record',
-    icon: '🌾',
   },
   {
     id: 'ration_card',
@@ -73,7 +67,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Food & Civil Supplies card certifying Below Poverty Line or Antyodaya status.',
     sampleNumberFormat: 'State Ration Card No.',
-    icon: '🍚',
   },
   {
     id: 'bank_passbook',
@@ -83,7 +76,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Active bank account linked with Aadhaar for Direct Benefit Transfer (DBT).',
     sampleNumberFormat: 'Account No. & IFSC Code',
-    icon: '🏦',
   },
   {
     id: 'domicile',
@@ -93,7 +85,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Proof of permanent residence in the respective state or union territory.',
     sampleNumberFormat: 'Issued by District Magistrate/Tehsildar',
-    icon: '🏠',
   },
   {
     id: 'mobile_number',
@@ -103,7 +94,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'SMS OTP Verification',
     description: 'Active mobile number linked with Aadhaar and bank account for DBT alerts.',
     sampleNumberFormat: '+91 98XXX XXXXX',
-    icon: '📱',
   },
   {
     id: 'birth_certificate',
@@ -113,7 +103,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Official birth certificate issued by Municipal Corporation or Registrar of Births.',
     sampleNumberFormat: 'Registration No. / Municipal Record',
-    icon: '👶',
   },
   {
     id: 'mgnrega_job_card',
@@ -123,7 +112,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Issued by Gram Panchayat certifying rural household employment registration.',
     sampleNumberFormat: 'Panchayat Job Card Number',
-    icon: '👷',
   },
   {
     id: 'udyam_registration',
@@ -133,7 +121,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Ministry of MSME official Udyam Registration Certificate for micro/small enterprise.',
     sampleNumberFormat: 'UDYAM-XX-00-0000000',
-    icon: '🏭',
   },
   {
     id: 'vending_certificate',
@@ -143,7 +130,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Vending Certificate or Letter of Recommendation (LoR) issued by Urban Local Body.',
     sampleNumberFormat: 'ULB Vending Identity No.',
-    icon: '🛒',
   },
   {
     id: 'mcp_card',
@@ -153,7 +139,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Official MCP Card issued by Ministry of Health & Family Welfare for maternal benefits.',
     sampleNumberFormat: 'RCH / Anganwadi Record ID',
-    icon: '🤰',
   },
   {
     id: 'age_proof',
@@ -163,7 +148,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'School Leaving Certificate, Matriculation Marksheet, or Age Certificate.',
     sampleNumberFormat: 'Official Issuing Authority ID',
-    icon: '📅',
   },
   {
     id: 'electricity_bill_id',
@@ -173,7 +157,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Recent electricity utility bill showing consumer account ID and residential address.',
     sampleNumberFormat: 'DISCOM Consumer ID',
-    icon: '⚡',
   },
   {
     id: 'educational_certificate',
@@ -183,7 +166,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Degree, Diploma, or 10th/12th passing marksheets issued by recognized board/university.',
     sampleNumberFormat: 'Roll / Registration Number',
-    icon: '🎓',
   },
   {
     id: 'disability_certificate',
@@ -193,7 +175,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Unique Disability ID (UDID) or certificate issued by Medical Board certifying 40%+ disability.',
     sampleNumberFormat: 'UDID Card No.',
-    icon: '♿',
   },
   {
     id: 'address_proof',
@@ -203,7 +184,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Utility bill, voter card, or official certificate establishing permanent address.',
     sampleNumberFormat: 'Document Reference Number',
-    icon: '📍',
   },
   {
     id: 'project_report',
@@ -213,7 +193,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 10MB)',
     description: 'Detailed project estimate / proposal for self-employment or micro-enterprise.',
     sampleNumberFormat: 'DPR Proposal Reference',
-    icon: '📊',
   },
   {
     id: 'cap_allotment_letter',
@@ -223,7 +202,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Centralised Admission Process (CAP) allotment letter for higher education courses.',
     sampleNumberFormat: 'CAP Application ID',
-    icon: '🏛️',
   },
   {
     id: 'class_12_marksheet',
@@ -233,7 +211,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Higher Secondary School Certificate (HSC) or 10+2 marksheet from recognized board.',
     sampleNumberFormat: 'Board Roll Number',
-    icon: '📑',
   },
   {
     id: 'degree_or_diploma_certificate',
@@ -243,7 +220,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Passing certificate or marksheet for University Degree or Polytechnic Diploma.',
     sampleNumberFormat: 'Convocation / Degree Number',
-    icon: '📜',
   },
   {
     id: 'death_or_disability_certificate',
@@ -253,7 +229,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: 'Official Death Certificate or Medical Board Permanent Disability report.',
     sampleNumberFormat: 'Hospital / Civil Registrar ID',
-    icon: '🏥',
   },
   {
     id: 'post_mortem_report',
@@ -263,7 +238,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Certified copy of Police FIR, Panchnama, or Hospital Post-Mortem examination.',
     sampleNumberFormat: 'Police Station FIR No.',
-    icon: '⚖️',
   },
   {
     id: 'rental_agreement',
@@ -273,7 +247,6 @@ export const SUPPORTED_DOCUMENTS = [
     acceptedFormats: 'PDF (Max 5MB)',
     description: 'Registered lease deed or notarized tenancy contract proving residential status.',
     sampleNumberFormat: 'Agreement Document Number',
-    icon: '📝',
   },
 ];
 
@@ -317,143 +290,8 @@ export function getDocumentDefinition(docKey) {
     acceptedFormats: 'PDF, JPG (Max 5MB)',
     description: `Official ${clean.replace(/_/g, ' ')} document.`,
     sampleNumberFormat: 'Government Record ID',
-    icon: '📄',
   };
 }
 
 // Initial mock document state for newly registered citizen demo
-export const INITIAL_CITIZEN_DOCUMENTS = {
-  aadhaar: {
-    status: 'VERIFIED',
-    uploadedAt: '2026-09-15',
-    fileName: 'aadhaar_rameshwar_patil.pdf',
-    fileSize: '1.4 MB',
-    number: 'XXXX-XXXX-8921',
-  },
-  bank_passbook: {
-    status: 'VERIFIED',
-    uploadedAt: '2026-09-18',
-    fileName: 'sbi_passbook_verified.pdf',
-    fileSize: '950 KB',
-    number: 'State Bank of India (IFSC: SBIN0001234)',
-  },
-  photo: {
-    status: 'VERIFIED',
-    uploadedAt: '2026-09-20',
-    fileName: 'rameshwar_photo.jpg',
-    fileSize: '420 KB',
-    number: 'Photo ID Verified',
-  },
-  mobile_number: {
-    status: 'VERIFIED',
-    uploadedAt: '2026-09-20',
-    fileName: 'Aadhaar-OTP Verified',
-    fileSize: 'N/A',
-    number: '+91 98765 43210',
-  },
-  pan: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  land_record: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  income_cert: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  caste_cert: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  ration_card: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  domicile: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  birth_certificate: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  mgnrega_job_card: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  udyam_registration: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  vending_certificate: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  mcp_card: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  age_proof: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  electricity_bill_id: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  educational_certificate: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-  disability_certificate: {
-    status: 'NOT_UPLOADED',
-    uploadedAt: null,
-    fileName: null,
-    fileSize: null,
-    number: null,
-  },
-};
+export const INITIAL_CITIZEN_DOCUMENTS = {};

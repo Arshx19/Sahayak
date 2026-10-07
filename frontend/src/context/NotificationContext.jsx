@@ -3,25 +3,7 @@ import { getUserNotifications, markNotificationAsRead as apiMarkRead, markAllNot
 
 const NotificationContext = createContext(null);
 
-const DEFAULT_NOTIFICATIONS = [
-  {
-    id: 'notif_welcome',
-    title: 'Welcome to SAHAYAK Scheme Portal',
-    message: 'Your Aadhaar Card, Photo ID, and Bank Account details have been verified. Upload your Land Records to unlock PM-KISAN eligibility!',
-    type: 'DOCUMENT_VERIFIED',
-    timestamp: 'Just now',
-    read: false,
-  },
-  {
-    id: 'notif_solar',
-    title: 'New Scheme Open: PM Surya Ghar Muft Bijli',
-    message: 'Central Government has opened Phase 2 rooftop solar subsidies up to ₹78,000 for residential households.',
-    type: 'SCHEME_NEW',
-    schemeId: 'CEN001',
-    timestamp: '2 hours ago',
-    read: false,
-  },
-];
+const DEFAULT_NOTIFICATIONS = [];
 
 export function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState(() => {

@@ -34,14 +34,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const savedUser = localStorage.getItem('sahayak_user');
-      return savedUser ? JSON.parse(savedUser) : DEMO_ACCOUNTS.citizen;
+      return savedUser ? JSON.parse(savedUser) : null;
     } catch {
-      return DEMO_ACCOUNTS.citizen;
+      return null;
     }
   });
 
   const [token, setToken] = useState(() => {
-    return localStorage.getItem('sahayak_token') || DEMO_ACCOUNTS.citizen.token;
+    return localStorage.getItem('sahayak_token') || null;
   });
 
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,20 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const demoLogin = (role = 'citizen') => {
+  const demoLogin = async (role = 'citizen') => {
+    const creds = {
+      citizen: { email: 'citizen@sahayak.gov.in', password: 'Citizen@123' },
+      officer: { email: 'officer@sahayak.gov.in', password: 'Officer@123' },
+      admin: { email: 'admin@sahayak.gov.in', password: 'Admin@123' },
+    }[role] || { email: 'citizen@sahayak.gov.in', password: 'Citizen@123' };
+
+    try {
+      const res = await login(creds.email, creds.password);
+      if (res && res.success) return res.user;
+    } catch {
+      // Fallback to offline demo account
+    }
+
     const acc = DEMO_ACCOUNTS[role] || DEMO_ACCOUNTS.citizen;
     setUser(acc);
     setToken(acc.token);

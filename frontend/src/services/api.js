@@ -268,19 +268,21 @@ export const getProfile = async () => {
       return {
         ...MOCK_PROFILE,
         ...res.data,
-        name: res.data.name || MOCK_PROFILE.name,
-        age: res.data.age || MOCK_PROFILE.age,
-        gender: res.data.gender || MOCK_PROFILE.gender,
-        income: res.data.annual_income ? `₹${res.data.annual_income.toLocaleString('en-IN')}` : MOCK_PROFILE.income,
-        annual_income: res.data.annual_income || 120000,
-        occupation: res.data.occupation || MOCK_PROFILE.occupation,
+        name: res.data.name || '',
+        age: res.data.age || '',
+        gender: res.data.gender || '',
+        income: res.data.annual_income ? `₹${res.data.annual_income.toLocaleString('en-IN')}` : '',
+        annual_income: res.data.annual_income || 0,
+        occupation: res.data.occupation || '',
+        state: res.data.state || '',
+        district: res.data.district || '',
       };
     }
   } catch {
     // Fallback
   }
 
-  await delay();
+  await delay(50);
   return MOCK_PROFILE;
 };
 
@@ -341,13 +343,13 @@ export const getGrievances = async () => {
   try {
     // Try citizen tickets first
     const res = await request('/grievances/my');
-    if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+    if (res && res.data && Array.isArray(res.data)) {
       return res.data.map((g) => ({
         id: g.ticket_id || g.id,
         subject: g.complaint_text || g.complaint || 'Grievance Ticket',
         hiSubject: g.complaint_text || 'शिकायत टिकट',
         scheme: g.scheme_name || g.scheme_id || 'PM-KISAN',
-        department: g.department || 'Agriculture & Farmers Welfare',
+        department: g.department || 'Public Grievance Redressal',
         status: g.status || 'OPEN',
         date: g.created_at ? new Date(g.created_at).toLocaleDateString() : 'Today',
         history: g.timeline || [],
@@ -357,8 +359,12 @@ export const getGrievances = async () => {
     // Fallback
   }
 
-  await delay();
-  return MOCK_GRIEVANCES;
+  try {
+    const saved = localStorage.getItem('sahayak_grievances');
+    if (saved) return JSON.parse(saved);
+  } catch {}
+
+  return [];
 };
 
 export const getAllGrievances = async (filters = {}) => {
@@ -444,29 +450,28 @@ export const updateGrievanceStatus = async (ticketId, { status, comment }) => {
 // =============================================================================
 export const getOfficerDashboard = async () => {
   try {
-    // If backend has DB dashboard aggregator or grievances
     const all = await request('/grievances');
     if (all && all.data && Array.isArray(all.data)) {
       const tickets = all.data;
       return {
         officerId: 'OFF-8812',
-        totalQueries: tickets.length * 3 + 120,
-        openGrievances: tickets.filter((t) => t.status === 'OPEN').length || 14,
-        pendingAction: tickets.filter((t) => t.status === 'ASSIGNED' || t.status === 'IN_PROGRESS').length || 28,
-        resolvedGrievances: tickets.filter((t) => t.status === 'RESOLVED').length || 85,
+        totalQueries: tickets.length,
+        openGrievances: tickets.filter((t) => t.status === 'OPEN').length,
+        pendingAction: tickets.filter((t) => t.status === 'ASSIGNED' || t.status === 'IN_PROGRESS').length,
+        resolvedGrievances: tickets.filter((t) => t.status === 'RESOLVED').length,
       };
     }
   } catch {
     // Fallback
   }
 
-  await delay();
+  await delay(50);
   return {
     officerId: 'OFF-8812',
-    totalQueries: 1284,
-    openGrievances: 163,
-    pendingAction: 42,
-    resolvedGrievances: 921,
+    totalQueries: 0,
+    openGrievances: 0,
+    pendingAction: 0,
+    resolvedGrievances: 0,
   };
 };
 
