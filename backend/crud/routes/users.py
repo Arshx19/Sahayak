@@ -2,6 +2,7 @@
 
 Handles self-service account retrieval, update, and deletion.
 Users are strictly confined to their own accounts via JWT authentication.
+Delegates directly to repository functions in backend/DB/crud.py.
 """
 
 from typing import Any, Dict
@@ -14,8 +15,12 @@ except ImportError:
     from crud.schemas.user import UserUpdateRequest
     from crud.auth.dependencies import get_current_user
 
-from DB.connection import get_db
-import DB.crud as db_crud
+try:
+    from DB.connection import get_db
+    from DB import crud, schemas
+except ImportError:
+    from backend.DB.connection import get_db
+    from backend.DB import crud, schemas
 
 router = APIRouter()
 
@@ -33,7 +38,7 @@ async def get_my_user(
     user_id = current_user["user_id"]
 
     try:
-        user = await db_crud.get_user_by_id(db, user_id)
+        user = await crud.get_user_by_id(db, user_id)
         if user:
             return {
                 "success": True,
@@ -44,7 +49,10 @@ async def get_my_user(
                     "email": user.get("email", "user@sahayak.gov.in"),
                     "name": user.get("name", "Authenticated User"),
                     "phone": user.get("phone"),
+                    "state": user.get("state"),
+                    "district": user.get("district"),
                     "is_active": user.get("is_active", True),
+                    "created_at": user.get("created_at"),
                 },
             }
     except Exception:
@@ -85,7 +93,7 @@ async def update_my_user(
 
     updated_doc = None
     try:
-        updated_doc = await db_crud.update_user(db, user_id, update_payload)
+        updated_doc = await crud.update_user(db, user_id, update_payload)
     except Exception:
         pass
 
@@ -113,7 +121,7 @@ async def delete_my_user(
     user_id = current_user["user_id"]
 
     try:
-        await db_crud.delete_user(db, user_id, soft_delete=True)
+        await crud.delete_user(db, user_id, soft_delete=True)
     except Exception:
         pass
 
