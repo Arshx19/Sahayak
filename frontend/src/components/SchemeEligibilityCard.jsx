@@ -12,8 +12,11 @@ export default function SchemeEligibilityCard({
   const checks = evaluation ? evaluation.criteriaChecks : [];
   const missingDocs = evaluation ? evaluation.missingDocuments : [];
 
+  const hi = language === 'hi';
   const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
-  const providerLabel = isState ? `State (${scheme.state})` : 'Central Scheme';
+  const providerLabel = isState
+    ? (hi ? `राज्य (${scheme.state})` : `State (${scheme.state})`)
+    : (hi ? 'केंद्रीय योजना' : 'Central Scheme');
 
   return (
     <div
@@ -46,8 +49,8 @@ export default function SchemeEligibilityCard({
             <Calendar className="w-3 h-3 text-slate-400" />
             <span>
               {typeof scheme.timeline === 'object'
-                ? scheme.timeline?.application_status || scheme.timeline?.application_frequency || 'Continuous'
-                : scheme.timeline || 'Always Open'}
+                ? scheme.timeline?.application_status || scheme.timeline?.application_frequency || (hi ? 'सतत खुला' : 'Continuous')
+                : scheme.timeline || (hi ? 'सदैव खुला' : 'Always Open')}
             </span>
           </span>
         </div>
@@ -67,7 +70,7 @@ export default function SchemeEligibilityCard({
           <div className="bg-slate-50 border border-slate-200 rounded p-2.5 space-y-1">
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1">
               <Award className="w-3 h-3 text-amber-600" />
-              <span>Primary Entitlement</span>
+              <span>{hi ? 'प्रमुख लाभ / अधिकार' : 'Primary Entitlement'}</span>
             </span>
             <p className="text-xs font-semibold text-slate-800 line-clamp-2">
               {scheme.benefits[0]}
@@ -98,13 +101,13 @@ export default function SchemeEligibilityCard({
                 }`}
               >
                 {isEligible
-                  ? 'Eligible to Apply (All criteria satisfied)'
-                  : `Requirements Pending (${missingDocs.length} missing items)`}
+                  ? (hi ? 'आवेदन हेतु पात्र (सभी शर्तें पूरी हैं)' : 'Eligible to Apply (All criteria satisfied)')
+                  : (hi ? `दस्तावेज़ शेष (${missingDocs.length} लंबित)` : `Requirements Pending (${missingDocs.length} missing items)`)}
               </span>
             </div>
 
             <span className="text-[10px] font-mono text-slate-500">
-              {evaluation?.passedCount}/{evaluation?.totalCount} Met
+              {evaluation?.passedCount}/{evaluation?.totalCount} {hi ? 'शर्तें पूरी' : 'Met'}
             </span>
           </div>
 
@@ -113,6 +116,7 @@ export default function SchemeEligibilityCard({
             criteriaChecks={checks}
             compact={true}
             onUploadClick={onUploadMissing}
+            language={language}
           />
         </div>
       </div>
@@ -123,7 +127,7 @@ export default function SchemeEligibilityCard({
           to={`/schemes/${scheme.id}`}
           className="font-semibold text-[#0f2942] hover:underline"
         >
-          View Full Scheme Guidelines →
+          {hi ? 'योजना के पूर्ण दिशा-निर्देश देखें →' : 'View Full Scheme Guidelines →'}
         </Link>
 
         {isEligible ? (
@@ -133,7 +137,7 @@ export default function SchemeEligibilityCard({
             rel="noopener noreferrer"
             className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-1.5 rounded transition shadow-2xs flex items-center gap-1.5"
           >
-            <span>Apply on Portal</span>
+            <span>{hi ? 'पोर्टल पर आवेदन करें' : 'Apply on Portal'}</span>
             <ExternalLink className="w-3 h-3" />
           </a>
         ) : (
@@ -144,7 +148,7 @@ export default function SchemeEligibilityCard({
               onClick={() => onUploadMissing(missingDocs[0])}
               className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white font-semibold px-3 py-1.5 rounded transition shadow-2xs cursor-pointer"
             >
-              Upload Documents
+              {hi ? 'दस्तावेज़ अपलोड करें' : 'Upload Documents'}
             </button>
           )
         )}

@@ -1,0 +1,304 @@
+[
+  {
+    "scheme_id": "SCH_PM_KISAN_001",
+    "name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "ministry": "Ministry of Agriculture & Farmers Welfare",
+    "level": "central",
+    "applicable_states": ["ALL"],
+    "applicable_districts": [],
+    "rule_version": "2.0",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "direct_benefit_transfer",
+      "amount_inr": 6000,
+      "description": "₹6,000 per annum in three equal instalments of ₹2,000 via DBT"
+    },
+    "required_documents": [
+      "aadhaar",
+      "land_record"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_pmk_occ",
+        "field": "occupation",
+        "operator": "==",
+        "value": "farmer",
+        "mandatory": true,
+        "description": "Applicant must be a practicing small or marginal farmer"
+      },
+      {
+        "condition_id": "cond_pmk_land",
+        "field": "land_acres",
+        "operator": "<=",
+        "value": 5.0,
+        "mandatory": true,
+        "description": "Total cultivable agricultural land holding must be up to 5.0 acres"
+      }
+    ],
+    "exclusions": [
+      {
+        "exclusion_id": "excl_tax_payer",
+        "field": "is_income_tax_payer",
+        "operator": "==",
+        "value": true,
+        "reason": "Institutional landholders and income tax paying families are excluded"
+      }
+    ]
+  },
+  {
+    "scheme_id": "SCH_AB_PMJAY_002",
+    "name": "Ayushman Bharat - PM Jan Arogya Yojana (AB-PMJAY)",
+    "ministry": "Ministry of Health and Family Welfare",
+    "level": "central",
+    "applicable_states": ["ALL"],
+    "applicable_districts": [],
+    "rule_version": "2.0",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "health_insurance_cover",
+      "amount_inr": 500000,
+      "description": "Cashless hospitalization health cover up to ₹5,00,000 per family per year"
+    },
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_pmjay_bpl",
+        "field": "is_bpl",
+        "operator": "==",
+        "value": true,
+        "mandatory": true,
+        "description": "Family must belong to BPL / Antyodaya (AAY) or priority household under NFSA"
+      }
+    ],
+    "exclusions": [
+      {
+        "exclusion_id": "excl_gov_employee",
+        "field": "is_government_employee",
+        "operator": "==",
+        "value": true,
+        "reason": "Families of regular government employees are excluded from AB-PMJAY"
+      }
+    ]
+  },
+  {
+    "scheme_id": "SCH_MAHA_SCHOLARSHIP_003",
+    "name": "Maharashtra Post-Matric Merit-cum-Means Scholarship",
+    "ministry": "Higher & Technical Education Department, Government of Maharashtra",
+    "level": "state",
+    "applicable_states": ["Maharashtra"],
+    "applicable_districts": [],
+    "rule_version": "2.1",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "scholarship_dbt",
+      "amount_inr": 50000,
+      "description": "₹50,000 annual tuition fee waiver and maintenance stipend"
+    },
+    "required_documents": [
+      "aadhaar",
+      "income_certificate",
+      "caste_certificate",
+      "marksheet",
+      "domicile_certificate"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_maha_age",
+        "field": "age",
+        "operator": "between",
+        "value": [16, 28],
+        "mandatory": true,
+        "description": "Applicant age must be between 16 and 28 years as of today"
+      },
+      {
+        "condition_id": "cond_maha_marks",
+        "field": "marks_percentage",
+        "operator": ">=",
+        "value": 60.0,
+        "mandatory": true,
+        "description": "Minimum 60% aggregate marks in 10th or 12th board marksheet"
+      },
+      {
+        "condition_id": "cond_maha_income",
+        "field": "annual_family_income",
+        "operator": "<=",
+        "value": 250000,
+        "mandatory": true,
+        "description": "Annual family income must not exceed ₹2,50,000 from all sources"
+      },
+      {
+        "condition_id": "cond_maha_caste",
+        "field": "caste_category",
+        "operator": "in",
+        "value": ["SC", "ST", "OBC", "EWS"],
+        "mandatory": true,
+        "state_specific_caste_check": true,
+        "description": "Must hold valid caste certificate for SC, ST, OBC, or EWS issued by Government of Maharashtra"
+      }
+    ],
+    "exclusions": [
+      {
+        "exclusion_id": "excl_maha_other_scholarship",
+        "field": "active_government_scholarship",
+        "operator": "==",
+        "value": true,
+        "reason": "Existing beneficiaries of another state or central scholarship cannot receive duplicate funding"
+      }
+    ]
+  },
+  {
+    "scheme_id": "SCH_UP_KANYA_004",
+    "name": "UP Mukhyamantri Kanya Sumangala Yojana",
+    "ministry": "Department of Women and Child Development, Government of Uttar Pradesh",
+    "level": "state",
+    "applicable_states": ["Uttar Pradesh"],
+    "applicable_districts": [],
+    "rule_version": "2.0",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "direct_benefit_transfer",
+      "amount_inr": 25000,
+      "description": "₹25,000 conditional cash transfer in 6 phases for girl child education and health"
+    },
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "income_certificate"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_up_gender",
+        "field": "gender",
+        "operator": "==",
+        "value": "Female",
+        "mandatory": true,
+        "description": "Scheme is specifically for female citizens (girl child / woman applicant)"
+      },
+      {
+        "condition_id": "cond_up_age",
+        "field": "age",
+        "operator": "between",
+        "value": [1, 25],
+        "mandatory": true,
+        "description": "Girl child age must be between 1 and 25 years"
+      },
+      {
+        "condition_id": "cond_up_income",
+        "field": "annual_family_income",
+        "operator": "<=",
+        "value": 300000,
+        "mandatory": true,
+        "description": "Annual family income must not exceed ₹3,00,000"
+      }
+    ],
+    "exclusions": [
+      {
+        "exclusion_id": "excl_up_daughters_count",
+        "field": "daughters_count_exceeded",
+        "operator": "==",
+        "value": true,
+        "reason": "Maximum 2 girl children per family are eligible under this scheme"
+      }
+    ]
+  },
+  {
+    "scheme_id": "SCH_DIVYANG_PENSION_005",
+    "name": "Divyangjan Disability Social Security Pension",
+    "ministry": "Department of Empowerment of Persons with Disabilities",
+    "level": "central",
+    "applicable_states": ["ALL"],
+    "applicable_districts": [],
+    "rule_version": "2.0",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "monthly_pension_dbt",
+      "amount_inr": 12000,
+      "description": "₹1,000 monthly pension (₹12,000 per annum) directly credited to bank account"
+    },
+    "required_documents": [
+      "aadhaar",
+      "disability_certificate"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_div_age",
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "mandatory": true,
+        "description": "Applicant must be an adult aged 18 years or above"
+      },
+      {
+        "condition_id": "cond_div_status",
+        "field": "is_differently_abled",
+        "operator": "==",
+        "value": true,
+        "mandatory": true,
+        "description": "Must possess medical disability certificate"
+      },
+      {
+        "condition_id": "cond_div_perc",
+        "field": "disability_percentage",
+        "operator": ">=",
+        "value": 40.0,
+        "mandatory": true,
+        "description": "Minimum benchmark disability of 40% as certified by competent medical authority"
+      }
+    ],
+    "exclusions": [
+      {
+        "exclusion_id": "excl_other_pension",
+        "field": "receiving_other_pension",
+        "operator": "==",
+        "value": true,
+        "reason": "Beneficiaries already receiving old age or widow pension are excluded"
+      }
+    ]
+  },
+  {
+    "scheme_id": "SCH_PMSVANIDHI_006",
+    "name": "PM Street Vendor's AtmaNirbhar Nidhi (PM SVANidhi)",
+    "ministry": "Ministry of Housing and Urban Affairs",
+    "level": "central",
+    "applicable_states": ["ALL"],
+    "applicable_districts": [],
+    "rule_version": "2.0",
+    "effective_from": "2026-01-01",
+    "effective_to": "2026-12-31",
+    "benefit_summary": {
+      "type": "collateral_free_working_capital",
+      "amount_inr": 50000,
+      "description": "Collateral-free working capital micro-credit loan up to ₹50,000 with 7% interest subsidy"
+    },
+    "required_documents": [
+      "aadhaar"
+    ],
+    "eligibility_conditions": [
+      {
+        "condition_id": "cond_svanidhi_age",
+        "field": "age",
+        "operator": ">=",
+        "value": 18,
+        "mandatory": true,
+        "description": "Applicant must be at least 18 years of age"
+      },
+      {
+        "condition_id": "cond_svanidhi_occ",
+        "field": "occupation",
+        "operator": "in",
+        "value": ["street_vendor", "vendor", "hawker"],
+        "mandatory": true,
+        "description": "Applicant must be an urban street vendor or hawker vending in urban areas"
+      }
+    ],
+    "exclusions": []
+  }
+]

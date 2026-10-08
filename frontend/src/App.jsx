@@ -20,7 +20,20 @@ import AssistantPage from './pages/AssistantPage.jsx';
 
 export default function App() {
   const [fontSize, setFontSize] = useState('base');
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState(() => {
+    try {
+      return localStorage.getItem('sahayak_language') || 'en';
+    } catch {
+      return 'en';
+    }
+  });
+
+  const handleSetLanguage = (lang) => {
+    setLanguage(lang);
+    try {
+      localStorage.setItem('sahayak_language', lang);
+    } catch {}
+  };
 
   const fontClass = fontSize === 'sm' ? 'text-xs' : fontSize === 'lg' ? 'text-base' : 'text-sm';
 
@@ -32,7 +45,7 @@ export default function App() {
             fontSize={fontSize}
             setFontSize={setFontSize}
             language={language}
-            setLanguage={setLanguage}
+            setLanguage={handleSetLanguage}
           />
 
           <main className="flex-1">

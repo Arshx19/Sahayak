@@ -13,6 +13,20 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, status
 
 try:
+    from AI.rules_engine.profile_merger import merge_extracted_documents
+    from AI.rules_engine.evaluator import SchemeEvaluator
+    from AI.rules_engine.ranker import rank_schemes
+except ImportError:
+    try:
+        from backend.AI.rules_engine.profile_merger import merge_extracted_documents
+        from backend.AI.rules_engine.evaluator import SchemeEvaluator
+        from backend.AI.rules_engine.ranker import rank_schemes
+    except ImportError:
+        merge_extracted_documents = None
+        SchemeEvaluator = None
+        rank_schemes = None
+
+try:
     from schemas.eligibility import (
         EligibilityCheckRequest,
         CriterionResult,
@@ -444,3 +458,100 @@ async def get_my_schemes(
             "ineligible": ineligible or [],
         },
     }
+
+
+def _load_enhanced_schemes() -> List[Dict[str, Any]]:
+    """Load sample data-driven schemes from enhanced_schemes.json."""
+    try:
+        seeds_path = Path(__file__).resolve().parent.parent.parent / "DB" / "seeds" / "enhanced_schemes.json"
+        if seeds_path.exists():
+            with open(seeds_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception:
+        pass
+    return []
+
+
+@router.post(
+    "/evaluate-profile",
+    status_code=status.HTTP_200_OK,
+    summary="Evaluate unified applicant profile against data-driven scheme rules",
+)
+async def evaluate_applicant_profile(
+    payload: Dict[str, Any],
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    db: Any = Depends(get_db),
+) -> Dict[str, Any]:
+    """
+    Synthesizes a UnifiedApplicantProfile from extracted documents and evaluates
+    against data-driven scheme rules, returning ranked eligibility outcomes:
+    {
+      "scheme_id": "...",
+      "status": "eligible|not_eligible|needs_info",
+      "passed": [...],
+      "failed": [...],
+      "unverified": [...],
+      "missing_documents": [...]
+    }
+    """
+    if merge_extracted_documents is None or SchemeEvaluator is None:
+        return {
+            "success": False,
+            "message": "Rules engine module is not loaded on this server",
+            "evaluations": [],
+        }
+
+    user_id = current_user["user_id"]
+    extracted_docs = payload.get("extracted_documents", [])
+    supplemental = payload.get("supplemental_profile", {})
+    target_scheme_ids = payload.get("scheme_ids")
+
+    # If no extracted docs passed explicitly, load from user's locker
+    if not extracted_docs:
+        try:
+            user_docs = await crud.get_user_documents(db, user_id)
+            if user_docs:
+                for ud in user_docs:
+                    meta = ud.get("metadata", {})
+                    extracted_fields = meta.get("extracted_fields", {})
+                    fields_fmt = {}
+                    for fn, fv in extracted_fields.items():
+                        fields_fmt[fn] = {"value": fv, "confidence": 0.90, "source": "locker"}
+                    extracted_docs.append({
+                        "doc_type": ud.get("document_type"),
+                        "fields": fields_fmt,
+                        "needs_review": meta.get("needs_review", []),
+                        "validation_errors": meta.get("validation_errors", []),
+                    })
+        except Exception:
+            pass
+
+    # 1. Merge into unified applicant profile
+    unified_profile = merge_extracted_documents(
+        extracted_docs=extracted_docs,
+        supplemental_profile=supplemental,
+    )
+
+    # 2. Load enhanced schemes
+    schemes_pool = _load_enhanced_schemes()
+    if target_scheme_ids:
+        clean_target_ids = {str(x).strip().lower() for x in target_scheme_ids}
+        schemes_pool = [s for s in schemes_pool if s.get("scheme_id", "").lower() in clean_target_ids]
+
+    schemes_meta_by_id = {s.get("scheme_id", ""): s for s in schemes_pool}
+
+    # 3. Evaluate each scheme
+    evaluations: List[Dict[str, Any]] = []
+    for scheme_def in schemes_pool:
+        eval_res = SchemeEvaluator.evaluate_scheme(scheme_def, unified_profile)
+        evaluations.append(eval_res)
+
+    # 4. Rank evaluations
+    ranked = rank_schemes(evaluations, schemes_meta_by_id) if rank_schemes else evaluations
+
+    return {
+        "success": True,
+        "applicant_profile": unified_profile.to_dict(),
+        "evaluations": ranked,
+    }
+

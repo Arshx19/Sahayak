@@ -30,9 +30,31 @@ const AVAILABLE_STATES = [
   'Odisha',
 ];
 
-export default function SchemesPage({ language }) {
+const CATEGORY_NAMES_HI = {
+  All: 'सभी श्रेणियां',
+  Farmer: 'कृषि एवं किसान',
+  Women: 'महिला एवं बाल विकास',
+  Healthcare: 'स्वास्थ्य सेवा',
+  Housing: 'आवास एवं शेल्टर',
+  Employment: 'रोजगार एवं कौशल',
+  MSME: 'सूक्ष्म व मध्यम उद्योग (MSME)',
+  Education: 'शिक्षा एवं छात्रवृत्ति',
+  'Social Welfare': 'सामाजिक कल्याण',
+  'Financial Assistance': 'वित्तीय सहायता',
+};
+
+const STATE_NAMES_HI = {
+  'All States': 'सभी राज्य',
+  'Uttar Pradesh': 'उत्तर प्रदेश',
+  Maharashtra: 'महाराष्ट्र',
+  Karnataka: 'कर्नाटक',
+  Odisha: 'ओडिशा',
+};
+
+export default function SchemesPage({ language = 'en' }) {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
+  const hi = language === 'hi';
 
   const [schemes, setSchemes] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -178,10 +200,12 @@ export default function SchemesPage({ language }) {
       <div className="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-            Government Scheme Directory
+            {hi ? 'सरकारी योजना निर्देशिका' : 'Government Scheme Directory'}
           </h1>
           <p className="text-xs text-slate-600 mt-0.5">
-            Browse all Central and State schemes with live eligibility checks based on your verified documents.
+            {hi
+              ? 'अपने सत्यापित दस्तावेज़ों के आधार पर लाइव पात्रता जांच के साथ सभी केंद्र व राज्य योजनाएं देखें।'
+              : 'Browse all Central and State schemes with live eligibility checks based on your verified documents.'}
           </p>
         </div>
 
@@ -190,7 +214,7 @@ export default function SchemesPage({ language }) {
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search schemes by name or code..."
+            placeholder={hi ? 'योजना का नाम या कोड खोजें...' : 'Search schemes by name or code...'}
             className="w-full border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#0f2942] pl-8 shadow-2xs"
           />
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
@@ -210,7 +234,9 @@ export default function SchemesPage({ language }) {
         {/* Eligibility Status Chips */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
           <div className="flex items-center gap-1.5 text-xs font-semibold">
-            <span className="text-slate-500 text-[11px] uppercase mr-1">Eligibility:</span>
+            <span className="text-slate-500 text-[11px] uppercase mr-1">
+              {hi ? 'पात्रता स्थिति:' : 'Eligibility:'}
+            </span>
             <button
               onClick={() => setFilterEligibility('ALL')}
               className={`px-3 py-1 rounded-full border transition cursor-pointer ${
@@ -219,7 +245,7 @@ export default function SchemesPage({ language }) {
                   : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
-              All Schemes ({schemes.length})
+              {hi ? `सभी योजनाएं (${schemes.length})` : `All Schemes (${schemes.length})`}
             </button>
             <button
               onClick={() => setFilterEligibility('ELIGIBLE')}
@@ -230,7 +256,11 @@ export default function SchemesPage({ language }) {
               }`}
             >
               <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-              <span>Eligible to Apply ({eligibleSchemes.length})</span>
+              <span>
+                {hi
+                  ? `आवेदन हेतु पात्र (${eligibleSchemes.length})`
+                  : `Eligible to Apply (${eligibleSchemes.length})`}
+              </span>
             </button>
             <button
               onClick={() => setFilterEligibility('NOT_ELIGIBLE')}
@@ -241,7 +271,11 @@ export default function SchemesPage({ language }) {
               }`}
             >
               <AlertCircle className="w-3 h-3 text-slate-400" />
-              <span>Action Required ({ineligibleSchemes.length})</span>
+              <span>
+                {hi
+                  ? `आवश्यक कार्रवाई (${ineligibleSchemes.length})`
+                  : `Action Required (${ineligibleSchemes.length})`}
+              </span>
             </button>
           </div>
 
@@ -250,7 +284,7 @@ export default function SchemesPage({ language }) {
               onClick={resetFilters}
               className="text-[11px] text-rose-700 hover:text-rose-900 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <span>Clear All Filters</span>
+              <span>{hi ? 'सभी फ़िल्टर साफ़ करें' : 'Clear All Filters'}</span>
               <X className="w-3 h-3" />
             </button>
           )}
@@ -260,22 +294,22 @@ export default function SchemesPage({ language }) {
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              Provided By
+              {hi ? 'प्रदाता स्तर' : 'Provided By'}
             </label>
             <select
               value={filterProvider}
               onChange={(e) => setFilterProvider(e.target.value)}
               className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
             >
-              <option value="All">All Levels</option>
-              <option value="Central">Central Government</option>
-              <option value="State">State Government</option>
+              <option value="All">{hi ? 'सभी स्तर' : 'All Levels'}</option>
+              <option value="Central">{hi ? 'केंद्र सरकार' : 'Central Government'}</option>
+              <option value="State">{hi ? 'राज्य सरकार' : 'State Government'}</option>
             </select>
           </div>
 
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              Applicable State
+              {hi ? 'संबंधित राज्य' : 'Applicable State'}
             </label>
             <select
               value={filterState}
@@ -284,7 +318,7 @@ export default function SchemesPage({ language }) {
             >
               {AVAILABLE_STATES.map((st) => (
                 <option key={st} value={st}>
-                  {st}
+                  {hi ? STATE_NAMES_HI[st] || st : st}
                 </option>
               ))}
             </select>
@@ -292,7 +326,7 @@ export default function SchemesPage({ language }) {
 
           <div>
             <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-              Category
+              {hi ? 'श्रेणी' : 'Category'}
             </label>
             <select
               value={filterCategory}
@@ -301,7 +335,7 @@ export default function SchemesPage({ language }) {
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {c === 'All' ? 'All Categories' : c}
+                  {hi ? CATEGORY_NAMES_HI[c] || c : c === 'All' ? 'All Categories' : c}
                 </option>
               ))}
             </select>
@@ -309,7 +343,7 @@ export default function SchemesPage({ language }) {
 
           <div className="flex items-end">
             <div className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 w-full text-slate-600 text-xs flex items-center justify-between">
-              <span>Matching Schemes:</span>
+              <span>{hi ? 'उपयुक्त योजनाएं:' : 'Matching Schemes:'}</span>
               <strong className="text-[#0f2942] font-bold text-sm">
                 {filteredSchemes.length}
               </strong>
@@ -322,15 +356,19 @@ export default function SchemesPage({ language }) {
       {filteredSchemes.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-lg p-10 text-center space-y-3">
           <Search className="w-8 h-8 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-800">No schemes found matching criteria</h3>
+          <h3 className="text-base font-bold text-slate-800">
+            {hi ? 'कोई योजना नहीं मिली' : 'No schemes found matching criteria'}
+          </h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
-            Try adjusting your provider, state, or category filter to discover more government welfare schemes.
+            {hi
+              ? 'अधिक लोक कल्याणकारी योजनाओं को देखने के लिए अपने फ़िल्टर बदलें।'
+              : 'Try adjusting your provider, state, or category filter to discover more government welfare schemes.'}
           </p>
           <button
             onClick={resetFilters}
             className="bg-[#0f2942] text-white px-4 py-1.5 rounded text-xs font-semibold hover:bg-[#1e3a5f] cursor-pointer"
           >
-            Reset All Filters
+            {hi ? 'फ़िल्टर रीसेट करें' : 'Reset All Filters'}
           </button>
         </div>
       ) : (
@@ -353,6 +391,7 @@ export default function SchemesPage({ language }) {
         onClose={() => setUploadModalOpen(false)}
         initialDocId={targetDocId}
         onUploadSuccess={handleDocumentUploaded}
+        language={language}
       />
     </div>
   );

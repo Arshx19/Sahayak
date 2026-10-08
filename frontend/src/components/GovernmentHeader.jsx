@@ -26,23 +26,30 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
 
   const getNavItems = () => {
     const base = [
-      { to: '/', label: 'Home', end: true },
-      { to: '/schemes', label: 'Government Schemes' },
-      { to: '/grievances', label: 'Grievance Redressal' },
+      { to: '/', label: t('home'), end: true },
+      { to: '/schemes', label: t('schemes'), end: false },
+      { to: '/grievances', label: t('grievances'), end: false },
     ];
 
     if (!isAuthenticated || user?.role === 'citizen') {
       return [
         ...base,
-        { to: '/citizen', label: 'Document Locker' },
-        { to: '/profile', label: 'Citizen Profile' },
+        { to: '/citizen', label: language === 'hi' ? 'दस्तावेज़ लॉकर' : 'Document Locker' },
+        { to: '/profile', label: t('profile') },
       ];
     }
 
     if (user?.role === 'admin') {
       return [
         ...base,
-        { to: '/admin', label: 'Policy Administration' },
+        { to: '/admin', label: language === 'hi' ? 'नीति प्रशासन' : 'Policy Administration' },
+      ];
+    }
+
+    if (user?.role === 'officer') {
+      return [
+        ...base,
+        { to: '/officer', label: t('officer') },
       ];
     }
 
@@ -75,7 +82,9 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
           <span className="font-semibold tracking-wide text-amber-300">{t('govOfIndia')}</span>
           <span className="text-slate-400 hidden sm:inline">•</span>
           <span className="text-slate-200 text-[11px] hidden sm:inline">
-            National Public Welfare Schemes & Eligibility Portal
+            {language === 'hi'
+              ? 'राष्ट्रीय लोक कल्याण योजना व पात्रता पोर्टल'
+              : 'National Public Welfare Schemes & Eligibility Portal'}
           </span>
         </div>
 
@@ -96,11 +105,13 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-xl text-[#0f2942] tracking-tight">SAHAYAK</span>
               <span className="text-[10px] bg-slate-100 text-slate-800 px-1.5 py-0.2 rounded font-semibold border border-slate-300 uppercase tracking-wider">
-                Public Portal
+                {language === 'hi' ? 'लोक पोर्टल' : 'Public Portal'}
               </span>
             </div>
             <p className="text-[11px] text-slate-500 hidden sm:block">
-              Government Entitlement Verification & Document Locker
+              {language === 'hi'
+                ? 'सरकारी योजना पात्रता सत्यापन व डिजिटल दस्तावेज़ लॉकर'
+                : 'Government Entitlement Verification & Document Locker'}
             </p>
           </div>
         </Link>
@@ -146,7 +157,7 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
                 className="text-xs text-rose-700 hover:text-rose-900 font-semibold px-2.5 py-1 hover:bg-rose-50 rounded border border-rose-200 transition cursor-pointer flex items-center gap-1"
               >
                 <LogOut className="w-3 h-3" />
-                <span className="hidden sm:inline">Sign Out</span>
+                <span className="hidden sm:inline">{language === 'hi' ? 'साइन आउट' : 'Sign Out'}</span>
               </button>
             </div>
           ) : (
@@ -154,7 +165,7 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
               to="/login"
               className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white font-semibold px-3.5 py-1.5 rounded text-xs transition shadow-2xs cursor-pointer"
             >
-              Sign In / Register
+              {language === 'hi' ? 'साइन इन / रजिस्टर' : 'Sign In / Register'}
             </Link>
           )}
 
@@ -195,20 +206,27 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
             </button>
           ))}
 
-          <div className="pt-2 border-t border-slate-200">
+          <div className="pt-2 border-t border-slate-200 space-y-2">
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-[11px] text-slate-500 font-semibold">
+                {language === 'hi' ? 'भाषा व अभिगम्यता' : 'Language & Accessibility'}:
+              </span>
+              <LanguageSwitcher language={language} setLanguage={setLanguage} />
+            </div>
+
             {isAuthenticated ? (
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-3 py-2 rounded text-rose-700 hover:bg-rose-50 font-semibold"
               >
-                Sign Out ({user?.email})
+                {language === 'hi' ? 'साइन आउट' : 'Sign Out'} ({user?.email})
               </button>
             ) : (
               <button
                 onClick={() => go('/login')}
                 className="w-full text-left px-3 py-2 rounded bg-[#0f2942] text-white font-semibold"
               >
-                Sign In / Register
+                {language === 'hi' ? 'साइन इन / रजिस्टर' : 'Sign In / Register'}
               </button>
             )}
           </div>

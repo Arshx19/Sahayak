@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { getTranslation } from '../utils/translations.js';
 import {
   Landmark,
-  Zap,
   User,
   Briefcase,
   ShieldCheck,
@@ -53,7 +52,7 @@ export default function LoginPage({ language }) {
   const [district, setDistrict] = useState('');
   const [localError, setLocalError] = useState('');
 
-  const { user, isAuthenticated, logout, login, register, demoLogin, loading, authError, setAuthError } = useAuth();
+  const { user, isAuthenticated, logout, login, register, loading, authError, setAuthError } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const t = (key) => getTranslation(language, key);
@@ -97,11 +96,6 @@ export default function LoginPage({ language }) {
         redirectAfterAuth(res.user?.role || 'citizen');
       }
     }
-  };
-
-  const handleQuickDemo = (roleName) => {
-    const loggedUser = demoLogin(roleName);
-    redirectAfterAuth(loggedUser.role);
   };
 
   return (
@@ -152,45 +146,6 @@ export default function LoginPage({ language }) {
             </div>
           </div>
         )}
-
-        {/* 1-Click Demo Profiles for Rapid Testing / Evaluators */}
-        <div className="bg-slate-50 border border-slate-200 rounded-md p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-700 uppercase tracking-wide">
-              <Zap className="w-3.5 h-3.5 text-amber-600" />
-              <span>Quick Test Access</span>
-            </div>
-            <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-semibold border border-amber-300">
-              Evaluator Mode
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-1.5 text-xs">
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('citizen')}
-              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
-            >
-              <User className="w-3.5 h-3.5 text-slate-600" />
-              <span>Citizen</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('officer')}
-              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
-            >
-              <Briefcase className="w-3.5 h-3.5 text-slate-600" />
-              <span>Officer</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickDemo('admin')}
-              className="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 px-2 py-1.5 rounded font-semibold transition text-center shadow-2xs flex items-center justify-center gap-1 cursor-pointer"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
-              <span>Admin</span>
-            </button>
-          </div>
-        </div>
 
         {/* Error Alert */}
         {(localError || authError) && (

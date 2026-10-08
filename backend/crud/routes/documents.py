@@ -6,7 +6,15 @@ and triggers automatic in-app notifications upon document upload/verification.
 """
 
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
+
+try:
+    from AI.extraction.pipeline import extract_certificate_features
+except ImportError:
+    try:
+        from backend.AI.extraction.pipeline import extract_certificate_features
+    except ImportError:
+        extract_certificate_features = None
 
 try:
     from schemas.document import DocumentUploadRequest
@@ -173,3 +181,111 @@ async def delete_document(
         "success": True,
         "message": f"Document '{canonical_type}' deleted successfully from locker",
     }
+
+
+@router.post(
+    "/extract",
+    status_code=status.HTTP_200_OK,
+    summary="Extract feature attributes from an uploaded certificate without saving",
+)
+async def extract_document(
+    file: UploadFile = File(...),
+    hint_doc_type: Optional[str] = Form(None),
+) -> Dict[str, Any]:
+    """
+    Extracts structured fields from an uploaded certificate scan or PDF.
+    Returns per-document extraction output format:
+    { doc_type, fields: { field: { value, confidence, source } }, needs_review, validation_errors }
+    """
+    if extract_certificate_features is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Extraction engine is not available on this server",
+        )
+
+    content = await file.read()
+    result = extract_certificate_features(
+        file_bytes=content,
+        file_name=file.filename or "",
+        hint_doc_type=hint_doc_type,
+    )
+    return {"success": True, "data": result}
+
+
+@router.post(
+    "/extract-and-upload",
+    status_code=status.HTTP_201_CREATED,
+    summary="Extract fields from certificate and save masked record to citizen locker",
+)
+async def extract_and_upload_document(
+    file: UploadFile = File(...),
+    hint_doc_type: Optional[str] = Form(None),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    db: Any = Depends(get_db),
+) -> Dict[str, Any]:
+    """
+    Runs extraction pipeline, strictly masks sensitive identifiers (e.g. Aadhaar),
+    and saves the verified document in the citizen's document locker.
+    """
+    if extract_certificate_features is None:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Extraction engine is not available on this server",
+        )
+
+    user_id = current_user["user_id"]
+    content = await file.read()
+
+    extraction_result = extract_certificate_features(
+        file_bytes=content,
+        file_name=file.filename or "",
+        hint_doc_type=hint_doc_type,
+    )
+
+    doc_type = normalize_document_type(extraction_result.get("doc_type", "unknown"))
+    extracted_fields = extraction_result.get("fields", {})
+
+    # Extract masked doc number
+    doc_number = None
+    if "aadhaar_last_4" in extracted_fields:
+        last4 = extracted_fields["aadhaar_last_4"].get("value")
+        doc_number = f"XXXX-XXXX-{last4}" if last4 else None
+    elif "pan_number" in extracted_fields:
+        doc_number = extracted_fields["pan_number"].get("value")
+    elif "certificate_number" in extracted_fields:
+        doc_number = extracted_fields["certificate_number"].get("value")
+    elif "udid_number" in extracted_fields:
+        doc_number = extracted_fields["udid_number"].get("value")
+    elif "ration_card_number" in extracted_fields:
+        doc_number = extracted_fields["ration_card_number"].get("value")
+
+    doc_name = doc_type.replace("_", " ").title()
+    verification_status = "verified" if len(extraction_result.get("needs_review", [])) == 0 else "pending_review"
+
+    # Save to MongoDB locker
+    doc_data = {
+        "document_type": doc_type,
+        "document_name": doc_name,
+        "document_number": doc_number,
+        "file_name": file.filename or f"{doc_type}.pdf",
+        "verification_status": verification_status,
+        "status": "active",
+        "metadata": {
+            "extracted_fields": {k: v.get("value") for k, v in extracted_fields.items()},
+            "needs_review": extraction_result.get("needs_review", []),
+            "validation_errors": extraction_result.get("validation_errors", []),
+        },
+    }
+
+    saved_doc = None
+    try:
+        saved_doc = await crud.create_or_update_user_document(db, user_id, doc_data)
+    except Exception:
+        saved_doc = {"user_id": user_id, **doc_data}
+
+    return {
+        "success": True,
+        "extraction": extraction_result,
+        "document": saved_doc,
+    }
+

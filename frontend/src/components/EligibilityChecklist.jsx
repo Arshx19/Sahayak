@@ -1,7 +1,8 @@
 import { Check, X } from 'lucide-react';
 
-export default function EligibilityChecklist({ criteriaChecks = [], compact = false, onUploadClick }) {
+export default function EligibilityChecklist({ criteriaChecks = [], compact = false, onUploadClick, language = 'en' }) {
   if (!criteriaChecks || criteriaChecks.length === 0) return null;
+  const hi = language === 'hi';
 
   return (
     <div className={`space-y-1.5 ${compact ? 'text-[11px]' : 'text-xs'}`}>
@@ -39,7 +40,7 @@ export default function EligibilityChecklist({ criteriaChecks = [], compact = fa
               onClick={() => onUploadClick(check.docId)}
               className="shrink-0 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-semibold px-2 py-0.5 rounded text-[10px] transition shadow-2xs cursor-pointer"
             >
-              Upload
+              {hi ? 'अपलोड' : 'Upload'}
             </button>
           )}
         </div>
