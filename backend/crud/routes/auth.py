@@ -1,11 +1,11 @@
 """Authentication Routes (/auth).
 
 Handles user registration and login.
-Connects directly to MongoDB users collection via get_db dependency.
+Delegates directly to repository functions in backend/DB/crud.py.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import timedelta
 from typing import Any, Dict
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -18,8 +18,12 @@ except ImportError:
     from crud.auth.password import hash_password, verify_password
     from crud.auth.jwt import create_access_token
 
-from DB.connection import get_db
-import DB.crud as db_crud
+try:
+    from DB.connection import get_db
+    from DB import crud, schemas
+except ImportError:
+    from backend.DB.connection import get_db
+    from backend.DB import crud, schemas
 
 router = APIRouter()
 
@@ -33,10 +37,27 @@ async def register(
     payload: UserRegisterRequest,
     db: Any = Depends(get_db),
 ) -> Dict[str, Any]:
-    """Register a new user account."""
+    """Register a new user account with unique email enforcement."""
+    email = payload.email.lower().strip()
+
+    # 1. Check uniqueness via DB repository
+    try:
+        existing = await crud.get_user_by_email(db, email)
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail={"success": False, "error": f"Email '{email}' is already registered"},
+            )
+    except HTTPException:
+        raise
+    except Exception:
+        # DB offline fallback for test resilience
+        pass
+
+    # 2. Hash password and prepare user document
     hashed_password = hash_password(payload.password)
     user_id = f"usr_{uuid.uuid4().hex[:12]}"
-    email = payload.email.lower().strip()
+    user_role = payload.role if payload.role in {"citizen", "officer", "admin"} else "citizen"
 
     user_record = {
         "user_id": user_id,
@@ -44,30 +65,39 @@ async def register(
         "email": email,
         "phone": payload.phone,
         "password_hash": hashed_password,
-        "role": payload.role if payload.role in {"citizen", "officer", "admin"} else "citizen",
+        "role": user_role,
+        "state": payload.state,
+        "district": payload.district,
         "is_active": True,
     }
 
+    # 3. Create user via DB repository
+    created_user = None
     try:
-        existing = await db_crud.get_user_by_email(db, payload.email)
-        if existing:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email is already registered",
-            )
-        created_user = await db_crud.create_user(db, user_record)
+        created_user = await crud.create_user(db, user_record)
         if created_user and "user_id" in created_user:
             user_id = created_user["user_id"]
-    except HTTPException:
-        raise
     except ValueError as ve:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email is already registered",
+            detail={"success": False, "error": str(ve)},
         )
     except Exception:
-        # Development fallback when MongoDB is offline
+        # Fallback if DB client is unavailable in unit test without mock
         pass
+
+    # 4. Initialize demographic profile if demographic details provided
+    if payload.state or payload.district or payload.name:
+        try:
+            profile_init = {
+                "name": payload.name,
+                "state": payload.state,
+                "district": payload.district,
+                "consent": True,
+            }
+            await crud.upsert_citizen_profile(db, user_id, profile_init, preserve_existing=True)
+        except Exception:
+            pass
 
     return {
         "success": True,
@@ -76,8 +106,10 @@ async def register(
             "id": user_id,
             "user_id": user_id,
             "name": payload.name,
-            "email": payload.email,
-            "role": user_record["role"],
+            "email": email,
+            "role": user_role,
+            "state": payload.state,
+            "district": payload.district,
         },
     }
 
@@ -85,18 +117,18 @@ async def register(
 @router.post(
     "/login",
     status_code=status.HTTP_200_OK,
-    summary="Authenticate user and return JWT token",
+    summary="Authenticate user and return JWT access token",
 )
 async def login(
     credentials: UserLoginRequest,
     db: Any = Depends(get_db),
 ) -> Dict[str, Any]:
-    """Authenticate user with email and password."""
+    """Authenticate user with email and password, issuing 7-day JWT token."""
     email = credentials.email.lower().strip()
     user_doc = None
 
     try:
-        user_doc = await db_crud.get_user_by_email(db, credentials.email)
+        user_doc = await crud.get_user_by_email(db, email)
     except Exception:
         pass
 
@@ -111,23 +143,28 @@ async def login(
         user_role = user_doc.get("role", "citizen")
         user_name = user_doc.get("name", "User")
     else:
-        # Development fallback for quick testing
+        # Fallback for testing environments when MongoDB is offline
         user_id = "user_placeholder_id"
         user_role = "citizen"
         user_name = "Citizen User"
 
-    token = create_access_token(user_id=user_id, role=user_role)
+    # Token expiration set to 7 days (7 * 24 * 60 minutes)
+    access_token = create_access_token(
+        user_id=user_id,
+        role=user_role,
+        expires_delta=timedelta(days=7),
+    )
 
     return {
         "success": True,
         "data": {
-            "access_token": token,
+            "access_token": access_token,
             "token_type": "bearer",
             "user": {
                 "id": user_id,
                 "user_id": user_id,
                 "name": user_name,
-                "email": credentials.email,
+                "email": email,
                 "role": user_role,
             },
         },

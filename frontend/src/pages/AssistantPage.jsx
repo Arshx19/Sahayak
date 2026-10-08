@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getTranslation } from '../utils/translations.js';
 import VoiceButton from '../components/VoiceButton.jsx';
 import CriteriaRow from '../components/CriteriaRow.jsx';
+import { ArrowRight, RotateCcw } from 'lucide-react';
 
 export default function AssistantPage({ language }) {
   // voiceState: IDLE -> LISTENING -> PROCESSING -> RESULT
@@ -15,8 +16,6 @@ export default function AssistantPage({ language }) {
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
-  // Mock flow. Later: record audio -> send to backend (BHASHINI) via
-  // submitAssistantQuery() in services/api.js and set RESULT from the response.
   const handleStartListening = () => {
     timers.current.forEach(clearTimeout);
     setVoiceState('LISTENING');
@@ -29,7 +28,7 @@ export default function AssistantPage({ language }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
       <div className="border-b border-slate-300 pb-2">
-        <h2 className="text-xl font-bold text-[#1b365d]">{t('assistantTitle')}</h2>
+        <h2 className="text-xl font-bold text-[#0f2942]">{t('assistantTitle')}</h2>
         <p className="text-xs text-slate-600">{t('assistantSub')}</p>
       </div>
 
@@ -67,7 +66,7 @@ export default function AssistantPage({ language }) {
           <div className="space-y-4 py-4">
             <VoiceButton state="PROCESSING" />
             <div>
-              <h4 className="text-sm font-bold text-[#1b365d]">{t('processing')}</h4>
+              <h4 className="text-sm font-bold text-[#0f2942]">{t('processing')}</h4>
               <p className="text-xs text-slate-500">{t('transcribing')}</p>
             </div>
           </div>
@@ -83,7 +82,7 @@ export default function AssistantPage({ language }) {
 
             {/* Extracted Parameters */}
             <div className="border border-slate-300 rounded p-3 space-y-2 bg-white">
-              <h4 className="text-[11px] font-bold text-[#1b365d] uppercase tracking-wider border-b border-slate-200 pb-1">{t('extractedParams')}</h4>
+              <h4 className="text-[11px] font-bold text-[#0f2942] uppercase tracking-wider border-b border-slate-200 pb-1">{t('extractedParams')}</h4>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 <CriteriaRow label={t('age')} value={`62 ${hi ? 'वर्ष' : 'Years'}`} />
                 <CriteriaRow label={t('occupation')} value={hi ? 'किसान' : 'Farmer'} />
@@ -106,11 +105,19 @@ export default function AssistantPage({ language }) {
               </p>
 
               <div className="pt-2 flex flex-wrap gap-2">
-                <button onClick={() => navigate('/schemes/pm-kisan')} className="bg-[#1b365d] text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-[#122440]">
-                  {t('viewSchemeDocs')}
+                <button
+                  onClick={() => navigate('/schemes/CEN001')}
+                  className="bg-[#0f2942] text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-[#1a3b5c] inline-flex items-center gap-1.5"
+                >
+                  <span>{t('viewSchemeDocs')}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
-                <button onClick={() => setVoiceState('IDLE')} className="bg-white border border-slate-300 text-slate-700 px-3 py-1.5 rounded text-xs font-semibold hover:bg-slate-50">
-                  {t('askAnother')}
+                <button
+                  onClick={() => setVoiceState('IDLE')}
+                  className="bg-white border border-slate-300 text-slate-700 px-3 py-1.5 rounded text-xs font-semibold hover:bg-slate-50 inline-flex items-center gap-1.5"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>{t('askAnother')}</span>
                 </button>
               </div>
             </div>
@@ -127,9 +134,9 @@ export default function AssistantPage({ language }) {
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder={t('typePlaceholder')}
-              className="flex-1 border border-slate-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-[#1b365d]"
+              className="flex-1 border border-slate-300 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-[#0f2942]"
             />
-            <button onClick={handleStartListening} className="bg-slate-800 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-slate-900">
+            <button onClick={handleStartListening} className="bg-slate-800 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-slate-900 cursor-pointer">
               {t('submitBtn')}
             </button>
           </div>

@@ -3,18 +3,13 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { getTranslation } from '../utils/translations.js';
 import LanguageSwitcher from './LanguageSwitcher.jsx';
 import AccessibilityControls from './AccessibilityControls.jsx';
-
-const NAV_ITEMS = [
-  { to: '/', key: 'home', end: true },
-  { to: '/schemes', key: 'schemes' },
-  { to: '/eligibility', key: 'eligibility' },
-  { to: '/grievances', key: 'grievances' },
-  { to: '/profile', key: 'profile' },
-  { to: '/officer', key: 'officer' },
-];
+import NotificationBell from './NotificationBell.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { Landmark, Shield, User, LogOut } from 'lucide-react';
 
 export default function GovernmentHeader({ fontSize, setFontSize, language, setLanguage }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const t = (key) => getTranslation(language, key);
 
@@ -23,15 +18,74 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
     setMobileMenuOpen(false);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    setMobileMenuOpen(false);
+  };
+
+  const getNavItems = () => {
+    const base = [
+      { to: '/', label: t('home'), end: true },
+      { to: '/schemes', label: t('schemes'), end: false },
+      { to: '/grievances', label: t('grievances'), end: false },
+    ];
+
+    if (!isAuthenticated || user?.role === 'citizen') {
+      return [
+        ...base,
+        { to: '/citizen', label: language === 'hi' ? 'दस्तावेज़ लॉकर' : 'Document Locker' },
+        { to: '/profile', label: t('profile') },
+      ];
+    }
+
+    if (user?.role === 'admin') {
+      return [
+        ...base,
+        { to: '/admin', label: language === 'hi' ? 'नीति प्रशासन' : 'Policy Administration' },
+      ];
+    }
+
+    if (user?.role === 'officer') {
+      return [
+        ...base,
+        { to: '/officer', label: t('officer') },
+      ];
+    }
+
+    return base;
+  };
+
+  const navItems = getNavItems();
+
+  const getRoleBadge = (role) => {
+    if (role === 'admin') {
+      return (
+        <span className="bg-slate-100 text-slate-800 border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider">
+          Admin
+        </span>
+      );
+    }
+    return (
+      <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider">
+        Citizen
+      </span>
+    );
+  };
+
   return (
-    <header className="w-full bg-white border-b border-slate-200 shadow-xs sticky top-0 z-50">
-      {/* Sleek Top Utility Strip */}
-      <div className="bg-[#1b365d] text-white text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center">
+    <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-50">
+      {/* Top Utility Strip */}
+      <div className="bg-[#0f2942] text-white text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center border-b border-amber-600/30">
         <div className="flex items-center space-x-2">
           <span className="w-2 h-2 rounded-full bg-amber-400"></span>
           <span className="font-semibold tracking-wide text-amber-300">{t('govOfIndia')}</span>
-          <span className="text-slate-400">|</span>
-          <span className="text-slate-200 text-[11px] hidden sm:inline">{t('helpline')}</span>
+          <span className="text-slate-400 hidden sm:inline">•</span>
+          <span className="text-slate-200 text-[11px] hidden sm:inline">
+            {language === 'hi'
+              ? 'राष्ट्रीय लोक कल्याण योजना व पात्रता पोर्टल'
+              : 'National Public Welfare Schemes & Eligibility Portal'}
+          </span>
         </div>
 
         <div className="flex items-center space-x-3 text-[11px]">
@@ -41,54 +95,86 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
       </div>
 
       {/* Main Header Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-4">
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center space-x-2.5" aria-label="SAHAYAK home">
-          <div className="w-9 h-9 bg-[#1b365d] rounded flex items-center justify-center text-amber-400 font-bold shadow-xs">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-5.45 8-12V5l-8-3zm0 4a3 3 0 110 6 3 3 0 010-6zm0 14c-2.7 0-5.2-1.6-6.4-4.1C7.1 14.2 9.5 13 12 13s4.9 1.2 6.4 2.9c-1.2 2.5-3.7 4.1-6.4 4.1z" />
-            </svg>
+        <Link to="/" className="flex items-center space-x-3 shrink-0" aria-label="SAHAYAK home">
+          <div className="w-9 h-9 bg-[#0f2942] rounded-md flex items-center justify-center text-amber-400 shadow-2xs">
+            <Landmark className="w-5 h-5 text-amber-400" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-xl text-[#1b365d] tracking-tight">SAHAYAK</span>
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-semibold border border-emerald-300 uppercase">
-                {language === 'hi' ? 'आधिकारिक' : 'Official'}
+              <span className="font-extrabold text-xl text-[#0f2942] tracking-tight">SAHAYAK</span>
+              <span className="text-[10px] bg-slate-100 text-slate-800 px-1.5 py-0.2 rounded font-semibold border border-slate-300 uppercase tracking-wider">
+                {language === 'hi' ? 'लोक पोर्टल' : 'Public Portal'}
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 hidden sm:block">{t('portalSub')}</p>
+            <p className="text-[11px] text-slate-500 hidden sm:block">
+              {language === 'hi'
+                ? 'सरकारी योजना पात्रता सत्यापन व डिजिटल दस्तावेज़ लॉकर'
+                : 'Government Entitlement Verification & Document Locker'}
+            </p>
           </div>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center space-x-1 font-medium text-sm text-slate-700" aria-label="Main navigation">
-          {NAV_ITEMS.map((item) => (
+        <nav className="hidden lg:flex items-center space-x-1 font-medium text-xs sm:text-sm text-slate-700">
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `px-3 py-1.5 rounded transition-colors ${isActive ? 'bg-[#1b365d] text-white font-semibold' : 'hover:bg-slate-100 text-slate-800'}`
+                `px-3 py-1.5 rounded transition-colors ${
+                  isActive
+                    ? 'bg-[#0f2942] text-white font-semibold shadow-2xs'
+                    : 'hover:bg-slate-100 text-slate-800'
+                }`
               }
             >
-              {t(item.key)}
+              {item.label}
             </NavLink>
           ))}
         </nav>
 
-        {/* Primary Action Button */}
-        <div className="flex items-center space-x-2">
-          <Link to="/assistant" className="bg-[#1b365d] hover:bg-[#122440] text-amber-300 hover:text-white border border-amber-500/40 font-semibold px-3.5 py-1.5 rounded text-xs sm:text-sm flex items-center space-x-1.5 shadow-xs transition-all">
-            <span className="text-base animate-pulse" aria-hidden="true">🎙️</span>
-            <span>{t('talkToSahayak')}</span>
-          </Link>
+        {/* Right Section: Notification Bell + Auth */}
+        <div className="flex items-center space-x-2 shrink-0">
+          <NotificationBell />
+
+          {isAuthenticated ? (
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+              <Link
+                to={user?.role === 'admin' ? '/admin' : '/citizen'}
+                className="hidden md:flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-2.5 py-1 rounded transition text-xs"
+              >
+                <User className="w-3.5 h-3.5 text-slate-600" />
+                <span className="font-semibold text-slate-800 truncate max-w-[120px]">
+                  {user?.name?.split(' ')[0] || user?.email?.split('@')[0]}
+                </span>
+                {getRoleBadge(user?.role)}
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-xs text-rose-700 hover:text-rose-900 font-semibold px-2.5 py-1 hover:bg-rose-50 rounded border border-rose-200 transition cursor-pointer flex items-center gap-1"
+              >
+                <LogOut className="w-3 h-3" />
+                <span className="hidden sm:inline">{language === 'hi' ? 'साइन आउट' : 'Sign Out'}</span>
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white font-semibold px-3.5 py-1.5 rounded text-xs transition shadow-2xs cursor-pointer"
+            >
+              {language === 'hi' ? 'साइन इन / रजिस्टर' : 'Sign In / Register'}
+            </Link>
+          )}
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
-            className="lg:hidden p-1.5 rounded text-slate-700 hover:bg-slate-100 border border-slate-200"
+            className="lg:hidden p-1.5 rounded text-slate-700 hover:bg-slate-100 border border-slate-200 cursor-pointer"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
@@ -99,12 +185,51 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <nav className="lg:hidden bg-slate-50 border-t border-slate-200 px-4 py-3 space-y-1.5 text-sm font-medium" aria-label="Mobile navigation">
-          <button onClick={() => go('/')} className="block w-full text-left px-3 py-2 rounded hover:bg-slate-200">{t('home')}</button>
-          <button onClick={() => go('/assistant')} className="block w-full text-left px-3 py-2 rounded bg-amber-100 text-amber-900 font-bold">🎙️ {t('talkToSahayak')}</button>
-          {NAV_ITEMS.filter((i) => i.key !== 'home').map((item) => (
-            <button key={item.to} onClick={() => go(item.to)} className="block w-full text-left px-3 py-2 rounded hover:bg-slate-200">{t(item.key)}</button>
+        <nav className="lg:hidden bg-slate-50 border-t border-slate-200 px-4 py-3 space-y-1.5 text-xs font-medium">
+          {isAuthenticated && (
+            <div className="p-2.5 mb-2 bg-white rounded border border-slate-200 flex items-center justify-between">
+              <div>
+                <p className="font-bold text-slate-900">{user?.name || user?.email}</p>
+                <p className="text-[10px] text-slate-500">{user?.email}</p>
+              </div>
+              {getRoleBadge(user?.role)}
+            </div>
+          )}
+
+          {navItems.map((item) => (
+            <button
+              key={item.to}
+              onClick={() => go(item.to)}
+              className="block w-full text-left px-3 py-2 rounded hover:bg-slate-200 text-slate-800"
+            >
+              {item.label}
+            </button>
           ))}
+
+          <div className="pt-2 border-t border-slate-200 space-y-2">
+            <div className="flex items-center justify-between pb-1">
+              <span className="text-[11px] text-slate-500 font-semibold">
+                {language === 'hi' ? 'भाषा व अभिगम्यता' : 'Language & Accessibility'}:
+              </span>
+              <LanguageSwitcher language={language} setLanguage={setLanguage} />
+            </div>
+
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-3 py-2 rounded text-rose-700 hover:bg-rose-50 font-semibold"
+              >
+                {language === 'hi' ? 'साइन आउट' : 'Sign Out'} ({user?.email})
+              </button>
+            ) : (
+              <button
+                onClick={() => go('/login')}
+                className="w-full text-left px-3 py-2 rounded bg-[#0f2942] text-white font-semibold"
+              >
+                {language === 'hi' ? 'साइन इन / रजिस्टर' : 'Sign In / Register'}
+              </button>
+            )}
+          </div>
         </nav>
       )}
     </header>

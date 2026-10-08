@@ -19,7 +19,7 @@ export default function EligibilityPage({ language }) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-5">
       <div className="border-b border-slate-300 pb-2">
-        <h2 className="text-xl font-bold text-[#1b365d]">{t('eligibilityTitle')}</h2>
+        <h2 className="text-xl font-bold text-[#0f2942]">{t('eligibilityTitle')}</h2>
         <p className="text-xs text-slate-600">{t('eligibilitySub')}</p>
       </div>
 
@@ -30,7 +30,7 @@ export default function EligibilityPage({ language }) {
             id="scheme-select"
             value={selectedScheme}
             onChange={(e) => setSelectedScheme(e.target.value)}
-            className="w-full border border-slate-300 rounded px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-[#1b365d]"
+            className="w-full border border-slate-300 rounded px-3 py-1.5 text-xs font-medium focus:outline-none focus:border-[#0f2942]"
           >
             <option value="pm-kisan">{hi ? 'पीएम-किसान (प्रधानमंत्री किसान सम्मान निधि)' : 'PM-KISAN (Pradhan Mantri Kisan Samman Nidhi)'}</option>
             <option value="old-age-pension">{hi ? 'इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन' : 'Indira Gandhi National Old Age Pension'}</option>

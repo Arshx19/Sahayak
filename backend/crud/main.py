@@ -1,12 +1,14 @@
 """SAHAYAK - CRUD / API Service.
 
 FastAPI application providing the core REST API layer for:
-- Authentication & JWT issuance
-- User account self-service
-- Citizen profile management
-- Scheme information & rule authoring
-- Deterministic scheme eligibility verification
-- Grievance registration & officer resolution workflow
+- Authentication & JWT issuance (/auth)
+- User account self-service (/users)
+- Citizen demographic profiles (/profile)
+- Citizen digital document locker (/documents)
+- Government scheme directory & rules (/schemes, /rules)
+- Deterministic scheme eligibility verification (/eligibility)
+- In-app citizen notifications hub (/notifications)
+- Grievance registration & officer resolution workflow (/grievances)
 """
 
 import sys
@@ -34,17 +36,21 @@ try:
     from routes.auth import router as auth_router
     from routes.users import router as users_router
     from routes.profiles import router as profiles_router
+    from routes.documents import router as documents_router
     from routes.schemes import router as schemes_router
     from routes.rules import router as rules_router
     from routes.eligibility import router as eligibility_router
+    from routes.notifications import router as notifications_router
     from routes.grievances import router as grievances_router
 except ImportError:
     from crud.routes.auth import router as auth_router
     from crud.routes.users import router as users_router
     from crud.routes.profiles import router as profiles_router
+    from crud.routes.documents import router as documents_router
     from crud.routes.schemes import router as schemes_router
     from crud.routes.rules import router as rules_router
     from crud.routes.eligibility import router as eligibility_router
+    from crud.routes.notifications import router as notifications_router
     from crud.routes.grievances import router as grievances_router
 
 
@@ -70,8 +76,8 @@ app = FastAPI(
     title="SAHAYAK API",
     description=(
         "Voice-First AI Assistant for Government Scheme Eligibility and Grievance Assistance.\n\n"
-        "**CRUD/API Layer**: Orchestrates authentication, citizen data, scheme rules, "
-        "and coordinates DB and AI teammate services."
+        "**CRUD/API Layer**: Orchestrates authentication, citizen document locker, "
+        "scheme directory, deterministic eligibility verification, notifications, and grievances."
     ),
     version="1.0.0",
     docs_url="/docs",
@@ -84,7 +90,7 @@ app = FastAPI(
 # =============================================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -119,25 +125,31 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 # =============================================================================
 # ROUTER REGISTRATION
 # =============================================================================
-# 1. Authentication
+# 1. Authentication (/auth)
 app.include_router(auth_router, prefix="/auth", tags=["Auth"])
 
-# 2. Users self-service
+# 2. Users self-service (/users)
 app.include_router(users_router, prefix="/users", tags=["Users"])
 
-# 3. Citizen Profiles
+# 3. Citizen Profiles (/profile)
 app.include_router(profiles_router, prefix="/profile", tags=["Profiles"])
 
-# 4. Government Schemes
+# 4. Citizen Document Locker (/documents)
+app.include_router(documents_router, prefix="/documents", tags=["Documents"])
+
+# 5. Government Schemes (/schemes)
 app.include_router(schemes_router, prefix="/schemes", tags=["Schemes"])
 
-# 5. Scheme Rules (mounts /schemes/{scheme_id}/rules and /rules/{rule_id})
+# 6. Scheme Rules (mounts /schemes/{scheme_id}/rules and /rules/{rule_id})
 app.include_router(rules_router, tags=["Rules"])
 
-# 6. Eligibility Deterministic Verification
+# 7. Eligibility Deterministic Verification (/eligibility)
 app.include_router(eligibility_router, prefix="/eligibility", tags=["Eligibility"])
 
-# 7. Grievances Redressal
+# 8. User Notifications Hub (/notifications)
+app.include_router(notifications_router, prefix="/notifications", tags=["Notifications"])
+
+# 9. Grievances Redressal (/grievances)
 app.include_router(grievances_router, prefix="/grievances", tags=["Grievances"])
 
 

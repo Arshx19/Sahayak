@@ -1,78 +1,436 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getTranslation } from '../utils/translations.js';
-import { getSchemes } from '../services/api.js';
-import SchemeCard from '../components/SchemeCard.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useNotifications } from '../context/NotificationContext.jsx';
+import { getSchemes, getProfile, getUserDocuments, evaluateProfileWithEngine } from '../services/api.js';
+import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
+import { evaluateAllSchemes } from '../services/eligibilityService.js';
+import SchemeEligibilityCard from '../components/SchemeEligibilityCard.jsx';
+import DocumentUploadModal from '../components/DocumentUploadModal.jsx';
 import LoadingState from '../components/LoadingState.jsx';
+import { Search, CheckCircle2, AlertCircle, X } from 'lucide-react';
 
-export default function SchemesPage({ language }) {
-  const [schemes, setSchemes] = useState(null);
+const CATEGORIES = [
+  'All',
+  'Farmer',
+  'Women',
+  'Healthcare',
+  'Housing',
+  'Employment',
+  'MSME',
+  'Education',
+  'Social Welfare',
+  'Financial Assistance',
+];
+
+const AVAILABLE_STATES = [
+  'All States',
+  'Uttar Pradesh',
+  'Maharashtra',
+  'Karnataka',
+  'Odisha',
+];
+
+const CATEGORY_NAMES_HI = {
+  All: 'सभी श्रेणियां',
+  Farmer: 'कृषि एवं किसान',
+  Women: 'महिला एवं बाल विकास',
+  Healthcare: 'स्वास्थ्य सेवा',
+  Housing: 'आवास एवं शेल्टर',
+  Employment: 'रोजगार एवं कौशल',
+  MSME: 'सूक्ष्म व मध्यम उद्योग (MSME)',
+  Education: 'शिक्षा एवं छात्रवृत्ति',
+  'Social Welfare': 'सामाजिक कल्याण',
+  'Financial Assistance': 'वित्तीय सहायता',
+};
+
+const STATE_NAMES_HI = {
+  'All States': 'सभी राज्य',
+  'Uttar Pradesh': 'उत्तर प्रदेश',
+  Maharashtra: 'महाराष्ट्र',
+  Karnataka: 'कर्नाटक',
+  Odisha: 'ओडिशा',
+};
+
+export default function SchemesPage({ language = 'en' }) {
+  const { user } = useAuth();
+  const { addNotification } = useNotifications();
+  const hi = language === 'hi';
+
+  const [schemes, setSchemes] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [serverEvaluations, setServerEvaluations] = useState(null);
+
+  const [documents, setDocuments] = useState(() => {
+    try {
+      const saved = localStorage.getItem('sahayak_citizen_docs');
+      return saved ? JSON.parse(saved) : INITIAL_CITIZEN_DOCUMENTS;
+    } catch {
+      return INITIAL_CITIZEN_DOCUMENTS;
+    }
+  });
+
+  // Filter States
+  const [filterEligibility, setFilterEligibility] = useState('ALL'); // 'ALL' | 'ELIGIBLE' | 'NOT_ELIGIBLE'
+  const [filterProvider, setFilterProvider] = useState('All');
+  const [filterState, setFilterState] = useState('All States');
   const [filterCategory, setFilterCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const navigate = useNavigate();
-  const t = (key) => getTranslation(language, key);
+
+  // Upload modal for missing docs
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [targetDocId, setTargetDocId] = useState('pan');
 
   useEffect(() => {
-    getSchemes().then(setSchemes);
+    Promise.all([getSchemes(), getProfile(), getUserDocuments()])
+      .then(([sc, pr, docs]) => {
+        setSchemes(sc || []);
+        setProfile(pr);
+        if (docs && Object.keys(docs).length > 0) {
+          setDocuments((prev) => ({ ...prev, ...docs }));
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
-  const filteredSchemes = (schemes || []).filter((s) => {
-    const name = language === 'hi' ? s.hiName : s.name;
-    const desc = language === 'hi' ? s.hiShortDesc : s.shortDesc;
-    const cat = language === 'hi' ? s.hiCategory : s.category;
+  // Sync with AI Rules Engine whenever documents, profile, or schemes change
+  useEffect(() => {
+    let isMounted = true;
+    const syncRulesEngine = async () => {
+      try {
+        const docList = Object.entries(documents || {}).map(([docType, doc]) => ({
+          doc_type: docType,
+          fields: doc.extractedFields || {},
+          needs_review: doc.needsReview || [],
+          validation_errors: doc.validationErrors || [],
+        }));
+        const res = await evaluateProfileWithEngine({
+          extractedDocuments: docList,
+          supplementalProfile: profile || {},
+        });
+        if (isMounted && res?.evaluations) {
+          const evalMap = {};
+          res.evaluations.forEach((ev) => {
+            if (ev.scheme_id) {
+              evalMap[ev.scheme_id.toLowerCase()] = ev;
+              evalMap[ev.scheme_id] = ev;
+            }
+          });
+          setServerEvaluations(evalMap);
+        }
+      } catch (err) {
+        console.warn('Backend rules engine offline, continuing with local evaluator');
+      }
+    };
 
-    const matchesCat = filterCategory === 'All' || cat.includes(filterCategory) || s.category.includes(filterCategory);
-    const matchesQuery = name.toLowerCase().includes(searchQuery.toLowerCase()) || desc.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesQuery;
+    if (schemes.length > 0) {
+      syncRulesEngine();
+    }
+    return () => { isMounted = false; };
+  }, [documents, profile, schemes.length]);
+
+  const handleDocumentUploaded = (docId, filePayload) => {
+    const updatedDocs = {
+      ...documents,
+      [docId]: filePayload,
+    };
+    setDocuments(updatedDocs);
+    localStorage.setItem('sahayak_citizen_docs', JSON.stringify(updatedDocs));
+
+    addNotification({
+      title: 'Document Verified',
+      message: `${filePayload.fileName || docId.toUpperCase()} uploaded. Scheme eligibility updated!`,
+      type: 'DOCUMENT_VERIFIED',
+    });
+  };
+
+  const handleUploadMissing = (docId) => {
+    setTargetDocId(docId);
+    setUploadModalOpen(true);
+  };
+
+  const resetFilters = () => {
+    setFilterEligibility('ALL');
+    setFilterProvider('All');
+    setFilterState('All States');
+    setFilterCategory('All');
+    setSearchQuery('');
+  };
+
+  if (loading) return <LoadingState />;
+
+  // Dynamic evaluation (enhanced with server AI Rules Engine)
+  const { eligibleSchemes, ineligibleSchemes } = evaluateAllSchemes(
+    schemes,
+    documents,
+    profile || {},
+    serverEvaluations
+  );
+
+  const evaluatedAll = schemes.map((s) => {
+    const isEligible = eligibleSchemes.some((e) => e.id === s.id);
+    const full = isEligible
+      ? eligibleSchemes.find((e) => e.id === s.id)
+      : ineligibleSchemes.find((ie) => ie.id === s.id);
+    return full || s;
   });
+
+  const filteredSchemes = evaluatedAll.filter((s) => {
+    // Eligibility Filter
+    if (filterEligibility === 'ELIGIBLE' && !s.isEligible) return false;
+    if (filterEligibility === 'NOT_ELIGIBLE' && s.isEligible) return false;
+
+    // Provider / Level filter
+    if (filterProvider !== 'All') {
+      const isCentral = s.provider === 'Central' || s.provided_by === 'Central' || s.provided_by === 'Centre' || s.level === 'Central';
+      const isState = s.provider === 'State' || s.provided_by === 'State' || s.level === 'State';
+      if (filterProvider === 'Central' && !isCentral) return false;
+      if (filterProvider === 'State' && !isState) return false;
+    }
+
+    // State filter
+    if (filterState !== 'All States' && filterState !== 'All') {
+      const sState = (s.state || '').toLowerCase();
+      const targetState = filterState.toLowerCase();
+      const matchesState =
+        sState === targetState ||
+        sState.includes(targetState) ||
+        (Array.isArray(s.applicable_states) && !s.applicable_states.includes('ALL') && s.applicable_states.some((st) => st.toLowerCase() === targetState));
+      if (!matchesState) {
+        return false;
+      }
+    }
+
+    // Category filter
+    if (filterCategory !== 'All') {
+      const sCat = (s.category || '').toLowerCase();
+      const targetCat = filterCategory.toLowerCase();
+      if (!sCat.includes(targetCat) && !targetCat.includes(sCat)) {
+        return false;
+      }
+    }
+
+    // Search query
+    const q = searchQuery.trim().toLowerCase();
+    if (
+      q &&
+      !s.name.toLowerCase().includes(q) &&
+      !(s.shortDesc || '').toLowerCase().includes(q) &&
+      !s.id.toLowerCase().includes(q)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+
+  const isFiltered =
+    filterEligibility !== 'ALL' ||
+    filterProvider !== 'All' ||
+    (filterState !== 'All States' && filterState !== 'All') ||
+    filterCategory !== 'All' ||
+    searchQuery !== '';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
-      <div className="border-b border-slate-300 pb-2 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      {/* Page Title & Search Header */}
+      <div className="border-b border-slate-200 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-[#1b365d]">{t('schemesTitle')}</h2>
-          <p className="text-xs text-slate-600">{t('schemesSub')}</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+            {hi ? 'सरकारी योजना निर्देशिका' : 'Government Scheme Directory'}
+          </h1>
+          <p className="text-xs text-slate-600 mt-0.5">
+            {hi
+              ? 'अपने सत्यापित दस्तावेज़ों के आधार पर लाइव पात्रता जांच के साथ सभी केंद्र व राज्य योजनाएं देखें।'
+              : 'Browse all Central and State schemes with live eligibility checks based on your verified documents.'}
+          </p>
         </div>
 
-        <input
-          type="search"
-          aria-label={t('searchPlaceholder')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t('searchPlaceholder')}
-          className="border border-slate-300 rounded px-3 py-1.5 text-xs w-full md:w-64 focus:outline-none focus:border-[#1b365d]"
-        />
+        <div className="w-full md:w-80 relative">
+          <input
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={hi ? 'योजना का नाम या कोड खोजें...' : 'Search schemes by name or code...'}
+            className="w-full border border-slate-300 rounded px-3.5 py-2 text-xs focus:outline-none focus:border-[#0f2942] pl-8 shadow-2xs"
+          />
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 text-xs font-semibold">
-        {[
-          { key: 'All', label: t('allCat') },
-          { key: 'Agriculture', label: t('agriCat') },
-          { key: 'Housing', label: t('housingCat') },
-          { key: 'Social Welfare', label: t('socialCat') },
-          { key: 'Healthcare', label: t('healthCat') },
-          { key: 'Energy', label: t('energyCat') },
-        ].map((cat) => (
+      {/* Advanced Filter Toolbar */}
+      <div className="bg-white border border-slate-200 rounded-lg p-4 space-y-3.5 shadow-2xs">
+        {/* Eligibility Status Chips */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+          <div className="flex items-center gap-1.5 text-xs font-semibold">
+            <span className="text-slate-500 text-[11px] uppercase mr-1">
+              {hi ? 'पात्रता स्थिति:' : 'Eligibility:'}
+            </span>
+            <button
+              onClick={() => setFilterEligibility('ALL')}
+              className={`px-3 py-1 rounded-full border transition cursor-pointer ${
+                filterEligibility === 'ALL'
+                  ? 'bg-[#0f2942] text-white border-[#0f2942]'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              {hi ? `सभी योजनाएं (${schemes.length})` : `All Schemes (${schemes.length})`}
+            </button>
+            <button
+              onClick={() => setFilterEligibility('ELIGIBLE')}
+              className={`px-3 py-1 rounded-full border transition cursor-pointer flex items-center gap-1 ${
+                filterEligibility === 'ELIGIBLE'
+                  ? 'bg-emerald-700 text-white border-emerald-700'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+              <span>
+                {hi
+                  ? `आवेदन हेतु पात्र (${eligibleSchemes.length})`
+                  : `Eligible to Apply (${eligibleSchemes.length})`}
+              </span>
+            </button>
+            <button
+              onClick={() => setFilterEligibility('NOT_ELIGIBLE')}
+              className={`px-3 py-1 rounded-full border transition cursor-pointer flex items-center gap-1 ${
+                filterEligibility === 'NOT_ELIGIBLE'
+                  ? 'bg-slate-700 text-white border-slate-700'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
+            >
+              <AlertCircle className="w-3 h-3 text-slate-400" />
+              <span>
+                {hi
+                  ? `आवश्यक कार्रवाई (${ineligibleSchemes.length})`
+                  : `Action Required (${ineligibleSchemes.length})`}
+              </span>
+            </button>
+          </div>
+
+          {isFiltered && (
+            <button
+              onClick={resetFilters}
+              className="text-[11px] text-rose-700 hover:text-rose-900 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>{hi ? 'सभी फ़िल्टर साफ़ करें' : 'Clear All Filters'}</span>
+              <X className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+
+        {/* Dropdowns Row: Provider, State, Category */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              {hi ? 'प्रदाता स्तर' : 'Provided By'}
+            </label>
+            <select
+              value={filterProvider}
+              onChange={(e) => setFilterProvider(e.target.value)}
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
+            >
+              <option value="All">{hi ? 'सभी स्तर' : 'All Levels'}</option>
+              <option value="Central">{hi ? 'केंद्र सरकार' : 'Central Government'}</option>
+              <option value="State">{hi ? 'राज्य सरकार' : 'State Government'}</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              {hi ? 'संबंधित राज्य' : 'Applicable State'}
+            </label>
+            <select
+              value={filterState}
+              onChange={(e) => setFilterState(e.target.value)}
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
+            >
+              {AVAILABLE_STATES.map((st) => (
+                <option key={st} value={st}>
+                  {hi ? STATE_NAMES_HI[st] || st : st}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+              {hi ? 'श्रेणी' : 'Category'}
+            </label>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="w-full border border-slate-300 rounded px-2.5 py-1.5 focus:outline-none focus:border-[#0f2942] bg-white font-medium"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {hi ? CATEGORY_NAMES_HI[c] || c : c === 'All' ? 'All Categories' : c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-end">
+            <div className="bg-slate-50 border border-slate-200 rounded px-3 py-1.5 w-full text-slate-600 text-xs flex items-center justify-between">
+              <span>{hi ? 'उपयुक्त योजनाएं:' : 'Matching Schemes:'}</span>
+              <strong className="text-[#0f2942] font-bold text-sm">
+                {filteredSchemes.length}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Schemes Grid */}
+      {filteredSchemes.length === 0 ? (
+        <div className="bg-white border border-slate-200 rounded-lg p-10 text-center space-y-3">
+          <Search className="w-8 h-8 text-slate-300 mx-auto" />
+          <h3 className="text-base font-bold text-slate-800">
+            {hi ? 'कोई योजना नहीं मिली' : 'No schemes found matching criteria'}
+          </h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            {hi
+              ? 'अधिक लोक कल्याणकारी योजनाओं को देखने के लिए अपने फ़िल्टर बदलें।'
+              : 'Try adjusting your provider, state, or category filter to discover more government welfare schemes.'}
+          </p>
           <button
-            key={cat.key}
-            onClick={() => setFilterCategory(cat.key)}
-            aria-pressed={filterCategory === cat.key}
-            className={`px-2.5 py-1 rounded border transition-colors ${filterCategory === cat.key ? 'bg-[#1b365d] text-white border-[#1b365d]' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'}`}
+            onClick={resetFilters}
+            className="bg-[#0f2942] text-white px-4 py-1.5 rounded text-xs font-semibold hover:bg-[#1e3a5f] cursor-pointer"
           >
-            {cat.label}
+            {hi ? 'फ़िल्टर रीसेट करें' : 'Reset All Filters'}
           </button>
-        ))}
-      </div>
-
-      {!schemes ? (
-        <LoadingState />
+        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredSchemes.map((scheme) => (
-            <SchemeCard key={scheme.id} scheme={scheme} language={language} onViewDetails={(id) => navigate(`/schemes/${id}`)} />
+            <SchemeEligibilityCard
+              key={scheme.id}
+              scheme={scheme}
+              evaluation={scheme.evaluation}
+              onUploadMissing={handleUploadMissing}
+              language={language}
+            />
           ))}
         </div>
       )}
+
+      {/* Upload Modal */}
+      <DocumentUploadModal
+        isOpen={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        initialDocId={targetDocId}
+        onUploadSuccess={handleDocumentUploaded}
+        language={language}
+      />
     </div>
   );
 }

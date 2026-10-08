@@ -1,0 +1,65 @@
+services:
+  # MongoDB Database Service
+  mongo:
+    image: mongo:7.0
+    container_name: sahayak_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=sahayak_db
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Python FastAPI Backend (Rules Engine & Document Extraction Pipeline)
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: sahayak_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+      - DB_NAME=sahayak_db
+      - JWT_SECRET=sahayak_super_secure_jwt_secret_key_2026
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - UPLOAD_DIR=/app/backend/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - backend_uploads:/app/backend/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  # React Single Page Application (Served by Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: sahayak_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
+    driver: local
+  backend_uploads:
+    driver: local

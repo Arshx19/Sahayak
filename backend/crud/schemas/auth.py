@@ -11,6 +11,8 @@ class UserRegisterRequest(BaseModel):
     phone: Optional[str] = Field(None, description="Citizen or officer contact number")
     password: str = Field(..., min_length=6, description="Plain text password (hashed upon receipt)")
     role: Optional[str] = Field("citizen", description="Role: citizen, officer, or admin")
+    state: Optional[str] = Field(None, description="Citizen state of residence")
+    district: Optional[str] = Field(None, description="Citizen district")
 
 
 class UserLoginRequest(BaseModel):

@@ -1,7 +1,7 @@
 """Scheme Eligibility Rules Routes.
 
 Admin endpoints for managing deterministic criteria associated with schemes.
-Connects directly to DB layer helpers (get_scheme_rules, get_all_scheme_rules).
+Delegates directly to repository functions in backend/DB/crud.py (get_scheme_rules, add_scheme_rule_condition).
 """
 
 from typing import Any, Dict
@@ -14,8 +14,12 @@ except ImportError:
     from crud.schemas.rule import RuleCreate, RuleUpdate
     from crud.auth.dependencies import require_role
 
-from DB.connection import get_db
-import DB.crud as db_crud
+try:
+    from DB.connection import get_db
+    from DB import crud, schemas
+except ImportError:
+    from backend.DB.connection import get_db
+    from backend.DB import crud, schemas
 
 router = APIRouter(tags=["Rules"])
 
@@ -42,7 +46,7 @@ async def create_rule(
             "explanation": rule_data["explanation"],
             "hindi_explanation": rule_data.get("hindi_explanation"),
         }
-        await db_crud.add_scheme_rule_condition(db, scheme_id, rule_condition)
+        await crud.add_scheme_rule_condition(db, scheme_id, rule_condition)
         return {
             "success": True,
             "message": f"Rule added to scheme '{scheme_id}' successfully",
@@ -67,7 +71,7 @@ async def list_rules_for_scheme(
 ) -> Dict[str, Any]:
     """Retrieve all deterministic rule criteria attached to a scheme."""
     try:
-        rules_doc = await db_crud.get_scheme_rules(db, scheme_id)
+        rules_doc = await crud.get_scheme_rules(db, scheme_id)
         if rules_doc:
             return {"success": True, "data": rules_doc}
     except Exception:

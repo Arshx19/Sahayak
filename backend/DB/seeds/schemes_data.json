@@ -1,210 +1,1179 @@
 [
   {
-    "scheme_id": "pm_kisan",
-    "scheme_code": "PM-KISAN",
-    "name": "Pradhan Mantri Kisan Samman Nidhi",
-    "hindi_name": "प्रधानमंत्री किसान सम्मान निधि",
-    "category": "Agriculture",
+    "scheme_id": "CEN001",
+    "scheme_code": "CEN001",
+    "name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "category": "Farmer",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Income support scheme providing ₹6,000 per year in 3 equal installments of ₹2,000 each directly into the bank accounts of landholding farmer families across India.",
-    "benefits": "₹6,000 per year in three direct bank transfers (₹2,000 every 4 months)",
-    "required_documents": [
-      "Aadhaar Card",
-      "Land Ownership Record (Khatauni / Jamabandi / RoR)",
-      "Bank Account Passbook (Aadhaar-seeded)",
-      "Active Mobile Number linked to Aadhaar"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
+    "description": "Direct income support of ₹6,000 per year in three equal installments of ₹2,000 to all landholding farmer families across India.",
+    "benefits": "Direct income support of ₹6,000 per year in three equal installments of ₹2,000 to all landholding farmer families across India.",
+    "eligibility": "Landholding farmer families with cultivable agricultural land in their name. Institutional landholders and high-income/tax-paying taxpayers are excluded.",
+    "required_documents": [
+      "aadhaar",
+      "land_record",
+      "bank_account",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Land Ownership Document | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Register on PM-KISAN portal or CSC centers → Verify Aadhaar and land record (Khatauni) → Submit bank details for DBT linkage.",
+    "application_url": "https://pmkisan.gov.in",
     "official_url": "https://pmkisan.gov.in",
-    "helpline_number": "155261 / 011-24300606",
+    "official_source": "https://pmkisan.gov.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "pm_jay",
-    "scheme_code": "PM-JAY",
-    "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
-    "hindi_name": "आयुष्मान भारत - प्रधानमंत्री जन आरोग्य योजना",
+    "scheme_id": "CEN002",
+    "scheme_code": "CEN002",
+    "name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana (AB-PMJAY)",
     "category": "Healthcare",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "The world's largest health assurance scheme providing comprehensive secondary and tertiary care hospitalization coverage to poor and vulnerable families.",
-    "benefits": "Cashless health cover up to ₹5,00,000 per family per year in all empanelled government and private hospitals",
-    "required_documents": [
-      "Aadhaar Card",
-      "Ration Card",
-      "Income Certificate / SECC 2011 Verification",
-      "Active Mobile Number"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
-    "official_url": "https://pmjay.gov.in",
-    "helpline_number": "14555",
+    "description": "Cashless health assurance cover of up to ₹5 lakh per family per year for secondary and tertiary care hospitalization in empanelled hospitals.",
+    "benefits": "Cashless health assurance cover of up to ₹5 lakh per family per year for secondary and tertiary care hospitalization in empanelled hospitals.",
+    "eligibility": "Families identified as deprived under rural and urban categories of Socio-Economic Caste Census (SECC) 2011 or NFSA ration card holders, and senior citizens aged 70+.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Check eligibility on portal or Ayushman App → Visit nearest CSC or empanelled hospital with Aadhaar and Ration Card → Complete e-KYC and download Ayushman Card.",
+    "application_url": "https://beneficiary.nha.gov.in",
+    "official_url": "https://beneficiary.nha.gov.in",
+    "official_source": "https://pmjay.gov.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "pmay_g",
-    "scheme_code": "PMAY-G",
-    "name": "Pradhan Mantri Awaas Yojana - Gramin",
-    "hindi_name": "प्रधानमंत्री आवास योजना - ग्रामीण",
+    "scheme_id": "CEN003",
+    "scheme_code": "CEN003",
+    "name": "Pradhan Mantri Awas Yojana - Gramin (PMAY-G)",
     "category": "Housing",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Flagship social welfare initiative providing financial grant assistance to rural families living in kutcha or dilapidated houses for building safe, permanent pucca homes.",
-    "benefits": "Financial grant of ₹1,20,000 (plain areas) or ₹1,30,000 (hilly/difficult areas) plus ₹12,000 for toilet construction",
-    "required_documents": [
-      "Aadhaar Card",
-      "MGNREGA Job Card",
-      "Bank Account Details (DBT enabled)",
-      "Land Record / Proof of plot for house"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
+    "description": "Financial assistance of ₹1.20 lakh (plains) or ₹1.30 lakh (hilly areas) for constructing pucca houses with basic amenities for houseless and kutcha-house rural families.",
+    "benefits": "Financial assistance of ₹1.20 lakh (plains) or ₹1.30 lakh (hilly areas) for constructing pucca houses with basic amenities for houseless and kutcha-house rural families.",
+    "eligibility": "Rural households living in kutcha or dilapidated houses, identified through SECC 2011 / Awaas+ list verified by Gram Sabha.",
+    "required_documents": [
+      "aadhaar",
+      "bank_account",
+      "mgnrega_job_card",
+      "land_record",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Bank Account Details | MGNREGA Job Card | Land Ownership Document | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Periodic",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Periodic",
+    "application_status": "Open",
+    "application_process": "Gram Panchayat prepares beneficiary priority list → Block Development Office verifies field geo-tagging → Sanction order issued and DBT installments released in stages.",
+    "application_url": "https://pmayg.nic.in",
     "official_url": "https://pmayg.nic.in",
-    "helpline_number": "1800-11-6446",
+    "official_source": "https://pmayg.nic.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "pmuy",
-    "scheme_code": "PMUY",
-    "name": "Pradhan Mantri Ujjwala Yojana 2.0",
-    "hindi_name": "प्रधानमंत्री उज्ज्वला योजना 2.0",
-    "category": "Clean Cooking Fuel",
+    "scheme_id": "CEN004",
+    "scheme_code": "CEN004",
+    "name": "Pradhan Mantri Ujjwala Yojana 2.0 (PMUY)",
+    "category": "Women",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Provides deposit-free LPG connections along with a free first cylinder refill and stove to women belonging to below-poverty-line and disadvantaged rural households.",
-    "benefits": "Free LPG gas connection with subsidized cylinder, free first refill, and gas stove",
-    "required_documents": [
-      "Aadhaar Card of Adult Female Applicant",
-      "Ration Card / BPL Document showing family composition",
-      "Bank Account Passbook",
-      "Self-declaration of residential address"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
+    "description": "Deposit-free LPG connection with free first refill and hotplate stove provided to adult women from poor and deprived households.",
+    "benefits": "Deposit-free LPG connection with free first refill and hotplate stove provided to adult women from poor and deprived households.",
+    "eligibility": "Adult woman (aged 18+) belonging to poor households (SC/ST, PMAY, Antyodaya Anna Yojana, Most Backward Classes, or verified 14-point declaration) having no existing LPG connection in the family.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "bank_account",
+      "photograph"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Bank Account Details | Passport Size Photograph",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Apply online on PMUY portal or submit application at nearest LPG distributor with Aadhaar and Ration Card → Distributor conducts e-KYC and releases connection.",
+    "application_url": "https://www.pmuy.gov.in",
     "official_url": "https://www.pmuy.gov.in",
-    "helpline_number": "1800-266-6696",
+    "official_source": "https://www.pmuy.gov.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "apy",
-    "scheme_code": "APY",
-    "name": "Atal Pension Yojana",
-    "hindi_name": "अटल पेंशन योजना",
-    "category": "Social Security",
+    "scheme_id": "CEN005",
+    "scheme_code": "CEN005",
+    "name": "Atal Pension Yojana (APY)",
+    "category": "Social Welfare",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Government guaranteed monthly pension scheme for citizens working in the unorganized sector, ensuring dignified financial stability after retirement.",
-    "benefits": "Guaranteed monthly pension of ₹1,000 to ₹5,000 after 60 years of age, depending on contribution",
-    "required_documents": [
-      "Aadhaar Card",
-      "Savings Bank Account / Post Office Account",
-      "Mobile Number"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
-    "official_url": "https://www.npscra.nsdl.co.in",
-    "helpline_number": "1800-110-069",
+    "description": "Guaranteed minimum monthly pension of ₹1,000 to ₹5,000 to unorganized sector workers after attaining 60 years of age.",
+    "benefits": "Guaranteed minimum monthly pension of ₹1,000 to ₹5,000 to unorganized sector workers after attaining 60 years of age.",
+    "eligibility": "Indian citizen aged between 18 and 40 years holding a savings bank account. Applicant must not be an income taxpayer or member of any statutory social security scheme.",
+    "required_documents": [
+      "aadhaar",
+      "bank_account",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Visit bank branch or use net banking / mobile app → Fill APY registration form with auto-debit consent → Receive Permanent Retirement Account Number (PRAN).",
+    "application_url": "https://enps.nsdl.com",
+    "official_url": "https://enps.nsdl.com",
+    "official_source": "https://www.npscra.nsdl.co.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "ignoaps",
-    "scheme_code": "IGNOAPS",
-    "name": "Indira Gandhi National Old Age Pension Scheme",
-    "hindi_name": "इंदिरा गांधी राष्ट्रीय वृद्धावस्था पेंशन योजना",
-    "category": "Social Assistance",
+    "scheme_id": "CEN006",
+    "scheme_code": "CEN006",
+    "name": "Pradhan Mantri Mudra Yojana (PMMY)",
+    "category": "MSME",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Part of the National Social Assistance Programme (NSAP) providing non-contributory monthly pensions to destitute senior citizens living below poverty line.",
-    "benefits": "Monthly financial pension assistance of ₹200 to ₹500 (plus state top-up up to ₹1,000 - ₹2,500 depending on state) transferred to bank",
-    "required_documents": [
-      "Aadhaar Card",
-      "Age Proof (Voter ID / Birth Certificate / Medical Certificate)",
-      "BPL Ration Card / Income Certificate",
-      "Bank Account Passbook"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
-    "official_url": "https://nsap.nic.in",
-    "helpline_number": "1800-111-555",
+    "description": "Collateral-free micro loans up to ₹10 lakh in three categories (Shishu up to ₹50k, Kishore ₹50k-5L, Tarun ₹5L-10L) to non-corporate, non-farm small/micro enterprises.",
+    "benefits": "Collateral-free micro loans up to ₹10 lakh in three categories (Shishu up to ₹50k, Kishore ₹50k-5L, Tarun ₹5L-10L) to non-corporate, non-farm small/micro enterprises.",
+    "eligibility": "Any Indian citizen with a business plan for non-farm income-generating activity such as manufacturing, processing, trading, or service sector.",
+    "required_documents": [
+      "aadhaar",
+      "pan",
+      "address_proof",
+      "bank_account",
+      "photograph",
+      "udyam_registration"
+    ],
+    "raw_required_documents": "Aadhaar Card | PAN Card | Address Proof | Bank Account Details | Passport Size Photograph | Business Registration / Udyam Registration",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Apply via Udyamimitra portal or visit commercial/RRB/cooperative bank with project proposal and KYC → Bank verifies and disburses loan without collateral.",
+    "application_url": "https://www.udyamimitra.in",
+    "official_url": "https://www.udyamimitra.in",
+    "official_source": "https://www.mudra.org.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
   },
   {
-    "scheme_id": "ssy",
-    "scheme_code": "SSY",
-    "name": "Sukanya Samriddhi Yojana",
-    "hindi_name": "सुकन्या समृद्धि योजना",
-    "category": "Financial Savings",
-    "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "High-interest, government-backed savings scheme launched under 'Beti Bachao Beti Padhao' to build a secure financial corpus for girl child education and marriage.",
-    "benefits": "Government-backed 8.2% annual compound interest, tax deduction under 80C, and completely tax-free maturity amount",
-    "required_documents": [
-      "Birth Certificate of Girl Child",
-      "Aadhaar Card / ID Proof of Parent/Guardian",
-      "Address Proof of Guardian",
-      "Passport Size Photographs"
-    ],
-    "official_url": "https://www.india.gov.in/sukanya-samriddhi-yojna",
-    "helpline_number": "1800-266-6868",
-    "is_active": true,
-    "version": "1.0"
-  },
-  {
-    "scheme_id": "mgnrega",
-    "scheme_code": "MGNREGA",
-    "name": "Mahatma Gandhi National Rural Employment Guarantee Scheme",
-    "hindi_name": "महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी योजना",
+    "scheme_id": "CEN007",
+    "scheme_code": "CEN007",
+    "name": "PM Street Vendor's AtmaNirbhar Nidhi (PM SVANidhi)",
     "category": "Employment",
     "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Legal employment guarantee providing at least 100 days of guaranteed wage employment in a financial year to every rural adult who volunteers for unskilled manual work.",
-    "benefits": "Guaranteed 100 days wage employment per household per year at statutory state minimum wage rates with DBT payment within 15 days",
-    "required_documents": [
-      "Aadhaar Card",
-      "MGNREGA Job Card Application Form",
-      "Passport Size Photos of adult family members",
-      "Bank or Post Office Passbook"
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
     ],
-    "official_url": "https://nrega.nic.in",
-    "helpline_number": "1800-345-6789",
-    "is_active": true,
-    "version": "1.0"
-  },
-  {
-    "scheme_id": "pmmy",
-    "scheme_code": "PMMY",
-    "name": "Pradhan Mantri Mudra Yojana",
-    "hindi_name": "प्रधानमंत्री मुद्रा योजना",
-    "category": "Financial & MSME",
-    "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Provides collateral-free loans up to ₹10 lakh to non-corporate, non-farm small and micro enterprises to encourage self-employment and small business growth.",
-    "benefits": "Collateral-free business loans up to ₹10 Lakh in 3 categories: Shishu (up to ₹50k), Kishore (₹50k-₹5L), Tarun (₹5L-₹10L) at low interest",
+    "description": "Collateral-free working capital micro-credit starting at ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) with 7% interest subsidy for street vendors.",
+    "benefits": "Collateral-free working capital micro-credit starting at ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) with 7% interest subsidy for street vendors.",
+    "eligibility": "Urban street vendors vending on or before March 24, 2020 holding a Certificate of Vending / Identity Card issued by Urban Local Body, or Letter of Recommendation.",
     "required_documents": [
-      "Aadhaar Card / Voter ID / PAN Card",
-      "Business Address Proof / Registration Certificate",
-      "Past 6 months Bank Account Statement",
-      "Quotation / Business Project Plan"
+      "aadhaar",
+      "vending_certificate",
+      "bank_account",
+      "mobile_number"
     ],
-    "official_url": "https://www.mudra.org.in",
-    "helpline_number": "1800-180-1111",
-    "is_active": true,
-    "version": "1.0"
-  },
-  {
-    "scheme_id": "pmsvanidhi",
-    "scheme_code": "PMSVANIDHI",
-    "name": "PM Street Vendor's AtmaNirbhar Nidhi",
-    "hindi_name": "पीएम स्ट्रीट वेंडर्स आत्मनिर्भर निधि",
-    "category": "Urban Livelihoods",
-    "scheme_type": "Central",
-    "applicable_states": ["ALL"],
-    "description": "Special micro-credit facility providing affordable, collateral-free working capital loans to urban street vendors to resume and scale livelihoods.",
-    "benefits": "Collateral-free working capital loan of ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) with 7% interest subsidy and cashback on digital transactions",
-    "required_documents": [
-      "Aadhaar Card",
-      "Vending Certificate / Identity Card issued by Urban Local Body (ULB) / Letter of Recommendation",
-      "Bank Account Details"
-    ],
+    "raw_required_documents": "Aadhaar Card | Vending Certificate / ID Card | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Register on PM SVANidhi portal or through ULB/banking correspondent → Upload vending proof and KYC → Bank disburses loan to account.",
+    "application_url": "https://pmsvanidhi.mohua.gov.in",
     "official_url": "https://pmsvanidhi.mohua.gov.in",
-    "helpline_number": "1800-11-1979",
+    "official_source": "https://pmsvanidhi.mohua.gov.in",
     "is_active": true,
-    "version": "1.0"
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "CEN008",
+    "scheme_code": "CEN008",
+    "name": "Pradhan Mantri Matru Vandana Yojana (PMMVY)",
+    "category": "Women",
+    "scheme_type": "Central",
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
+    ],
+    "description": "Cash incentive of ₹5,000 in two installments for the first live child and ₹6,000 for the second girl child to pregnant and lactating mothers for health and nutrition.",
+    "benefits": "Cash incentive of ₹5,000 in two installments for the first live child and ₹6,000 for the second girl child to pregnant and lactating mothers for health and nutrition.",
+    "eligibility": "Pregnant women and lactating mothers aged 19+ belonging to socially/economically disadvantaged categories (BPL, SC/ST, EWS income < ₹8L, PMMY/e-Shram holders) excluding regular government employees.",
+    "required_documents": [
+      "aadhaar",
+      "mcp_card",
+      "bank_account",
+      "income_certificate"
+    ],
+    "raw_required_documents": "Aadhaar Card | Mother-Child Protection Card (MCP Card) | Bank Account Details | Income Certificate",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Register at nearest Anganwadi Centre or on PMMVY portal within pregnancy registration period → Submit MCP card and bank details → DBT disbursed directly.",
+    "application_url": "https://pmmvy.wcd.gov.in",
+    "official_url": "https://pmmvy.wcd.gov.in",
+    "official_source": "https://wcd.nic.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "CEN009",
+    "scheme_code": "CEN009",
+    "name": "Mahatma Gandhi National Rural Employment Guarantee Scheme (MGNREGS)",
+    "category": "Employment",
+    "scheme_type": "Central",
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
+    ],
+    "description": "Statutory guarantee of at least 100 days of unskilled wage employment per financial year to rural adult household members willing to do manual work.",
+    "benefits": "Statutory guarantee of at least 100 days of unskilled wage employment per financial year to rural adult household members willing to do manual work.",
+    "eligibility": "Adult members (aged 18+) of rural households residing in the notified Gram Panchayat area who volunteer for unskilled manual labour.",
+    "required_documents": [
+      "aadhaar",
+      "photograph",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Passport Size Photograph | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Submit application to Gram Panchayat → Receive Job Card within 15 days → Submit written work demand → Work allocated within 15 days.",
+    "application_url": "https://nrega.nic.in",
+    "official_url": "https://nrega.nic.in",
+    "official_source": "https://nrega.nic.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "CEN010",
+    "scheme_code": "CEN010",
+    "name": "Sukanya Samriddhi Yojana (SSY)",
+    "category": "Financial Assistance",
+    "scheme_type": "Central",
+    "provider": "Central",
+    "state": "All India",
+    "applicable_states": [
+      "ALL"
+    ],
+    "description": "High-interest government small savings scheme for a girl child with tax exemption under Section 80C and sovereign guarantee for higher education and marriage.",
+    "benefits": "High-interest government small savings scheme for a girl child with tax exemption under Section 80C and sovereign guarantee for higher education and marriage.",
+    "eligibility": "Girl child who is an Indian resident aged below 10 years at account opening. A maximum of two accounts allowed per family (or three in case of twins/triplets).",
+    "required_documents": [
+      "birth_certificate",
+      "aadhaar",
+      "address_proof",
+      "photograph"
+    ],
+    "raw_required_documents": "Birth Certificate of Girl Child | Aadhaar Card | Address Proof | Passport Size Photograph",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Fill account opening form at authorized post office or commercial bank branch → Attach child birth certificate and parent KYC → Deposit minimum initial amount of ₹250.",
+    "application_url": "https://www.indiapost.gov.in",
+    "official_url": "https://www.indiapost.gov.in",
+    "official_source": "https://www.nsiindia.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "UP001",
+    "scheme_code": "UP001",
+    "name": "Mukhyamantri Yuva Swarojgar Yojana (MMYSY)",
+    "category": "Employment",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Uttar Pradesh",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "description": "Financial assistance with 25% margin money subsidy for unemployed youth to set up industrial projects (up to ₹25 lakh) or service sector units (up to ₹10 lakh).",
+    "benefits": "Financial assistance with 25% margin money subsidy for unemployed youth to set up industrial projects (up to ₹25 lakh) or service sector units (up to ₹10 lakh).",
+    "eligibility": "Resident of Uttar Pradesh aged 18 to 40 years with minimum Class 10 qualification. Must be unemployed and not a defaulter in any bank.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "marksheet",
+      "project_report",
+      "bank_account",
+      "photograph"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Educational Qualification Certificate | Project Report | Bank Account Details | Passport Size Photograph",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Open",
+    "application_process": "Apply online on UP DIUP portal → District Level Task Force Committee (DLTFC) screens application → Forwarded to bank for loan and margin subsidy release.",
+    "application_url": "https://diupmsme.upsdc.gov.in",
+    "official_url": "https://diupmsme.upsdc.gov.in",
+    "official_source": "https://diupmsme.upsdc.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "UP002",
+    "scheme_code": "UP002",
+    "name": "Mukhyamantri Kanya Sumangala Yojana",
+    "category": "Women",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Uttar Pradesh",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "description": "Conditional cash transfer of ₹25,000 in six milestones from birth to degree/diploma admission to promote girl child education and curb female foeticide.",
+    "benefits": "Conditional cash transfer of ₹25,000 in six milestones from birth to degree/diploma admission to promote girl child education and curb female foeticide.",
+    "eligibility": "Permanent resident of Uttar Pradesh with annual family income not exceeding ₹3 lakh. Maximum two girl children per family eligible.",
+    "required_documents": [
+      "aadhaar",
+      "birth_certificate",
+      "domicile_certificate",
+      "income_certificate",
+      "bank_account",
+      "photograph"
+    ],
+    "raw_required_documents": "Aadhaar Card | Birth Certificate of Girl Child | Domicile Certificate | Income Certificate | Bank Account Details | Passport Size Photograph",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Register girl child on MKSY portal → Select applicable milestone stage and upload supporting certificates → BDO/SDO verification → Direct DBT transfer.",
+    "application_url": "https://mksy.up.gov.in",
+    "official_url": "https://mksy.up.gov.in",
+    "official_source": "https://mksy.up.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "UP003",
+    "scheme_code": "UP003",
+    "name": "One District One Product (ODOP) Margin Money Scheme",
+    "category": "MSME",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Uttar Pradesh",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "description": "Subsidized margin money support (up to ₹20 lakh) for artisans, craftspersons, and entrepreneurs establishing enterprises under district-notified ODOP products.",
+    "benefits": "Subsidized margin money support (up to ₹20 lakh) for artisans, craftspersons, and entrepreneurs establishing enterprises under district-notified ODOP products.",
+    "eligibility": "Resident of Uttar Pradesh aged 18+ engaged or planning to engage in the notified ODOP craft/product of their district.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "project_report",
+      "bank_account",
+      "photograph",
+      "caste_certificate"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Project Report | Bank Account Details | Passport Size Photograph | Caste Certificate",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Open",
+    "application_process": "Apply through DIUP portal under ODOP scheme → Interview by district committee → Sanctioned by bank → Margin money disbursed by DIC.",
+    "application_url": "https://diupmsme.upsdc.gov.in",
+    "official_url": "https://diupmsme.upsdc.gov.in",
+    "official_source": "https://odopup.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "UP004",
+    "scheme_code": "UP004",
+    "name": "UP Mukhyamantri Abhyudaya Yojana",
+    "category": "Education",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Uttar Pradesh",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "description": "Free competitive examination coaching (UPSC, UPPSC, JEE, NEET, NDA, CDS) provided through divisional centers and virtual classes by senior officers and subject experts.",
+    "benefits": "Free competitive examination coaching (UPSC, UPPSC, JEE, NEET, NDA, CDS) provided through divisional centers and virtual classes by senior officers and subject experts.",
+    "eligibility": "Domicile of Uttar Pradesh preparing for competitive exams, belonging to financially weaker or middle-income backgrounds.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "marksheet",
+      "photograph"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Educational Qualification Certificate | Passport Size Photograph",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Annual",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Annual",
+    "application_status": "Open",
+    "application_process": "Register on Abhyudaya portal → Select course and divisional center → Appear for eligibility entrance test → Selected candidates join classes.",
+    "application_url": "https://abhyuday.up.gov.in",
+    "official_url": "https://abhyuday.up.gov.in",
+    "official_source": "https://abhyuday.up.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "UP005",
+    "scheme_code": "UP005",
+    "name": "Mukhyamantri Krishak Durghatna Kalyan Yojana",
+    "category": "Farmer",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Uttar Pradesh",
+    "applicable_states": [
+      "Uttar Pradesh"
+    ],
+    "description": "Accident insurance compensation of up to ₹5 lakh in case of accidental death or permanent disability of farmers while working in fields.",
+    "benefits": "Accident insurance compensation of up to ₹5 lakh in case of accidental death or permanent disability of farmers while working in fields.",
+    "eligibility": "Account holder / co-tenure holder farmer or agricultural labourer of Uttar Pradesh aged 18 to 70 years.",
+    "required_documents": [
+      "aadhaar",
+      "land_record",
+      "disability_certificate",
+      "post_mortem_report",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Land Ownership Document | Death Certificate / Medical Disability Certificate | Post-Mortem Report | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Submit claim within 45 days of accident to concerned Tehsil / SDM office → Verification by revenue officials → Sanction and DBT payment by District Magistrate.",
+    "application_url": "https://edistrict.up.gov.in",
+    "official_url": "https://edistrict.up.gov.in",
+    "official_source": "https://up.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "MH001",
+    "scheme_code": "MH001",
+    "name": "Mukhyamantri Majhi Ladki Bahin Yojana",
+    "category": "Women",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Maharashtra",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "description": "Monthly direct financial assistance of ₹1,500 transferred to women to promote economic independence, nutrition, and health.",
+    "benefits": "Monthly direct financial assistance of ₹1,500 transferred to women to promote economic independence, nutrition, and health.",
+    "eligibility": "Resident woman of Maharashtra aged between 21 and 65 years with annual family income up to ₹2.5 lakh. Excludes income taxpayers and government pensioners.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "ration_bpl",
+      "income_certificate",
+      "bank_account",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Ration Card | Income Certificate | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Apply online via Nari Shakti Doot App / portal or Anganwadi / Setu Suvidha Kendra → Upload Aadhaar, Ration Card, and bank details → Direct monthly DBT credited.",
+    "application_url": "https://ladakibahin.maharashtra.gov.in",
+    "official_url": "https://ladakibahin.maharashtra.gov.in",
+    "official_source": "https://maharashtra.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "MH002",
+    "scheme_code": "MH002",
+    "name": "Mahatma Jyotirao Phule Jan Arogya Yojana (MJPJAY)",
+    "category": "Healthcare",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Maharashtra",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "description": "Cashless health insurance coverage of up to ₹5 lakh per family per year for secondary and tertiary medical treatments across empanelled hospitals in Maharashtra.",
+    "benefits": "Cashless health insurance coverage of up to ₹5 lakh per family per year for secondary and tertiary medical treatments across empanelled hospitals in Maharashtra.",
+    "eligibility": "All families holding valid ration cards (Yellow, Orange, White) or domicile of Maharashtra holding valid state family identity proof.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "domicile_certificate"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Domicile Certificate",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Visit Arogyamitra desk at any empanelled network hospital with Aadhaar and Ration Card → Pre-authorization generated → Cashless treatment provided.",
+    "application_url": "https://www.jeevandayee.gov.in",
+    "official_url": "https://www.jeevandayee.gov.in",
+    "official_source": "https://www.jeevandayee.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "MH003",
+    "scheme_code": "MH003",
+    "name": "Mukhyamantri Saur Krushi Vahini Yojana (MSKVY 2.0)",
+    "category": "Farmer",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Maharashtra",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "description": "Daytime solar power supply for agricultural pumps by leasing farmer land for solar power generation with guaranteed lease rent of ₹1.25 lakh/acre/year.",
+    "benefits": "Daytime solar power supply for agricultural pumps by leasing farmer land for solar power generation with guaranteed lease rent of ₹1.25 lakh/acre/year.",
+    "eligibility": "Farmers / landholders in Maharashtra owning land within a 5 km radius of agricultural sub-stations suitable for solar power projects.",
+    "required_documents": [
+      "aadhaar",
+      "land_record",
+      "bank_account",
+      "pan"
+    ],
+    "raw_required_documents": "Aadhaar Card | Land Ownership Document | Bank Account Details | PAN Card",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Open",
+    "application_process": "Land registration on MSEB solar portal → Land inspection by Mahavitaran team → Execution of 30-year lease agreement and annual lease payout.",
+    "application_url": "https://www.mahadiscom.in/solar-mskvy",
+    "official_url": "https://www.mahadiscom.in/solar-mskvy",
+    "official_source": "https://www.mahadiscom.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "MH004",
+    "scheme_code": "MH004",
+    "name": "Mukhyamantri Vayoshri Yojana",
+    "category": "Social Welfare",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Maharashtra",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "description": "One-time financial assistance of ₹3,000 for senior citizens to purchase daily living assistive devices and physical support equipment.",
+    "benefits": "One-time financial assistance of ₹3,000 for senior citizens to purchase daily living assistive devices and physical support equipment.",
+    "eligibility": "Senior citizens residing in Maharashtra aged 65 years and above with annual family income not exceeding ₹2 lakh.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "age_proof",
+      "income_certificate",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Age Proof | Income Certificate | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Open",
+    "application_process": "Apply through Social Justice Department portal or District Social Welfare Office → Verification of age and income → Amount disbursed to Aadhaar-linked bank account.",
+    "application_url": "https://sjsa.maharashtra.gov.in",
+    "official_url": "https://sjsa.maharashtra.gov.in",
+    "official_source": "https://sjsa.maharashtra.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "MH005",
+    "scheme_code": "MH005",
+    "name": "Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti Yojna",
+    "category": "Education",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Maharashtra",
+    "applicable_states": [
+      "Maharashtra"
+    ],
+    "description": "50% tuition and examination fee reimbursement scholarship for higher and professional education students from economically weaker sections.",
+    "benefits": "50% tuition and examination fee reimbursement scholarship for higher and professional education students from economically weaker sections.",
+    "eligibility": "Domicile of Maharashtra pursuing approved diploma/degree/postgraduate course with annual family income up to ₹8 lakh. Candidate must have taken admission through CAP.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "income_certificate",
+      "cap_allotment_letter",
+      "marksheet",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Income Certificate | CAP Allotment Letter | Educational Qualification Certificate | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Annual",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Annual",
+    "application_status": "Open",
+    "application_process": "Register on MahaDBT portal → Apply under Directorate of Higher/Technical Education → College scrutiny → Department approval and DBT fee reimbursement.",
+    "application_url": "https://mahadbt.maharashtra.gov.in",
+    "official_url": "https://mahadbt.maharashtra.gov.in",
+    "official_source": "https://mahadbt.maharashtra.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "KA001",
+    "scheme_code": "KA001",
+    "name": "Gruha Lakshmi Scheme",
+    "category": "Women",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Karnataka",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "description": "Direct financial aid of ₹2,000 per month provided to the female head of eligible households to cushion rising living costs.",
+    "benefits": "Direct financial aid of ₹2,000 per month provided to the female head of eligible households to cushion rising living costs.",
+    "eligibility": "Female head of the family named on Antyodaya, BPL, or APL ration card issued by Karnataka Government. Woman and husband must not be income tax or GST payees.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "bank_account",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Register via Seva Sindhu portal or visit Grama One / Karnataka One / Bangalore One centers → Provide Aadhaar and Ration Card → Biometric verification and monthly DBT activation.",
+    "application_url": "https://sevasindhu.karnataka.gov.in",
+    "official_url": "https://sevasindhu.karnataka.gov.in",
+    "official_source": "https://karnataka.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "KA002",
+    "scheme_code": "KA002",
+    "name": "Gruha Jyothi Scheme",
+    "category": "Social Welfare",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Karnataka",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "description": "Free electricity up to 200 units per month for domestic consumers in Karnataka based on their average annual monthly consumption pattern.",
+    "benefits": "Free electricity up to 200 units per month for domestic consumers in Karnataka based on their average annual monthly consumption pattern.",
+    "eligibility": "Domestic residential electricity connection holders in Karnataka (owners and tenants). Average monthly consumption must be below 200 units. Commercial usage excluded.",
+    "required_documents": [
+      "aadhaar",
+      "electricity_bill_id",
+      "rental_agreement"
+    ],
+    "raw_required_documents": "Aadhaar Card | Electricity Bill Account ID | Rental Agreement",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Link electricity Consumer ID with Aadhaar on Seva Sindhu portal → ESCOM verifies consumption benchmark → Zero-bill benefit reflected on qualifying monthly bills.",
+    "application_url": "https://sevasindhugs.karnataka.gov.in",
+    "official_url": "https://sevasindhugs.karnataka.gov.in",
+    "official_source": "https://energy.karnataka.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "KA003",
+    "scheme_code": "KA003",
+    "name": "Yuva Nidhi Scheme",
+    "category": "Employment",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Karnataka",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "description": "Unemployment stipend of ₹3,00,0 per month for degree holders and ₹1,500 per month for diploma holders for up to 2 years while looking for employment.",
+    "benefits": "Unemployment stipend of ₹3,00,0 per month for degree holders and ₹1,500 per month for diploma holders for up to 2 years while looking for employment.",
+    "eligibility": "Graduates and diploma holders domiciled in Karnataka who passed out in recent academic cycles and remained unemployed for at least 6 months after graduation.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "marksheet",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Degree/Diploma Passing Certificate | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Open",
+    "application_process": "Submit application on Seva Sindhu portal → Self-declare unemployment status monthly on the portal → DBT allowance credited to bank account.",
+    "application_url": "https://sevasindhu.karnataka.gov.in",
+    "official_url": "https://sevasindhu.karnataka.gov.in",
+    "official_source": "https://skill.karnataka.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "KA004",
+    "scheme_code": "KA004",
+    "name": "Anna Bhagya Scheme (Cash in lieu of Foodgrains)",
+    "category": "Financial Assistance",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Karnataka",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "description": "Monthly cash transfer of ₹170 per person (at ₹34/kg for 5 kg additional rice) directly to BPL cardholders' accounts in lieu of additional foodgrains.",
+    "benefits": "Monthly cash transfer of ₹170 per person (at ₹34/kg for 5 kg additional rice) directly to BPL cardholders' accounts in lieu of additional foodgrains.",
+    "eligibility": "Members of Antyodaya Anna Yojana (AAY) and Priority Household (PHH/BPL) ration cards issued by Karnataka Food and Civil Supplies Department.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Automatic DBT based on active Aadhaar-seeded BPL ration cards; cardholders verify seeding on the Ahara portal.",
+    "application_url": "https://ahara.kar.nic.in",
+    "official_url": "https://ahara.kar.nic.in",
+    "official_source": "https://ahara.kar.nic.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "KA005",
+    "scheme_code": "KA005",
+    "name": "Shakti Scheme",
+    "category": "Women",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Karnataka",
+    "applicable_states": [
+      "Karnataka"
+    ],
+    "description": "Free public bus travel for women and transgender citizens across Karnataka in state-run road transport corporations (KSRTC, BMTC, NWKRTC, KKRTC).",
+    "benefits": "Free public bus travel for women and transgender citizens across Karnataka in state-run road transport corporations (KSRTC, BMTC, NWKRTC, KKRTC).",
+    "eligibility": "All women and transgender residents of Karnataka travelling in non-premium ordinary city, suburban, and express bus services within the state.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Show valid Karnataka government-issued residential photo ID proof to bus conductor while travelling to receive a zero-fare ticket.",
+    "application_url": "https://transport.karnataka.gov.in",
+    "official_url": "https://transport.karnataka.gov.in",
+    "official_source": "https://transport.karnataka.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "OD001",
+    "scheme_code": "OD001",
+    "name": "Subhadra Yojana",
+    "category": "Women",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Odisha",
+    "applicable_states": [
+      "Odisha"
+    ],
+    "description": "Financial empowerment assistance of ₹10,000 per year (₹50,000 over 5 years in two ₹5,000 tranches) transferred directly to eligible women.",
+    "benefits": "Financial empowerment assistance of ₹10,000 per year (₹50,000 over 5 years in two ₹5,000 tranches) transferred directly to eligible women.",
+    "eligibility": "Resident woman of Odisha aged 21 to 59 years from economically disadvantaged households holding NFSA/SFSS ration card or meeting family income limits. Income taxpayers excluded.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl",
+      "bank_account",
+      "mobile_number"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card | Bank Account Details | Mobile Number",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Annual",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Annual",
+    "application_status": "Open",
+    "application_process": "Submit physical form at Mo Seva Kendra / Anganwadi or apply on Subhadra portal → e-KYC validation → DBT credited on Rakhi Purnima and International Women's Day.",
+    "application_url": "https://subhadra.odisha.gov.in",
+    "official_url": "https://subhadra.odisha.gov.in",
+    "official_source": "https://subhadra.odisha.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "OD002",
+    "scheme_code": "OD002",
+    "name": "KALIA Scheme (Krushak Assistance for Livelihood and Income Augmentation)",
+    "category": "Farmer",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Odisha",
+    "applicable_states": [
+      "Odisha"
+    ],
+    "description": "Financial assistance of ₹4,000 per year in two installments for small and marginal farmers and ₹12,500 livelihood package for landless agricultural labourers.",
+    "benefits": "Financial assistance of ₹4,000 per year in two installments for small and marginal farmers and ₹12,500 livelihood package for landless agricultural labourers.",
+    "eligibility": "Small and marginal farmers or landless agricultural households residing in Odisha. Large farmers and public sector employees are excluded.",
+    "required_documents": [
+      "aadhaar",
+      "land_record",
+      "bank_account",
+      "ration_bpl"
+    ],
+    "raw_required_documents": "Aadhaar Card | Land Ownership Document | Bank Account Details | Ration Card",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Periodic",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Periodic",
+    "application_status": "Continuous",
+    "application_process": "Apply online at KALIA portal or register at PACS / GP office with Aadhaar and RoR → Ground verification → DBT payment directly into Aadhaar-linked account.",
+    "application_url": "https://kalia.odisha.gov.in",
+    "official_url": "https://kalia.odisha.gov.in",
+    "official_source": "https://kalia.odisha.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "OD003",
+    "scheme_code": "OD003",
+    "name": "Gopabandhu Jan Arogya Yojana (GJAY)",
+    "category": "Healthcare",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Odisha",
+    "applicable_states": [
+      "Odisha"
+    ],
+    "description": "Cashless secondary and tertiary healthcare treatment up to ₹5 lakh per family (₹10 lakh for female family members) per year in empanelled hospitals.",
+    "benefits": "Cashless secondary and tertiary healthcare treatment up to ₹5 lakh per family (₹10 lakh for female family members) per year in empanelled hospitals.",
+    "eligibility": "All families enrolled under National Food Security Act (NFSA) and State Food Security Scheme (SFSS) residing in Odisha.",
+    "required_documents": [
+      "aadhaar",
+      "ration_bpl"
+    ],
+    "raw_required_documents": "Aadhaar Card | Ration Card",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Present BSKY / GJAY Nabin Card or Ration Card with Aadhaar at the Swasthya Mitra counter in empanelled hospital for cashless treatment authorization.",
+    "application_url": "https://bsky.odisha.gov.in",
+    "official_url": "https://bsky.odisha.gov.in",
+    "official_source": "https://health.odisha.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "OD004",
+    "scheme_code": "OD004",
+    "name": "Madhu Babu Pension Yojana (MBPY)",
+    "category": "Social Welfare",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Odisha",
+    "applicable_states": [
+      "Odisha"
+    ],
+    "description": "Social security monthly pension of ₹1,000 to ₹1,200 for destitute elderly, widows, persons with disabilities, and destitute persons living in Odisha.",
+    "benefits": "Social security monthly pension of ₹1,000 to ₹1,200 for destitute elderly, widows, persons with disabilities, and destitute persons living in Odisha.",
+    "eligibility": "Permanent resident of Odisha aged 60+ (or widow / differently-abled / destitute) with annual family income less than ₹24,000, not receiving other pensions.",
+    "required_documents": [
+      "aadhaar",
+      "domicile_certificate",
+      "age_proof",
+      "income_certificate",
+      "disability_certificate",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Domicile Certificate | Age Proof | Income Certificate | Disability Certificate | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Continuous",
+      "application_status": "Continuous"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Continuous",
+    "application_status": "Continuous",
+    "application_process": "Apply online on SSEPD portal or submit form to Block Development Officer / Executive Officer → BDO inquiry and verification → Sanctioned and paid via DBT or cash on Jana Seva Day.",
+    "application_url": "https://ssepd.odisha.gov.in",
+    "official_url": "https://ssepd.odisha.gov.in",
+    "official_source": "https://ssepd.odisha.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
+  },
+  {
+    "scheme_id": "OD005",
+    "scheme_code": "OD005",
+    "name": "Biju Yuva Sashaktikaran Yojana (Free Laptop Distribution)",
+    "category": "Education",
+    "scheme_type": "State",
+    "provider": "State",
+    "state": "Odisha",
+    "applicable_states": [
+      "Odisha"
+    ],
+    "description": "Free laptop or direct financial DBT of ₹30,000 provided to meritorious Class 12 students in Odisha to facilitate higher technical and college education.",
+    "benefits": "Free laptop or direct financial DBT of ₹30,000 provided to meritorious Class 12 students in Odisha to facilitate higher technical and college education.",
+    "eligibility": "Permanent resident student of Odisha who secured top merit ranks in Higher Secondary (+2) examination conducted by CHSE Odisha across Arts, Science, Commerce, and Vocational streams.",
+    "required_documents": [
+      "aadhaar",
+      "marksheet",
+      "domicile_certificate",
+      "bank_account"
+    ],
+    "raw_required_documents": "Aadhaar Card | Class 12 Marksheet | Domicile Certificate | Bank Account Details",
+    "timeline": {
+      "application_start": "Not specified by official source",
+      "application_end": "Not specified by official source",
+      "application_frequency": "Annual",
+      "application_status": "Open"
+    },
+    "application_start": "Not specified by official source",
+    "application_end": "Not specified by official source",
+    "application_frequency": "Annual",
+    "application_status": "Open",
+    "application_process": "Higher Education Department publishes merit list on SAMS Odisha portal → Eligible students verify bank account details on portal → Direct DBT / laptop distribution via nodal colleges.",
+    "application_url": "https://dhe.odisha.gov.in",
+    "official_url": "https://dhe.odisha.gov.in",
+    "official_source": "https://dhe.odisha.gov.in",
+    "is_active": true,
+    "status": "active",
+    "version": "2.0"
   }
 ]

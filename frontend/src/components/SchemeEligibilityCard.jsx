@@ -1,0 +1,184 @@
+import { Link } from 'react-router-dom';
+import EligibilityChecklist from './EligibilityChecklist.jsx';
+import { Building2, Calendar, Award, Check, X, AlertTriangle, ExternalLink } from 'lucide-react';
+
+export default function SchemeEligibilityCard({
+  scheme,
+  evaluation,
+  onUploadMissing,
+  language = 'en',
+}) {
+  const isEligible = evaluation ? evaluation.isEligible : scheme.isEligible;
+  const status = evaluation?.status || (isEligible ? 'eligible' : 'not_eligible');
+  const checks = evaluation ? evaluation.criteriaChecks : [];
+  const missingDocs = evaluation ? evaluation.missingDocuments : [];
+  const unverifiedCount = evaluation?.unverifiedCount || checks.filter((c) => c.unverified).length;
+
+  const hi = language === 'hi';
+  const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
+  const providerLabel = isState
+    ? (hi ? `राज्य (${scheme.state})` : `State (${scheme.state})`)
+    : (hi ? 'केंद्रीय योजना' : 'Central Scheme');
+
+  return (
+    <div
+      className={`bg-white rounded-lg border transition-all p-5 flex flex-col justify-between space-y-4 shadow-2xs ${
+        isEligible
+          ? 'border-emerald-300 hover:border-emerald-400'
+          : status === 'needs_info' || unverifiedCount > 0
+          ? 'border-amber-300 hover:border-amber-400'
+          : 'border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      <div className="space-y-3">
+        {/* Top Badges */}
+        <div className="flex flex-wrap items-center justify-between gap-1.5 text-[10px] font-semibold">
+          <div className="flex items-center gap-1.5">
+            <span
+              className={`px-2 py-0.5 rounded border flex items-center gap-1 ${
+                isState
+                  ? 'bg-amber-50 text-amber-900 border-amber-200'
+                  : 'bg-slate-100 text-slate-800 border-slate-300'
+              }`}
+            >
+              <Building2 className="w-3 h-3 text-slate-500" />
+              <span>{providerLabel}</span>
+            </span>
+            <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+              {scheme.category}
+            </span>
+          </div>
+
+          <span className="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded flex items-center gap-1">
+            <Calendar className="w-3 h-3 text-slate-400" />
+            <span>
+              {typeof scheme.timeline === 'object'
+                ? scheme.timeline?.application_status || scheme.timeline?.application_frequency || (hi ? 'सतत खुला' : 'Continuous')
+                : scheme.timeline || (hi ? 'सदैव खुला' : 'Always Open')}
+            </span>
+          </span>
+        </div>
+
+        {/* Title & Description */}
+        <div>
+          <h3 className="font-bold text-sm text-slate-900 leading-snug">
+            {scheme.name}
+          </h3>
+          <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+            {scheme.shortDesc || scheme.description}
+          </p>
+        </div>
+
+        {/* Benefits Highlight */}
+        {((scheme.benefits && scheme.benefits.length > 0) || scheme.benefit_summary) && (
+          <div className="bg-slate-50 border border-slate-200 rounded p-2.5 space-y-1">
+            <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1">
+              <Award className="w-3 h-3 text-amber-600" />
+              <span>{hi ? 'प्रमुख लाभ / अधिकार' : 'Primary Entitlement'}</span>
+            </span>
+            <p className="text-xs font-semibold text-slate-800 line-clamp-2">
+              {Array.isArray(scheme.benefits)
+                ? scheme.benefits[0]
+                : typeof scheme.benefits === 'string'
+                ? scheme.benefits
+                : scheme.benefit_summary?.description || `₹${scheme.benefit_summary?.amount_inr?.toLocaleString('en-IN')}`}
+            </p>
+          </div>
+        )}
+
+        {/* Visual Eligibility Status Box */}
+        <div
+          className={`rounded-md p-3 space-y-2 border ${
+            isEligible
+              ? 'bg-emerald-50/50 border-emerald-300'
+              : status === 'needs_info' || unverifiedCount > 0
+              ? 'bg-amber-50/40 border-amber-300'
+              : 'bg-slate-50 border-slate-200'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <span
+                className={`w-4 h-4 rounded-full flex items-center justify-center font-bold text-xs text-white ${
+                  isEligible
+                    ? 'bg-emerald-700'
+                    : status === 'needs_info' || unverifiedCount > 0
+                    ? 'bg-amber-600'
+                    : 'bg-slate-400'
+                }`}
+              >
+                {isEligible ? (
+                  <Check className="w-3 h-3" />
+                ) : status === 'needs_info' || unverifiedCount > 0 ? (
+                  <AlertTriangle className="w-2.5 h-2.5" />
+                ) : (
+                  <X className="w-3 h-3" />
+                )}
+              </span>
+              <span
+                className={`font-semibold text-xs ${
+                  isEligible
+                    ? 'text-emerald-950'
+                    : status === 'needs_info' || unverifiedCount > 0
+                    ? 'text-amber-950'
+                    : 'text-slate-800'
+                }`}
+              >
+                {isEligible
+                  ? (hi ? 'आवेदन हेतु पात्र (सभी शर्तें पूरी हैं)' : 'Eligible to Apply (All criteria satisfied)')
+                  : unverifiedCount > 0
+                  ? (hi ? `सत्यापन आवश्यक (${unverifiedCount} स्पष्टीकरण अपेक्षित)` : `Verification Required (${unverifiedCount} field(s) unverified)`)
+                  : (hi ? `दस्तावेज़ शेष (${missingDocs.length} लंबित)` : `Requirements Pending (${missingDocs.length} missing items)`)}
+              </span>
+            </div>
+
+            <span className="text-[10px] font-mono text-slate-500">
+              {evaluation?.passedCount}/{evaluation?.totalCount} {hi ? 'शर्तें पूरी' : 'Met'}
+            </span>
+          </div>
+
+          {/* Visual criteria checklist */}
+          <EligibilityChecklist
+            criteriaChecks={checks}
+            compact={true}
+            onUploadClick={onUploadMissing}
+            language={language}
+          />
+        </div>
+      </div>
+
+      {/* Action Footer */}
+      <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+        <Link
+          to={`/schemes/${scheme.id || scheme.scheme_id}`}
+          className="font-semibold text-[#0f2942] hover:underline"
+        >
+          {hi ? 'योजना के पूर्ण दिशा-निर्देश देखें →' : 'View Full Scheme Guidelines →'}
+        </Link>
+
+        {isEligible ? (
+          <a
+            href={scheme.officialUrl || scheme.official_url || scheme.application_url || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-1.5 rounded transition shadow-2xs flex items-center gap-1.5"
+          >
+            <span>{hi ? 'पोर्टल पर आवेदन करें' : 'Apply on Portal'}</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        ) : (
+          missingDocs.length > 0 &&
+          onUploadMissing && (
+            <button
+              type="button"
+              onClick={() => onUploadMissing(missingDocs[0])}
+              className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white font-semibold px-3 py-1.5 rounded transition shadow-2xs cursor-pointer"
+            >
+              {hi ? 'दस्तावेज़ अपलोड करें' : 'Upload Documents'}
+            </button>
+          )
+        )}
+      </div>
+    </div>
+  );
+}
