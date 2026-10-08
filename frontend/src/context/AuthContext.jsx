@@ -8,16 +8,20 @@ const DEMO_ACCOUNTS = {
     id: 'usr_citizen_01',
     user_id: 'usr_citizen_01',
     name: 'Rameshwar Patil',
-    email: 'rameshwar.patil@example.in',
+    email: 'citizen@sahayak.gov.in',
     role: 'citizen',
+    state: 'Maharashtra',
+    district: 'Satara',
     token: 'demo-token-citizen-2026',
   },
   officer: {
     id: 'usr_officer_01',
     user_id: 'usr_officer_01',
     name: 'Pooja Deshmukh (Nodal Officer)',
-    email: 'pooja.officer@sahayak.gov.in',
+    email: 'officer@sahayak.gov.in',
     role: 'officer',
+    state: 'Maharashtra',
+    district: 'Pune',
     token: 'demo-token-officer-2026',
   },
   admin: {
@@ -26,6 +30,8 @@ const DEMO_ACCOUNTS = {
     name: 'Super Admin (National Informatics)',
     email: 'admin@sahayak.gov.in',
     role: 'admin',
+    state: 'All States / UTs',
+    district: 'New Delhi',
     token: 'demo-token-admin-2026',
   },
 };
@@ -72,7 +78,22 @@ export function AuthProvider({ children }) {
       }
       throw new Error(res?.error || 'Authentication failed');
     } catch (err) {
-      // Check if credentials match any demo account for instant testing
+      // 1. Check local registered users list in offline mode
+      try {
+        const registered = JSON.parse(localStorage.getItem('sahayak_registered_users') || '[]');
+        const match = registered.find(
+          (u) => u.email?.toLowerCase() === email.toLowerCase() && u.password === password
+        );
+        if (match) {
+          const { password: _, ...userWithoutPass } = match;
+          setUser(userWithoutPass);
+          setToken(userWithoutPass.token);
+          setLoading(false);
+          return { success: true, user: userWithoutPass };
+        }
+      } catch {}
+
+      // 2. Check demo accounts for quick testing
       const lower = email.toLowerCase();
       if (lower.includes('admin')) {
         const u = DEMO_ACCOUNTS.admin;
@@ -132,6 +153,57 @@ export function AuthProvider({ children }) {
       }
       throw new Error(res?.error || 'Registration failed');
     } catch (err) {
+      // If network fails (e.g. backend server is offline or unreachable), register locally in offline mode!
+      const isNetworkError =
+        !err.response &&
+        (err.message === 'Failed to fetch' ||
+          err.message?.includes('NetworkError') ||
+          err.message?.includes('fetch') ||
+          err.message?.includes('network'));
+
+      if (isNetworkError) {
+        const localUser = {
+          id: `usr_${Date.now()}`,
+          user_id: `usr_${Date.now()}`,
+          name: userData.name,
+          email: userData.email,
+          phone: userData.phone || '',
+          role: userData.role || 'citizen',
+          state: userData.state || 'Maharashtra',
+          district: userData.district || '',
+          token: `offline-token-${Date.now()}`,
+        };
+
+        // Save into local registered users list so they can log back in
+        try {
+          const registered = JSON.parse(localStorage.getItem('sahayak_registered_users') || '[]');
+          registered.push({ ...localUser, password: userData.password });
+          localStorage.setItem('sahayak_registered_users', JSON.stringify(registered));
+        } catch {}
+
+        // Save session
+        setUser(localUser);
+        setToken(localUser.token);
+        localStorage.setItem('sahayak_user', JSON.stringify(localUser));
+        localStorage.setItem('sahayak_token', localUser.token);
+
+        // Save profile
+        const localProfile = {
+          name: localUser.name,
+          phone: localUser.phone,
+          email: localUser.email,
+          state: localUser.state,
+          district: localUser.district,
+          occupation: '',
+          annual_income: 0,
+          age: 0,
+        };
+        localStorage.setItem('sahayak_profile', JSON.stringify(localProfile));
+
+        setLoading(false);
+        return { success: true, user: localUser };
+      }
+
       setAuthError(err.message || 'Registration failed');
       setLoading(false);
       return { success: false, error: err.message };

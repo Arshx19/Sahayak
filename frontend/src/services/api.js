@@ -279,8 +279,24 @@ export const getProfile = async () => {
       };
     }
   } catch {
-    // Fallback
+    // Fallback to local profile
   }
+
+  try {
+    const saved = localStorage.getItem('sahayak_profile');
+    if (saved) return JSON.parse(saved);
+    const userSaved = localStorage.getItem('sahayak_user');
+    if (userSaved) {
+      const u = JSON.parse(userSaved);
+      return {
+        ...MOCK_PROFILE,
+        name: u.name || '',
+        phone: u.phone || '',
+        state: u.state || '',
+        district: u.district || '',
+      };
+    }
+  } catch {}
 
   await delay(50);
   return MOCK_PROFILE;
@@ -292,10 +308,14 @@ export const updateProfile = async (data) => {
       method: 'PUT',
       body: JSON.stringify(data),
     });
-    return res.data;
+    const updated = res.data || data;
+    localStorage.setItem('sahayak_profile', JSON.stringify(updated));
+    return updated;
   } catch {
-    await delay();
-    return { ...MOCK_PROFILE, ...data };
+    await delay(50);
+    const updated = { ...MOCK_PROFILE, ...data };
+    localStorage.setItem('sahayak_profile', JSON.stringify(updated));
+    return updated;
   }
 };
 
