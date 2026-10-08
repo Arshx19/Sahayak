@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import EligibilityChecklist from './EligibilityChecklist.jsx';
-import { Building2, Calendar, Award, Check, X, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
+import { Building2, Calendar, Award, Check, X, AlertTriangle, ExternalLink } from 'lucide-react';
 
 export default function SchemeEligibilityCard({
   scheme,
@@ -9,8 +9,10 @@ export default function SchemeEligibilityCard({
   language = 'en',
 }) {
   const isEligible = evaluation ? evaluation.isEligible : scheme.isEligible;
+  const status = evaluation?.status || (isEligible ? 'eligible' : 'not_eligible');
   const checks = evaluation ? evaluation.criteriaChecks : [];
   const missingDocs = evaluation ? evaluation.missingDocuments : [];
+  const unverifiedCount = evaluation?.unverifiedCount || checks.filter((c) => c.unverified).length;
 
   const hi = language === 'hi';
   const isState = scheme.provider === 'State' || scheme.provided_by === 'State' || scheme.level === 'State';
@@ -23,6 +25,8 @@ export default function SchemeEligibilityCard({
       className={`bg-white rounded-lg border transition-all p-5 flex flex-col justify-between space-y-4 shadow-2xs ${
         isEligible
           ? 'border-emerald-300 hover:border-emerald-400'
+          : status === 'needs_info' || unverifiedCount > 0
+          ? 'border-amber-300 hover:border-amber-400'
           : 'border-slate-200 hover:border-slate-300'
       }`}
     >
@@ -61,19 +65,23 @@ export default function SchemeEligibilityCard({
             {scheme.name}
           </h3>
           <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
-            {scheme.shortDesc}
+            {scheme.shortDesc || scheme.description}
           </p>
         </div>
 
         {/* Benefits Highlight */}
-        {scheme.benefits && scheme.benefits.length > 0 && (
+        {((scheme.benefits && scheme.benefits.length > 0) || scheme.benefit_summary) && (
           <div className="bg-slate-50 border border-slate-200 rounded p-2.5 space-y-1">
             <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider flex items-center gap-1">
               <Award className="w-3 h-3 text-amber-600" />
               <span>{hi ? 'प्रमुख लाभ / अधिकार' : 'Primary Entitlement'}</span>
             </span>
             <p className="text-xs font-semibold text-slate-800 line-clamp-2">
-              {scheme.benefits[0]}
+              {Array.isArray(scheme.benefits)
+                ? scheme.benefits[0]
+                : typeof scheme.benefits === 'string'
+                ? scheme.benefits
+                : scheme.benefit_summary?.description || `₹${scheme.benefit_summary?.amount_inr?.toLocaleString('en-IN')}`}
             </p>
           </div>
         )}
@@ -83,6 +91,8 @@ export default function SchemeEligibilityCard({
           className={`rounded-md p-3 space-y-2 border ${
             isEligible
               ? 'bg-emerald-50/50 border-emerald-300'
+              : status === 'needs_info' || unverifiedCount > 0
+              ? 'bg-amber-50/40 border-amber-300'
               : 'bg-slate-50 border-slate-200'
           }`}
         >
@@ -90,18 +100,34 @@ export default function SchemeEligibilityCard({
             <div className="flex items-center gap-1.5">
               <span
                 className={`w-4 h-4 rounded-full flex items-center justify-center font-bold text-xs text-white ${
-                  isEligible ? 'bg-emerald-700' : 'bg-slate-400'
+                  isEligible
+                    ? 'bg-emerald-700'
+                    : status === 'needs_info' || unverifiedCount > 0
+                    ? 'bg-amber-600'
+                    : 'bg-slate-400'
                 }`}
               >
-                {isEligible ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
+                {isEligible ? (
+                  <Check className="w-3 h-3" />
+                ) : status === 'needs_info' || unverifiedCount > 0 ? (
+                  <AlertTriangle className="w-2.5 h-2.5" />
+                ) : (
+                  <X className="w-3 h-3" />
+                )}
               </span>
               <span
                 className={`font-semibold text-xs ${
-                  isEligible ? 'text-emerald-950' : 'text-slate-800'
+                  isEligible
+                    ? 'text-emerald-950'
+                    : status === 'needs_info' || unverifiedCount > 0
+                    ? 'text-amber-950'
+                    : 'text-slate-800'
                 }`}
               >
                 {isEligible
                   ? (hi ? 'आवेदन हेतु पात्र (सभी शर्तें पूरी हैं)' : 'Eligible to Apply (All criteria satisfied)')
+                  : unverifiedCount > 0
+                  ? (hi ? `सत्यापन आवश्यक (${unverifiedCount} स्पष्टीकरण अपेक्षित)` : `Verification Required (${unverifiedCount} field(s) unverified)`)
                   : (hi ? `दस्तावेज़ शेष (${missingDocs.length} लंबित)` : `Requirements Pending (${missingDocs.length} missing items)`)}
               </span>
             </div>
@@ -124,7 +150,7 @@ export default function SchemeEligibilityCard({
       {/* Action Footer */}
       <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
         <Link
-          to={`/schemes/${scheme.id}`}
+          to={`/schemes/${scheme.id || scheme.scheme_id}`}
           className="font-semibold text-[#0f2942] hover:underline"
         >
           {hi ? 'योजना के पूर्ण दिशा-निर्देश देखें →' : 'View Full Scheme Guidelines →'}
@@ -132,7 +158,7 @@ export default function SchemeEligibilityCard({
 
         {isEligible ? (
           <a
-            href={scheme.officialUrl || scheme.application_url || '#'}
+            href={scheme.officialUrl || scheme.official_url || scheme.application_url || '#'}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-3 py-1.5 rounded transition shadow-2xs flex items-center gap-1.5"

@@ -36,7 +36,7 @@
     "official_source": "https://pmkisan.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN002",
@@ -54,7 +54,7 @@
     "eligibility": "Families identified as deprived under rural and urban categories of Socio-Economic Caste Census (SECC) 2011 or NFSA ration card holders, and senior citizens aged 70+.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "mobile_number"
     ],
     "raw_required_documents": "Aadhaar Card | Ration Card | Mobile Number",
@@ -70,11 +70,11 @@
     "application_status": "Continuous",
     "application_process": "Check eligibility on portal or Ayushman App → Visit nearest CSC or empanelled hospital with Aadhaar and Ration Card → Complete e-KYC and download Ayushman Card.",
     "application_url": "https://beneficiary.nha.gov.in",
-    "official_url": "https://pmjay.gov.in",
+    "official_url": "https://beneficiary.nha.gov.in",
     "official_source": "https://pmjay.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN003",
@@ -114,7 +114,7 @@
     "official_source": "https://pmayg.nic.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN004",
@@ -132,7 +132,7 @@
     "eligibility": "Adult woman (aged 18+) belonging to poor households (SC/ST, PMAY, Antyodaya Anna Yojana, Most Backward Classes, or verified 14-point declaration) having no existing LPG connection in the family.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "bank_account",
       "photograph"
     ],
@@ -153,7 +153,7 @@
     "official_source": "https://www.pmuy.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN005",
@@ -187,11 +187,11 @@
     "application_status": "Continuous",
     "application_process": "Visit bank branch or use net banking / mobile app → Fill APY registration form with auto-debit consent → Receive Permanent Retirement Account Number (PRAN).",
     "application_url": "https://enps.nsdl.com",
-    "official_url": "https://www.npscra.nsdl.co.in",
+    "official_url": "https://enps.nsdl.com",
     "official_source": "https://www.npscra.nsdl.co.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN006",
@@ -228,11 +228,11 @@
     "application_status": "Continuous",
     "application_process": "Apply via Udyamimitra portal or visit commercial/RRB/cooperative bank with project proposal and KYC → Bank verifies and disburses loan without collateral.",
     "application_url": "https://www.udyamimitra.in",
-    "official_url": "https://www.mudra.org.in",
+    "official_url": "https://www.udyamimitra.in",
     "official_source": "https://www.mudra.org.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN007",
@@ -271,7 +271,7 @@
     "official_source": "https://pmsvanidhi.mohua.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN008",
@@ -306,11 +306,11 @@
     "application_status": "Continuous",
     "application_process": "Register at nearest Anganwadi Centre or on PMMVY portal within pregnancy registration period → Submit MCP card and bank details → DBT disbursed directly.",
     "application_url": "https://pmmvy.wcd.gov.in",
-    "official_url": "https://wcd.nic.in",
+    "official_url": "https://pmmvy.wcd.gov.in",
     "official_source": "https://wcd.nic.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN009",
@@ -348,7 +348,7 @@
     "official_source": "https://nrega.nic.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "CEN010",
@@ -383,11 +383,11 @@
     "application_status": "Continuous",
     "application_process": "Fill account opening form at authorized post office or commercial bank branch → Attach child birth certificate and parent KYC → Deposit minimum initial amount of ₹250.",
     "application_url": "https://www.indiapost.gov.in",
-    "official_url": "https://www.nsiindia.gov.in",
+    "official_url": "https://www.indiapost.gov.in",
     "official_source": "https://www.nsiindia.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "UP001",
@@ -406,7 +406,7 @@
     "required_documents": [
       "aadhaar",
       "domicile_certificate",
-      "educational_certificate",
+      "marksheet",
       "project_report",
       "bank_account",
       "photograph"
@@ -428,7 +428,7 @@
     "official_source": "https://diupmsme.upsdc.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "UP002",
@@ -469,7 +469,7 @@
     "official_source": "https://mksy.up.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "UP003",
@@ -506,11 +506,11 @@
     "application_status": "Open",
     "application_process": "Apply through DIUP portal under ODOP scheme → Interview by district committee → Sanctioned by bank → Margin money disbursed by DIC.",
     "application_url": "https://diupmsme.upsdc.gov.in",
-    "official_url": "https://odopup.in",
+    "official_url": "https://diupmsme.upsdc.gov.in",
     "official_source": "https://odopup.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "UP004",
@@ -529,7 +529,7 @@
     "required_documents": [
       "aadhaar",
       "domicile_certificate",
-      "educational_certificate",
+      "marksheet",
       "photograph"
     ],
     "raw_required_documents": "Aadhaar Card | Domicile Certificate | Educational Qualification Certificate | Passport Size Photograph",
@@ -549,7 +549,7 @@
     "official_source": "https://abhyuday.up.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "UP005",
@@ -568,7 +568,7 @@
     "required_documents": [
       "aadhaar",
       "land_record",
-      "death_or_disability_certificate",
+      "disability_certificate",
       "post_mortem_report",
       "bank_account"
     ],
@@ -585,11 +585,11 @@
     "application_status": "Continuous",
     "application_process": "Submit claim within 45 days of accident to concerned Tehsil / SDM office → Verification by revenue officials → Sanction and DBT payment by District Magistrate.",
     "application_url": "https://edistrict.up.gov.in",
-    "official_url": "https://up.gov.in",
+    "official_url": "https://edistrict.up.gov.in",
     "official_source": "https://up.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "MH001",
@@ -608,7 +608,7 @@
     "required_documents": [
       "aadhaar",
       "domicile_certificate",
-      "ration_card",
+      "ration_bpl",
       "income_certificate",
       "bank_account",
       "mobile_number"
@@ -626,11 +626,11 @@
     "application_status": "Continuous",
     "application_process": "Apply online via Nari Shakti Doot App / portal or Anganwadi / Setu Suvidha Kendra → Upload Aadhaar, Ration Card, and bank details → Direct monthly DBT credited.",
     "application_url": "https://ladakibahin.maharashtra.gov.in",
-    "official_url": "https://maharashtra.gov.in",
+    "official_url": "https://ladakibahin.maharashtra.gov.in",
     "official_source": "https://maharashtra.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "MH002",
@@ -648,7 +648,7 @@
     "eligibility": "All families holding valid ration cards (Yellow, Orange, White) or domicile of Maharashtra holding valid state family identity proof.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "domicile_certificate"
     ],
     "raw_required_documents": "Aadhaar Card | Ration Card | Domicile Certificate",
@@ -668,7 +668,7 @@
     "official_source": "https://www.jeevandayee.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "MH003",
@@ -703,11 +703,11 @@
     "application_status": "Open",
     "application_process": "Land registration on MSEB solar portal → Land inspection by Mahavitaran team → Execution of 30-year lease agreement and annual lease payout.",
     "application_url": "https://www.mahadiscom.in/solar-mskvy",
-    "official_url": "https://www.mahadiscom.in",
+    "official_url": "https://www.mahadiscom.in/solar-mskvy",
     "official_source": "https://www.mahadiscom.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "MH004",
@@ -747,7 +747,7 @@
     "official_source": "https://sjsa.maharashtra.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "MH005",
@@ -768,7 +768,7 @@
       "domicile_certificate",
       "income_certificate",
       "cap_allotment_letter",
-      "educational_certificate",
+      "marksheet",
       "bank_account"
     ],
     "raw_required_documents": "Aadhaar Card | Domicile Certificate | Income Certificate | CAP Allotment Letter | Educational Qualification Certificate | Bank Account Details",
@@ -788,7 +788,7 @@
     "official_source": "https://mahadbt.maharashtra.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "KA001",
@@ -806,7 +806,7 @@
     "eligibility": "Female head of the family named on Antyodaya, BPL, or APL ration card issued by Karnataka Government. Woman and husband must not be income tax or GST payees.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "bank_account",
       "mobile_number"
     ],
@@ -823,11 +823,11 @@
     "application_status": "Continuous",
     "application_process": "Register via Seva Sindhu portal or visit Grama One / Karnataka One / Bangalore One centers → Provide Aadhaar and Ration Card → Biometric verification and monthly DBT activation.",
     "application_url": "https://sevasindhu.karnataka.gov.in",
-    "official_url": "https://karnataka.gov.in",
+    "official_url": "https://sevasindhu.karnataka.gov.in",
     "official_source": "https://karnataka.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "KA002",
@@ -861,11 +861,11 @@
     "application_status": "Continuous",
     "application_process": "Link electricity Consumer ID with Aadhaar on Seva Sindhu portal → ESCOM verifies consumption benchmark → Zero-bill benefit reflected on qualifying monthly bills.",
     "application_url": "https://sevasindhugs.karnataka.gov.in",
-    "official_url": "https://energy.karnataka.gov.in",
+    "official_url": "https://sevasindhugs.karnataka.gov.in",
     "official_source": "https://energy.karnataka.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "KA003",
@@ -884,7 +884,7 @@
     "required_documents": [
       "aadhaar",
       "domicile_certificate",
-      "degree_or_diploma_certificate",
+      "marksheet",
       "bank_account"
     ],
     "raw_required_documents": "Aadhaar Card | Domicile Certificate | Degree/Diploma Passing Certificate | Bank Account Details",
@@ -900,11 +900,11 @@
     "application_status": "Open",
     "application_process": "Submit application on Seva Sindhu portal → Self-declare unemployment status monthly on the portal → DBT allowance credited to bank account.",
     "application_url": "https://sevasindhu.karnataka.gov.in",
-    "official_url": "https://skill.karnataka.gov.in",
+    "official_url": "https://sevasindhu.karnataka.gov.in",
     "official_source": "https://skill.karnataka.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "KA004",
@@ -922,7 +922,7 @@
     "eligibility": "Members of Antyodaya Anna Yojana (AAY) and Priority Household (PHH/BPL) ration cards issued by Karnataka Food and Civil Supplies Department.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "bank_account"
     ],
     "raw_required_documents": "Aadhaar Card | Ration Card | Bank Account Details",
@@ -942,7 +942,7 @@
     "official_source": "https://ahara.kar.nic.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "KA005",
@@ -979,7 +979,7 @@
     "official_source": "https://transport.karnataka.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "OD001",
@@ -997,7 +997,7 @@
     "eligibility": "Resident woman of Odisha aged 21 to 59 years from economically disadvantaged households holding NFSA/SFSS ration card or meeting family income limits. Income taxpayers excluded.",
     "required_documents": [
       "aadhaar",
-      "ration_card",
+      "ration_bpl",
       "bank_account",
       "mobile_number"
     ],
@@ -1018,7 +1018,7 @@
     "official_source": "https://subhadra.odisha.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "OD002",
@@ -1038,7 +1038,7 @@
       "aadhaar",
       "land_record",
       "bank_account",
-      "ration_card"
+      "ration_bpl"
     ],
     "raw_required_documents": "Aadhaar Card | Land Ownership Document | Bank Account Details | Ration Card",
     "timeline": {
@@ -1057,7 +1057,7 @@
     "official_source": "https://kalia.odisha.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "OD003",
@@ -1075,7 +1075,7 @@
     "eligibility": "All families enrolled under National Food Security Act (NFSA) and State Food Security Scheme (SFSS) residing in Odisha.",
     "required_documents": [
       "aadhaar",
-      "ration_card"
+      "ration_bpl"
     ],
     "raw_required_documents": "Aadhaar Card | Ration Card",
     "timeline": {
@@ -1090,11 +1090,11 @@
     "application_status": "Continuous",
     "application_process": "Present BSKY / GJAY Nabin Card or Ration Card with Aadhaar at the Swasthya Mitra counter in empanelled hospital for cashless treatment authorization.",
     "application_url": "https://bsky.odisha.gov.in",
-    "official_url": "https://health.odisha.gov.in",
+    "official_url": "https://bsky.odisha.gov.in",
     "official_source": "https://health.odisha.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "OD004",
@@ -1135,7 +1135,7 @@
     "official_source": "https://ssepd.odisha.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   },
   {
     "scheme_id": "OD005",
@@ -1153,7 +1153,7 @@
     "eligibility": "Permanent resident student of Odisha who secured top merit ranks in Higher Secondary (+2) examination conducted by CHSE Odisha across Arts, Science, Commerce, and Vocational streams.",
     "required_documents": [
       "aadhaar",
-      "class_12_marksheet",
+      "marksheet",
       "domicile_certificate",
       "bank_account"
     ],
@@ -1174,6 +1174,6 @@
     "official_source": "https://dhe.odisha.gov.in",
     "is_active": true,
     "status": "active",
-    "version": "1.0"
+    "version": "2.0"
   }
 ]

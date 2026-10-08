@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNotifications } from '../context/NotificationContext.jsx';
-import { getProfile, getSchemes, getUserDocuments, uploadUserDocument } from '../services/api.js';
+import { getProfile, getSchemes, getUserDocuments, uploadUserDocument, evaluateProfileWithEngine } from '../services/api.js';
 import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
 import { evaluateAllSchemes } from '../services/eligibilityService.js';
 import DocumentManager from '../components/DocumentManager.jsx';
@@ -17,6 +17,7 @@ export default function CitizenDashboardPage({ language }) {
   const [profile, setProfile] = useState(null);
   const [schemes, setSchemes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [serverEvaluations, setServerEvaluations] = useState(null);
 
   // Citizen Documents State (persisted per session)
   const [documents, setDocuments] = useState(() => {
@@ -52,6 +53,42 @@ export default function CitizenDashboardPage({ language }) {
       .catch(() => setLoading(false));
   }, []);
 
+  // Sync with AI Rules Engine whenever documents or profile change
+  useEffect(() => {
+    let isMounted = true;
+    const syncRulesEngine = async () => {
+      try {
+        const docList = Object.entries(documents || {}).map(([docType, doc]) => ({
+          doc_type: docType,
+          fields: doc.extractedFields || {},
+          needs_review: doc.needsReview || [],
+          validation_errors: doc.validationErrors || [],
+        }));
+        const res = await evaluateProfileWithEngine({
+          extractedDocuments: docList,
+          supplementalProfile: profile || {},
+        });
+        if (isMounted && res?.evaluations) {
+          const evalMap = {};
+          res.evaluations.forEach((ev) => {
+            if (ev.scheme_id) {
+              evalMap[ev.scheme_id.toLowerCase()] = ev;
+              evalMap[ev.scheme_id] = ev;
+            }
+          });
+          setServerEvaluations(evalMap);
+        }
+      } catch (err) {
+        console.warn('Backend rules engine offline, continuing with local evaluator');
+      }
+    };
+
+    if (schemes.length > 0) {
+      syncRulesEngine();
+    }
+    return () => { isMounted = false; };
+  }, [documents, profile, schemes.length]);
+
   const handleDocumentUploaded = (docId, filePayload) => {
     const updatedDocs = {
       ...documents,
@@ -70,8 +107,8 @@ export default function CitizenDashboardPage({ language }) {
     }).catch(() => {});
 
     // Evaluate new eligibility impact
-    const oldEval = evaluateAllSchemes(schemes, documents, profile || {});
-    const newEval = evaluateAllSchemes(schemes, updatedDocs, profile || {});
+    const oldEval = evaluateAllSchemes(schemes, documents, profile || {}, serverEvaluations);
+    const newEval = evaluateAllSchemes(schemes, updatedDocs, profile || {}, serverEvaluations);
 
     const newlyEligible = newEval.eligibleCount - oldEval.eligibleCount;
 
@@ -97,11 +134,12 @@ export default function CitizenDashboardPage({ language }) {
 
   if (loading) return <LoadingState />;
 
-  // Dynamic Batch Evaluation
+  // Dynamic Batch Evaluation (utilizing server AI engine when ready)
   const { eligibleSchemes, ineligibleSchemes } = evaluateAllSchemes(
     schemes,
     documents,
-    profile || {}
+    profile || {},
+    serverEvaluations
   );
 
   // Tab Filtering

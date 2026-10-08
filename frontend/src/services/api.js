@@ -16,8 +16,9 @@ const delay = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
 // Universal HTTP Request Helper with JWT token injection
 export const request = async (path, options = {}) => {
   const token = localStorage.getItem('sahayak_token');
+  const isFormData = options.body instanceof FormData;
   const headers = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {}),
   };
@@ -160,6 +161,36 @@ export const deleteUserDocument = async (docType) => {
     await delay(100);
     return { success: true };
   }
+};
+
+export const extractAndUploadDocument = async (file, docType = null) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (docType) {
+    const canonicalType = CANONICAL_DOC_TYPES[docType] || docType;
+    formData.append('hint_doc_type', canonicalType);
+  }
+
+  const res = await request('/documents/extract-and-upload', {
+    method: 'POST',
+    body: formData,
+  });
+  return res;
+};
+
+export const extractDocumentOnly = async (file, docType = null) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (docType) {
+    const canonicalType = CANONICAL_DOC_TYPES[docType] || docType;
+    formData.append('hint_doc_type', canonicalType);
+  }
+
+  const res = await request('/documents/extract', {
+    method: 'POST',
+    body: formData,
+  });
+  return res;
 };
 
 // =============================================================================
@@ -354,6 +385,23 @@ export const checkEligibility = async (data = {}) => {
       ? 'Citizen satisfies all primary income and landholding criteria for the scheme.'
       : 'Citizen does not meet the specified landholding threshold required.',
   };
+};
+
+export const evaluateProfileWithEngine = async ({ extractedDocuments = [], supplementalProfile = {}, schemeIds = null } = {}) => {
+  try {
+    const res = await request('/eligibility/evaluate-profile', {
+      method: 'POST',
+      body: JSON.stringify({
+        extracted_documents: extractedDocuments,
+        supplemental_profile: supplementalProfile,
+        scheme_ids: schemeIds,
+      }),
+    });
+    return res;
+  } catch (error) {
+    console.warn('Backend rules engine evaluation fallback:', error);
+    return null;
+  }
 };
 
 // =============================================================================

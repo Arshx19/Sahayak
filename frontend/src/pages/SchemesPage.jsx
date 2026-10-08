@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNotifications } from '../context/NotificationContext.jsx';
-import { getSchemes, getProfile, getUserDocuments } from '../services/api.js';
+import { getSchemes, getProfile, getUserDocuments, evaluateProfileWithEngine } from '../services/api.js';
 import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
 import { evaluateAllSchemes } from '../services/eligibilityService.js';
 import SchemeEligibilityCard from '../components/SchemeEligibilityCard.jsx';
@@ -59,6 +59,7 @@ export default function SchemesPage({ language = 'en' }) {
   const [schemes, setSchemes] = useState([]);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [serverEvaluations, setServerEvaluations] = useState(null);
 
   const [documents, setDocuments] = useState(() => {
     try {
@@ -93,6 +94,42 @@ export default function SchemesPage({ language = 'en' }) {
       .catch(() => setLoading(false));
   }, []);
 
+  // Sync with AI Rules Engine whenever documents, profile, or schemes change
+  useEffect(() => {
+    let isMounted = true;
+    const syncRulesEngine = async () => {
+      try {
+        const docList = Object.entries(documents || {}).map(([docType, doc]) => ({
+          doc_type: docType,
+          fields: doc.extractedFields || {},
+          needs_review: doc.needsReview || [],
+          validation_errors: doc.validationErrors || [],
+        }));
+        const res = await evaluateProfileWithEngine({
+          extractedDocuments: docList,
+          supplementalProfile: profile || {},
+        });
+        if (isMounted && res?.evaluations) {
+          const evalMap = {};
+          res.evaluations.forEach((ev) => {
+            if (ev.scheme_id) {
+              evalMap[ev.scheme_id.toLowerCase()] = ev;
+              evalMap[ev.scheme_id] = ev;
+            }
+          });
+          setServerEvaluations(evalMap);
+        }
+      } catch (err) {
+        console.warn('Backend rules engine offline, continuing with local evaluator');
+      }
+    };
+
+    if (schemes.length > 0) {
+      syncRulesEngine();
+    }
+    return () => { isMounted = false; };
+  }, [documents, profile, schemes.length]);
+
   const handleDocumentUploaded = (docId, filePayload) => {
     const updatedDocs = {
       ...documents,
@@ -123,11 +160,12 @@ export default function SchemesPage({ language = 'en' }) {
 
   if (loading) return <LoadingState />;
 
-  // Dynamic evaluation
+  // Dynamic evaluation (enhanced with server AI Rules Engine)
   const { eligibleSchemes, ineligibleSchemes } = evaluateAllSchemes(
     schemes,
     documents,
-    profile || {}
+    profile || {},
+    serverEvaluations
   );
 
   const evaluatedAll = schemes.map((s) => {
