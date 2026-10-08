@@ -81,21 +81,25 @@ export default function AdminDashboardPage({ language }) {
   useEffect(() => {
     getSchemes()
       .then((data) => {
-        const enriched = (data || []).map((s) => ({
-          ...s,
-          isActive: s.isActive !== undefined ? s.isActive : true,
-          nodal_ministry:
-            s.nodal_ministry ||
-            (s.category.includes('Agriculture')
-              ? 'Ministry of Agriculture & Farmers Welfare'
-              : s.category.includes('Housing')
-              ? 'Ministry of Rural Development'
-              : s.category.includes('Healthcare')
-              ? 'Ministry of Health & Family Welfare'
-              : 'Ministry of Social Justice & Empowerment'),
-          funding_pattern:
-            s.provided_by === 'State' ? '100% State Funded' : '100% Central Sector',
-        }));
+        const enriched = (data || []).map((s) => {
+          const cat = s.category || '';
+          return {
+            ...s,
+            name: s.name || 'Untitled Scheme',
+            isActive: s.isActive !== undefined ? s.isActive : true,
+            nodal_ministry:
+              s.nodal_ministry ||
+              (cat.includes('Agriculture')
+                ? 'Ministry of Agriculture & Farmers Welfare'
+                : cat.includes('Housing')
+                ? 'Ministry of Rural Development'
+                : cat.includes('Healthcare')
+                ? 'Ministry of Health & Family Welfare'
+                : 'Ministry of Social Justice & Empowerment'),
+            funding_pattern:
+              s.provided_by === 'State' ? '100% State Funded' : '100% Central Sector',
+          };
+        });
         setSchemes(enriched);
         setLoading(false);
       })
@@ -242,7 +246,7 @@ export default function AdminDashboardPage({ language }) {
     if (!q) return true;
 
     return (
-      s.name.toLowerCase().includes(q) ||
+      (s.name && s.name.toLowerCase().includes(q)) ||
       (s.nodal_ministry && s.nodal_ministry.toLowerCase().includes(q)) ||
       (s.id && s.id.toLowerCase().includes(q)) ||
       (s.category && s.category.toLowerCase().includes(q))

@@ -12,7 +12,11 @@ import SchemesPage from './pages/SchemesPage.jsx';
 import SchemeDetailPage from './pages/SchemeDetailPage.jsx';
 import CitizenDashboardPage from './pages/CitizenDashboardPage.jsx';
 import AdminDashboardPage from './pages/AdminDashboardPage.jsx';
+import OfficerDashboardPage from './pages/OfficerDashboardPage.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import GrievancesPage from './pages/GrievancesPage.jsx';
+import GrievanceDetailPage from './pages/GrievanceDetailPage.jsx';
+import AssistantPage from './pages/AssistantPage.jsx';
 
 export default function App() {
   const [fontSize, setFontSize] = useState('base');
@@ -38,6 +42,7 @@ export default function App() {
               <Route path="/login" element={<LoginPage language={language} />} />
               <Route path="/schemes" element={<SchemesPage language={language} />} />
               <Route path="/schemes/:schemeId" element={<SchemeDetailPage language={language} />} />
+              <Route path="/assistant" element={<AssistantPage language={language} />} />
 
               {/* Citizen Workflow Routes */}
               <Route
@@ -54,6 +59,32 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage language={language} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/grievances"
+                element={
+                  <ProtectedRoute>
+                    <GrievancesPage language={language} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/grievances/:grievanceId"
+                element={
+                  <ProtectedRoute>
+                    <GrievanceDetailPage language={language} />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Nodal Officer Portal Route */}
+              <Route
+                path="/officer"
+                element={
+                  <ProtectedRoute allowedRoles={['officer', 'admin']}>
+                    <OfficerDashboardPage language={language} />
                   </ProtectedRoute>
                 }
               />

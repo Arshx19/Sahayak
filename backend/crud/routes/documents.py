@@ -60,6 +60,11 @@ async def get_my_documents(
         if documents is not None:
             formatted_docs = []
             for d in documents:
+                up_at = d.get("uploaded_at")
+                if hasattr(up_at, "isoformat"):
+                    up_at_str = up_at.isoformat()
+                else:
+                    up_at_str = str(up_at) if up_at else None
                 formatted_docs.append({
                     "document_id": d.get("document_id"),
                     "document_type": d.get("document_type"),
@@ -68,14 +73,13 @@ async def get_my_documents(
                     "verification_status": d.get("verification_status", "verified"),
                     "file_name": d.get("file_name"),
                     "file_url": d.get("file_url"),
-                    "uploaded_at": d.get("uploaded_at"),
+                    "uploaded_at": up_at_str,
                     "metadata": d.get("metadata", {}),
                 })
             return {"success": True, "data": formatted_docs}
     except Exception:
         pass
 
-    # Fallback when database is offline or empty
     return {"success": True, "data": []}
 
 

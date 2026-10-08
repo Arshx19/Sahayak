@@ -159,7 +159,6 @@ async def create_or_update_user_document(
             "$setOnInsert": {
                 "document_id": doc_id,
                 "uploaded_at": now,
-                "status": clean_data.get("status", "active"),
             },
         },
         upsert=True,
