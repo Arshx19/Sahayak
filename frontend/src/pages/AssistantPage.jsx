@@ -48,7 +48,14 @@ export default function AssistantPage({ language }) {
 
         {voiceState === 'LISTENING' && (
           <div className="space-y-4 py-2">
-            <VoiceButton state="LISTENING" />
+            <VoiceButton
+              state="LISTENING"
+              onClick={() => {
+                timers.current.forEach(clearTimeout);
+                setVoiceState('PROCESSING');
+                timers.current = [setTimeout(() => setVoiceState('RESULT'), 1200)];
+              }}
+            />
             <div>
               <h4 className="text-base font-bold text-rose-700">{t('listening')}</h4>
               <p className="text-xs text-slate-600">{t('pleaseSpeak')}</p>

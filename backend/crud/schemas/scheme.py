@@ -14,11 +14,11 @@ class SchemeCreate(BaseModel):
     name: str = Field(..., description="Full official name of the scheme")
     hindi_name: Optional[str] = Field(None, description="Official Hindi title")
     description: str = Field(..., description="Overview and objective of the scheme")
-    category: str = Field(..., description="Sector/Category (e.g. Agriculture, Healthcare, Housing)")
+    category: str = Field("General", description="Sector/Category (e.g. Agriculture, Healthcare, Housing)")
     scheme_type: str = Field("Central", description="Scheme level: 'Central' or 'State'")
     type: Optional[str] = Field(None, description="Alias for scheme_type")
     applicable_states: List[str] = Field(default_factory=lambda: ["ALL"], description="List of eligible states or ['ALL']")
-    benefits: str = Field(..., description="Financial or non-financial benefits provided")
+    benefits: str = Field("Direct financial assistance and welfare benefits", description="Financial or non-financial benefits provided")
     required_documents: List[str] = Field(default_factory=list, description="Necessary verification documents")
     official_url: Optional[str] = Field(None, description="Official portal URL")
     official_source: Optional[str] = Field(None, description="Alias for official_url")
@@ -32,10 +32,18 @@ class SchemeCreate(BaseModel):
     @classmethod
     def normalize_aliases(cls, data: Any) -> Any:
         if isinstance(data, dict):
-            if "scheme_code" not in data and "code" in data:
-                data["scheme_code"] = data["code"]
+            if "scheme_code" not in data or not data["scheme_code"]:
+                data["scheme_code"] = data.get("code") or data.get("id") or data.get("scheme_id")
             if "scheme_type" not in data and "type" in data:
                 data["scheme_type"] = data["type"]
+            if "description" not in data or not data["description"]:
+                data["description"] = data.get("shortDesc") or data.get("fullDesc") or data.get("name", "")
+            if "category" not in data or not data["category"]:
+                data["category"] = "General"
+            if "benefits" in data and isinstance(data["benefits"], list):
+                data["benefits"] = ", ".join(str(b) for b in data["benefits"])
+            elif "benefits" not in data or not data["benefits"]:
+                data["benefits"] = "Direct financial assistance and welfare benefits"
             if "official_url" not in data and "official_source" in data:
                 data["official_url"] = data["official_source"]
         return data

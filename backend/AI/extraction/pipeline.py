@@ -84,7 +84,7 @@ def extract_certificate_features(
     ocr_lines = []
 
     # If PDF has rich text layer, prioritize text layer
-    if prep_result.pdf_text_layer and len(prep_result.pdf_text_layer.strip()) > 50:
+    if prep_result.pdf_text_layer and len(prep_result.pdf_text_layer.strip()) > 0:
         combined_text = prep_result.pdf_text_layer
     else:
         # Run OCR on preprocessed image(s)

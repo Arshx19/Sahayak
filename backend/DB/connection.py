@@ -19,7 +19,7 @@ def get_async_client():
             import os
             from motor.motor_asyncio import AsyncIOMotorClient
             logger.info("Initializing AsyncIOMotorClient connection...")
-            timeout_ms = int(os.getenv("MONGO_TIMEOUT_MS", "5000"))
+            timeout_ms = int(os.getenv("MONGO_TIMEOUT_MS", "1000"))
             _async_client = AsyncIOMotorClient(
                 MONGODB_URI,
                 serverSelectionTimeoutMS=timeout_ms,
@@ -48,7 +48,7 @@ def get_sync_client():
             import os
             from pymongo import MongoClient
             logger.info("Initializing synchronous MongoClient connection...")
-            timeout_ms = int(os.getenv("MONGO_TIMEOUT_MS", "5000"))
+            timeout_ms = int(os.getenv("MONGO_TIMEOUT_MS", "1000"))
             _sync_client = MongoClient(
                 MONGODB_URI,
                 serverSelectionTimeoutMS=timeout_ms,

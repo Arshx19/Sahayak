@@ -17,7 +17,13 @@ try:
 except ImportError:
     HAS_RAPIDFUZZ = False
 
-from ..extraction.validators import calculate_age_from_dob, validate_certificate_validity
+try:
+    from ..extraction.validators import calculate_age_from_dob, validate_certificate_validity
+except (ImportError, ValueError):
+    try:
+        from extraction.validators import calculate_age_from_dob, validate_certificate_validity
+    except ImportError:
+        from AI.extraction.validators import calculate_age_from_dob, validate_certificate_validity
 
 
 def fuzzy_similarity_ratio(str1: str, str2: str) -> float:

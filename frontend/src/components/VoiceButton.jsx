@@ -4,13 +4,17 @@ import { Mic, Radio, Loader2 } from 'lucide-react';
 export default function VoiceButton({ state = 'IDLE', onClick, label }) {
   if (state === 'LISTENING') {
     return (
-      <div
+      <button
+        type="button"
+        onClick={onClick}
         role="status"
         aria-live="polite"
-        className="w-16 h-16 rounded-full bg-rose-600 text-white flex items-center justify-center mx-auto border-4 border-rose-200 shadow-md animate-pulse"
+        title="Tap to finish speaking"
+        className="w-16 h-16 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex flex-col items-center justify-center mx-auto border-4 border-rose-200 shadow-md animate-pulse cursor-pointer transition-transform active:scale-95"
       >
         <Radio className="w-7 h-7 text-white" aria-hidden="true" />
-      </div>
+        <span className="text-[8px] font-bold tracking-wider uppercase mt-0.5">Stop</span>
+      </button>
     );
   }
 

@@ -1,7 +1,20 @@
 import { useState, useMemo } from 'react';
 import { SUPPORTED_DOCUMENTS } from '../data/documentsData.js';
 import DocumentUploadModal from './DocumentUploadModal.jsx';
-import { FolderArchive, Search, CheckCircle2, AlertCircle, FileText, X, UploadCloud, ChevronLeft, ChevronRight } from 'lucide-react';
+import ExtractedDataViewer from './ExtractedDataViewer.jsx';
+import {
+  FolderArchive,
+  Search,
+  CheckCircle2,
+  AlertCircle,
+  FileText,
+  X,
+  UploadCloud,
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Sparkles,
+} from 'lucide-react';
 
 export default function DocumentManager({
   documents = {},
@@ -10,6 +23,7 @@ export default function DocumentManager({
 }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDocForUpload, setSelectedDocForUpload] = useState('aadhaar');
+  const [inspectDocId, setInspectDocId] = useState(null);
 
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,6 +36,10 @@ export default function DocumentManager({
   const openUploadFor = (docId) => {
     setSelectedDocForUpload(docId);
     setModalOpen(true);
+  };
+
+  const openInspectFor = (docId) => {
+    setInspectDocId(docId);
   };
 
   const uploadedCount = Object.values(documents).filter(
@@ -82,9 +100,18 @@ export default function DocumentManager({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-semibold border border-slate-200">
+          <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded font-semibold border border-slate-200 hidden sm:inline">
             {uploadedCount} of {SUPPORTED_DOCUMENTS.length} Verified
           </span>
+          <button
+            type="button"
+            onClick={() => openInspectFor('aadhaar')}
+            className="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-3 py-1.5 rounded text-xs font-semibold transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
+            title="View AI Extracted Data like Aadhaar Number, PAN, etc."
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+            <span>Extracted Data Vault</span>
+          </button>
           <button
             onClick={() => openUploadFor('aadhaar')}
             className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white px-3.5 py-1.5 rounded text-xs font-semibold transition shadow-2xs flex items-center gap-1.5 cursor-pointer"
@@ -212,11 +239,34 @@ export default function DocumentManager({
 
                     <h4 className="font-bold text-xs text-slate-900 leading-snug">{docDef.name}</h4>
                     <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">{docDef.description}</p>
+
+                    {/* Extracted Credential Quick Strip */}
+                    {isUploaded && (
+                      <div className="bg-white/90 border border-emerald-300 rounded p-2 text-xs flex items-center justify-between gap-2 shadow-2xs mt-1">
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">
+                            Extracted Credential ID
+                          </span>
+                          <span className="font-mono font-bold text-xs text-[#0f2942]">
+                            {userDoc.number || (docDef.id === 'aadhaar' ? 'XXXX-XXXX-9021' : 'Verified & Stored')}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => openInspectFor(docDef.id)}
+                          className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200 px-2 py-1 rounded border border-emerald-300 transition cursor-pointer shrink-0"
+                          title="View OCR & Extracted Data"
+                        >
+                          <Eye className="w-3 h-3 text-emerald-700" />
+                          <span>View Data</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                     {isUploaded ? (
-                      <div className="text-[10px] text-slate-600 font-medium truncate max-w-[130px] flex items-center gap-1">
+                      <div className="text-[10px] text-slate-600 font-medium truncate max-w-[120px] flex items-center gap-1">
                         <FileText className="w-3 h-3 text-slate-500 shrink-0" />
                         <span className="truncate">{userDoc.fileName || 'Verified Document'}</span>
                       </div>
@@ -224,17 +274,30 @@ export default function DocumentManager({
                       <span className="text-[10px] text-slate-400 font-medium">Missing from locker</span>
                     )}
 
-                    <button
-                      type="button"
-                      onClick={() => openUploadFor(docDef.id)}
-                      className={`text-[11px] font-semibold px-2.5 py-1 rounded transition cursor-pointer ${
-                        isUploaded
-                          ? 'text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 shadow-2xs'
-                          : 'text-white bg-[#0f2942] hover:bg-[#1e3a5f] shadow-2xs'
-                      }`}
-                    >
-                      {isUploaded ? 'Update File' : 'Upload'}
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      {isUploaded && (
+                        <button
+                          type="button"
+                          onClick={() => openInspectFor(docDef.id)}
+                          className="text-[11px] font-semibold px-2 py-1 rounded text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300 transition cursor-pointer flex items-center gap-1"
+                          title="Inspect AI Extracted Attributes"
+                        >
+                          <Eye className="w-3 h-3 text-slate-600" />
+                          <span>Inspect</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => openUploadFor(docDef.id)}
+                        className={`text-[11px] font-semibold px-2.5 py-1 rounded transition cursor-pointer ${
+                          isUploaded
+                            ? 'text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 shadow-2xs'
+                            : 'text-white bg-[#0f2942] hover:bg-[#1e3a5f] shadow-2xs'
+                        }`}
+                      >
+                        {isUploaded ? 'Update' : 'Upload'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -294,6 +357,28 @@ export default function DocumentManager({
           onDocumentUploaded(docId, payload);
         }}
       />
+
+      {/* Extracted Data Inspection Modal */}
+      {inspectDocId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full my-8 relative animate-in fade-in zoom-in-95 duration-150">
+            <button
+              type="button"
+              onClick={() => setInspectDocId(null)}
+              className="absolute top-3.5 right-3.5 z-10 bg-white/20 hover:bg-white/40 text-white rounded-full p-1.5 transition cursor-pointer"
+              title="Close Preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <ExtractedDataViewer
+              documents={documents}
+              selectedDocId={inspectDocId}
+              onSelectDoc={(id) => setInspectDocId(id)}
+              onUpdateDocument={onDocumentUploaded}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

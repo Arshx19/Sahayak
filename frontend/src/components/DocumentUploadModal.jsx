@@ -47,9 +47,9 @@ export default function DocumentUploadModal({
 
     try {
       // Call backend extraction and upload API
-      const res = await extractAndUploadDocument(selectedFile, selectedDocId);
+      const res = await extractAndUploadDocument(selectedFile, selectedDocId, docNumber.trim());
       const extraction = res?.extraction || {};
-      const fields = extraction.fields || {};
+      const fields = { ...(extraction.fields || {}) };
 
       let resolvedNumber = docNumber.trim();
       if (!resolvedNumber) {
@@ -60,6 +60,18 @@ export default function DocumentUploadModal({
         else if (fields.ration_card_number?.value) resolvedNumber = fields.ration_card_number.value;
         else if (fields.roll_no?.value) resolvedNumber = `Roll: ${fields.roll_no.value}`;
         else resolvedNumber = 'Verified Official Record';
+      }
+
+      // If user provided a docNumber and fields does not have it, store in fields
+      if (docNumber.trim()) {
+        const inputNum = docNumber.trim();
+        if (selectedDocId === 'aadhaar' && !fields.aadhaar_last_4) {
+          fields.aadhaar_number = { value: inputNum, confidence: 1.0, source: 'user_provided' };
+        } else if (selectedDocId === 'pan' && !fields.pan_number) {
+          fields.pan_number = { value: inputNum.toUpperCase(), confidence: 1.0, source: 'user_provided' };
+        } else if (!fields.certificate_number) {
+          fields.certificate_number = { value: inputNum, confidence: 1.0, source: 'user_provided' };
+        }
       }
 
       const hasReviewFlags = (extraction.needs_review || []).length > 0;
@@ -81,6 +93,18 @@ export default function DocumentUploadModal({
     } catch (err) {
       // Graceful offline fallback
       console.warn('Backend extraction offline, saving locally:', err);
+      const fields = {};
+      if (docNumber.trim()) {
+        const inputNum = docNumber.trim();
+        if (selectedDocId === 'aadhaar') {
+          fields.aadhaar_number = { value: inputNum, confidence: 1.0, source: 'user_provided' };
+        } else if (selectedDocId === 'pan') {
+          fields.pan_number = { value: inputNum.toUpperCase(), confidence: 1.0, source: 'user_provided' };
+        } else {
+          fields.certificate_number = { value: inputNum, confidence: 1.0, source: 'user_provided' };
+        }
+      }
+
       const docPayload = {
         status: 'VERIFIED',
         uploadedAt: new Date().toISOString().split('T')[0],
@@ -88,6 +112,7 @@ export default function DocumentUploadModal({
         fileSize: `${(selectedFile.size / 1024).toFixed(0)} KB`,
         number: docNumber.trim() || 'Verified Official Record',
         fileUrl: URL.createObjectURL(selectedFile),
+        extractedFields: fields,
       };
 
       setUploading(false);

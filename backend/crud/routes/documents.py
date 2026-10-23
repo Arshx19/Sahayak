@@ -220,6 +220,7 @@ async def extract_document(
 async def extract_and_upload_document(
     file: UploadFile = File(...),
     hint_doc_type: Optional[str] = Form(None),
+    document_number: Optional[str] = Form(None),
     current_user: Dict[str, Any] = Depends(get_current_user),
     db: Any = Depends(get_db),
 ) -> Dict[str, Any]:
@@ -258,6 +259,20 @@ async def extract_and_upload_document(
         doc_number = extracted_fields["udid_number"].get("value")
     elif "ration_card_number" in extracted_fields:
         doc_number = extracted_fields["ration_card_number"].get("value")
+
+    # If OCR didn't extract the number but user provided one, use user's credential number
+    if not doc_number and document_number and document_number.strip():
+        raw_num = document_number.strip()
+        if "aadhaar" in doc_type and len(raw_num) >= 4:
+            last4 = raw_num.replace("-", "").replace(" ", "")[-4:]
+            doc_number = f"XXXX-XXXX-{last4}"
+            extracted_fields["aadhaar_last_4"] = {"value": last4, "confidence": 1.0, "source": "user_input"}
+        elif "pan" in doc_type:
+            doc_number = raw_num.upper()
+            extracted_fields["pan_number"] = {"value": doc_number, "confidence": 1.0, "source": "user_input"}
+        else:
+            doc_number = raw_num
+            extracted_fields["certificate_number"] = {"value": doc_number, "confidence": 1.0, "source": "user_input"}
 
     doc_name = doc_type.replace("_", " ").title()
     verification_status = "verified" if len(extraction_result.get("needs_review", [])) == 0 else "pending_review"

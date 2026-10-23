@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext.jsx';
+import { AuthProvider, useAuth } from './context/AuthContext.jsx';
 import { NotificationProvider } from './context/NotificationContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import GovernmentHeader from './components/GovernmentHeader.jsx';
@@ -17,6 +17,14 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import GrievancesPage from './pages/GrievancesPage.jsx';
 import GrievanceDetailPage from './pages/GrievanceDetailPage.jsx';
 import AssistantPage from './pages/AssistantPage.jsx';
+
+function DashboardRedirect() {
+  const { user, isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (user?.role === 'admin') return <Navigate to="/admin" replace />;
+  if (user?.role === 'officer') return <Navigate to="/officer" replace />;
+  return <Navigate to="/citizen" replace />;
+}
 
 export default function App() {
   const [fontSize, setFontSize] = useState('base');
@@ -61,12 +69,12 @@ export default function App() {
               <Route
                 path="/citizen"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute allowedRoles={['citizen', 'admin']}>
                     <CitizenDashboardPage language={language} />
                   </ProtectedRoute>
                 }
               />
-              <Route path="/dashboard" element={<Navigate to="/citizen" replace />} />
+              <Route path="/dashboard" element={<DashboardRedirect />} />
               <Route
                 path="/profile"
                 element={

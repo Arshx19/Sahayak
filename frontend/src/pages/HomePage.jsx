@@ -3,8 +3,10 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { Landmark, ArrowRight, FileText } from 'lucide-react';
 
 export default function HomePage({ language }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const hi = language === 'hi';
+
+  const roleDashboard = user?.role === 'admin' ? '/admin' : user?.role === 'officer' ? '/officer' : '/citizen';
 
   return (
     <div className="space-y-10 pb-16">
@@ -33,18 +35,20 @@ export default function HomePage({ language }) {
 
           <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              to={isAuthenticated ? '/citizen' : '/login'}
+              to={isAuthenticated ? roleDashboard : '/login'}
               className="w-full sm:w-auto bg-[#0f2942] hover:bg-[#1a3b5c] text-white font-semibold px-7 py-3 rounded text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
             >
               <FileText className="w-4 h-4 text-amber-400" />
               <span>
                 {isAuthenticated
-                  ? hi
-                    ? 'मेरे दस्तावेज़ डैशबोर्ड पर जाएं'
-                    : 'Go to My Document Dashboard'
+                  ? user?.role === 'admin'
+                    ? hi ? 'नीति प्रशासन कंसोल पर जाएं' : 'Go to Admin Governance Console'
+                    : user?.role === 'officer'
+                    ? hi ? 'अधिकारी पोर्टल पर जाएं' : 'Go to Nodal Officer Portal'
+                    : hi ? 'मेरे दस्तावेज़ डैशबोर्ड पर जाएं' : 'Go to My Document Dashboard'
                   : hi
-                  ? 'नागरिक के रूप में साइन इन / पंजीकरण करें'
-                  : 'Sign In / Register as Citizen'}
+                  ? 'साइन इन / पोर्टल एक्सेस करें'
+                  : 'Sign In / Access Portal'}
               </span>
             </Link>
             <Link

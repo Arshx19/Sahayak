@@ -61,13 +61,20 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
   const getRoleBadge = (role) => {
     if (role === 'admin') {
       return (
-        <span className="bg-slate-100 text-slate-800 border border-slate-300 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider">
+        <span className="bg-purple-50 text-purple-800 border border-purple-300 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
           Admin
         </span>
       );
     }
+    if (role === 'officer') {
+      return (
+        <span className="bg-blue-50 text-blue-800 border border-blue-300 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+          Officer
+        </span>
+      );
+    }
     return (
-      <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider">
+      <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
         Citizen
       </span>
     );
@@ -143,7 +150,7 @@ export default function GovernmentHeader({ fontSize, setFontSize, language, setL
           {isAuthenticated ? (
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
               <Link
-                to={user?.role === 'admin' ? '/admin' : '/citizen'}
+                to={user?.role === 'admin' ? '/admin' : user?.role === 'officer' ? '/officer' : '/citizen'}
                 className="hidden md:flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-2.5 py-1 rounded transition text-xs"
               >
                 <User className="w-3.5 h-3.5 text-slate-600" />

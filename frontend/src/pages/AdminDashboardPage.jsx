@@ -81,12 +81,23 @@ export default function AdminDashboardPage({ language }) {
   useEffect(() => {
     getSchemes()
       .then((data) => {
-        const enriched = (data || []).map((s) => {
+        const enriched = (data || []).map((s, index) => {
           const cat = s.category || '';
+          const rawId = s.id || s.scheme_id || s.scheme_code || `SCH-${index + 1}`;
+          const id = String(rawId);
+          const timelineFormatted =
+            typeof s.timeline === 'string'
+              ? s.timeline
+              : s.timeline?.application_status
+              ? `${s.timeline.application_status} (${s.timeline.application_frequency || 'Continuous'})`
+              : 'Open All Year Round';
+
           return {
             ...s,
+            id,
             name: s.name || 'Untitled Scheme',
-            isActive: s.isActive !== undefined ? s.isActive : true,
+            isActive: s.isActive !== undefined ? s.isActive : (s.is_active !== undefined ? s.is_active : true),
+            timelineFormatted,
             nodal_ministry:
               s.nodal_ministry ||
               (cat.includes('Agriculture')
@@ -177,14 +188,39 @@ export default function AdminDashboardPage({ language }) {
       formScheme.scheme_code.toLowerCase().replace(/[^a-z0-9]+/g, '-') ||
       formScheme.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
+    const schemeCode = (formScheme.scheme_code || schemeId).toUpperCase().trim();
+    const benefitText = typeof formScheme.benefits === 'string' && formScheme.benefits.trim()
+      ? formScheme.benefits.trim()
+      : 'Direct Financial and Welfare Grant to eligible beneficiaries';
+    const descText = formScheme.shortDesc || formScheme.description || formScheme.name;
+    const isState = formScheme.provided_by === 'State';
+    const applicableStates = isState ? [formScheme.state] : ['ALL'];
+
     const newPolicyRecord = {
       ...formScheme,
       id: schemeId,
+      scheme_id: schemeId,
+      scheme_code: schemeCode,
+      code: schemeCode,
+      name: formScheme.name,
+      description: descText,
+      shortDesc: descText,
+      fullDesc: descText,
+      category: formScheme.category || 'Welfare',
+      scheme_type: isState ? 'State' : 'Central',
+      provider: isState ? 'State' : 'Central',
+      provided_by: isState ? 'State' : 'Central',
+      state: isState ? formScheme.state : 'All India',
+      applicable_states: applicableStates,
+      applicableStates: applicableStates,
+      benefits: benefitText,
+      required_documents: formScheme.required_documents || ['aadhaar', 'bank_account'],
+      documents: formScheme.required_documents || ['aadhaar', 'bank_account'],
       isActive: true,
-      benefits: [formScheme.benefits || 'Financial and welfare grant'],
+      is_active: true,
       eligibility_criteria: {
         max_income: Number(formScheme.max_income) || 300000,
-        required_state: formScheme.provided_by === 'State' ? formScheme.state : 'All',
+        required_state: isState ? formScheme.state : 'All',
       },
     };
 
@@ -414,13 +450,13 @@ export default function AdminDashboardPage({ language }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {filteredSchemes.map((s) => (
-                <tr key={s.id} className="hover:bg-slate-50 transition">
+              {filteredSchemes.map((s, idx) => (
+                <tr key={s.id || idx} className="hover:bg-slate-50 transition">
                   {/* Scheme Title & Code */}
                   <td className="py-3 px-3 font-semibold text-slate-900 max-w-xs">
                     <div className="text-slate-900 font-bold leading-snug">{s.name}</div>
                     <div className="text-[10px] text-slate-500 font-mono">
-                      ID: {s.id.toUpperCase()} &bull; Sector: {s.category}
+                      ID: {String(s.id || s.schemeCode || 'POLICY').toUpperCase()} &bull; Sector: {s.category || 'General'}
                     </div>
                   </td>
 
@@ -435,7 +471,7 @@ export default function AdminDashboardPage({ language }) {
                             : 'bg-blue-50 text-blue-900 border-blue-200'
                         }`}
                       >
-                        {s.provided_by === 'State' ? `State (${s.state})` : 'Centre'}
+                        {s.provided_by === 'State' ? `State (${s.state || 'State'})` : 'Centre'}
                       </span>
                       <span className="text-[10px] text-slate-500">{s.funding_pattern}</span>
                     </div>
@@ -444,12 +480,12 @@ export default function AdminDashboardPage({ language }) {
                   {/* Mandatory Documents Policy Checklist */}
                   <td className="py-3 px-3">
                     <div className="flex flex-wrap gap-1 max-w-xs">
-                      {(s.required_documents || []).map((docId) => (
+                      {(s.required_documents || []).map((docId, dIdx) => (
                         <span
-                          key={docId}
+                          key={typeof docId === 'string' ? docId : dIdx}
                           className="bg-slate-100 text-slate-700 text-[10px] font-mono font-medium px-1.5 py-0.5 rounded border border-slate-200"
                         >
-                          {docId.toUpperCase()}
+                          {String(docId || '').toUpperCase()}
                         </span>
                       ))}
                     </div>
@@ -457,7 +493,7 @@ export default function AdminDashboardPage({ language }) {
 
                   {/* Application Timeline */}
                   <td className="py-3 px-3 text-slate-600 font-medium">
-                    {s.timeline || 'Open All Year Round'}
+                    {s.timelineFormatted || (typeof s.timeline === 'string' ? s.timeline : 'Open All Year Round')}
                   </td>
 
                   {/* Policy Status Badge */}

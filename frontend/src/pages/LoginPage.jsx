@@ -57,15 +57,58 @@ export default function LoginPage({ language }) {
   const location = useLocation();
   const t = (key) => getTranslation(language, key);
 
-  const redirectAfterAuth = (userRole) => {
-    const from = location.state?.from?.pathname;
-    if (from && from !== '/login') {
-      navigate(from, { replace: true });
-      return;
+  const DEMO_PRESETS = {
+    citizen: { email: 'citizen@sahayak.gov.in', password: 'Citizen@123', label: 'Citizen', path: '/citizen' },
+    officer: { email: 'officer@sahayak.gov.in', password: 'Officer@123', label: 'Nodal Officer', path: '/officer' },
+    admin: { email: 'admin@sahayak.gov.in', password: 'Admin@123', label: 'Administrator', path: '/admin' },
+  };
+
+  const handleRoleSelect = (selectedRole) => {
+    setRole(selectedRole);
+    if (!isRegister && DEMO_PRESETS[selectedRole]) {
+      setEmail(DEMO_PRESETS[selectedRole].email);
+      setPassword(DEMO_PRESETS[selectedRole].password);
     }
-    if (userRole === 'admin') navigate('/admin', { replace: true });
-    else if (userRole === 'officer') navigate('/officer', { replace: true });
+  };
+
+  const redirectAfterAuth = (userRole) => {
+    const targetRole = userRole || role || 'citizen';
+    const from = location.state?.from?.pathname;
+
+    // Only redirect back to 'from' if it matches the authenticated role privileges
+    if (from && from !== '/login' && from !== '/') {
+      if (targetRole === 'admin' && (from.startsWith('/admin') || from.startsWith('/schemes'))) {
+        navigate(from, { replace: true });
+        return;
+      }
+      if (targetRole === 'officer' && (from.startsWith('/officer') || from.startsWith('/grievances'))) {
+        navigate(from, { replace: true });
+        return;
+      }
+      if (targetRole === 'citizen' && !from.startsWith('/admin') && !from.startsWith('/officer')) {
+        navigate(from, { replace: true });
+        return;
+      }
+    }
+
+    // Default authoritative destination per role:
+    if (targetRole === 'admin') navigate('/admin', { replace: true });
+    else if (targetRole === 'officer') navigate('/officer', { replace: true });
     else navigate('/citizen', { replace: true });
+  };
+
+  const handleQuickDemoLogin = async (selectedRole) => {
+    setLocalError('');
+    setAuthError(null);
+    const preset = DEMO_PRESETS[selectedRole];
+    if (!preset) return;
+    setRole(selectedRole);
+    setEmail(preset.email);
+    setPassword(preset.password);
+    const res = await login(preset.email, preset.password);
+    if (res && res.success) {
+      redirectAfterAuth(res.user?.role || selectedRole);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -93,7 +136,7 @@ export default function LoginPage({ language }) {
     } else {
       const res = await login(email, password);
       if (res && res.success) {
-        redirectAfterAuth(res.user?.role || 'citizen');
+        redirectAfterAuth(res.user?.role || role || 'citizen');
       }
     }
   };
@@ -157,61 +200,71 @@ export default function LoginPage({ language }) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          {/* Universal Role Selection */}
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block font-semibold text-slate-700">
+                {isRegister ? 'Account Role / Privilege' : 'Select Target Portal / Role'}
+              </label>
+              {!isRegister && (
+                <span className="text-[10px] text-amber-700 font-medium">
+                  Auto-fills verified credentials
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => handleRoleSelect('citizen')}
+                className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  role === 'citizen'
+                    ? 'border-[#0f2942] bg-slate-100/90 text-[#0f2942] font-bold shadow-2xs ring-1 ring-[#0f2942]'
+                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <User className="w-4 h-4 text-emerald-700" />
+                <span className="text-[11px] font-bold">Citizen</span>
+                <span className="text-[9px] text-slate-500 font-mono">/citizen</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleRoleSelect('officer')}
+                className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  role === 'officer'
+                    ? 'border-[#0f2942] bg-slate-100/90 text-[#0f2942] font-bold shadow-2xs ring-1 ring-[#0f2942]'
+                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <Briefcase className="w-4 h-4 text-blue-700" />
+                <span className="text-[11px] font-bold">Officer</span>
+                <span className="text-[9px] text-slate-500 font-mono">/officer</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleRoleSelect('admin')}
+                className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  role === 'admin'
+                    ? 'border-[#0f2942] bg-slate-100/90 text-[#0f2942] font-bold shadow-2xs ring-1 ring-[#0f2942]'
+                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4 text-purple-700" />
+                <span className="text-[11px] font-bold">Admin</span>
+                <span className="text-[9px] text-slate-500 font-mono">/admin</span>
+              </button>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-1">
+              {role === 'citizen' && 'Access scheme matching, upload documents, and file grievances.'}
+              {role === 'officer' && 'Review citizen entitlement claims, inspect tickets, and resolve grievances.'}
+              {role === 'admin' && 'Access national policy console, gazette new schemes, and inspect audit logs.'}
+            </p>
+          </div>
+
           {/* REGISTRATION SPECIFIC FIELDS */}
           {isRegister && (
             <>
-              {/* Role Selection */}
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1.5">
-                  Account Role / Type
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setRole('citizen')}
-                    className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
-                      role === 'citizen'
-                        ? 'border-[#0f2942] bg-slate-100/80 text-[#0f2942] font-bold shadow-2xs'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <User className="w-4 h-4" />
-                    <span className="text-[11px]">Citizen</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRole('officer')}
-                    className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
-                      role === 'officer'
-                        ? 'border-[#0f2942] bg-slate-100/80 text-[#0f2942] font-bold shadow-2xs'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <Briefcase className="w-4 h-4" />
-                    <span className="text-[11px]">Officer</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRole('admin')}
-                    className={`p-2 rounded border text-left transition flex flex-col items-center justify-center gap-1 cursor-pointer ${
-                      role === 'admin'
-                        ? 'border-[#0f2942] bg-slate-100/80 text-[#0f2942] font-bold shadow-2xs'
-                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="text-[11px]">Admin</span>
-                  </button>
-                </div>
-                <p className="text-[10px] text-slate-500 mt-1">
-                  {role === 'citizen' && 'Access scheme matching, upload documents, and file grievances.'}
-                  {role === 'officer' && 'Review citizen entitlement claims and manage grievances.'}
-                  {role === 'admin' && 'Access policy console, gazette new schemes, and inspect audit logs.'}
-                </p>
-              </div>
-
               {/* Location Fields: State & District */}
               <div className="bg-slate-50/70 border border-slate-200 p-3 rounded-md space-y-2.5">
                 <div className="flex items-center gap-1 text-[11px] font-bold text-slate-800">
@@ -318,9 +371,43 @@ export default function LoginPage({ language }) {
             <span>
               {isRegister
                 ? `Create ${role} Account (${state})`
-                : 'Sign In to Portal'}
+                : `Sign In to ${role.toUpperCase()} Portal (${DEMO_PRESETS[role]?.path || '/citizen'})`}
             </span>
           </button>
+
+          {!isRegister && (
+            <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block text-center">
+                ⚡ Instant 1-Click Role Login
+              </span>
+              <div className="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('citizen')}
+                  className="bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 py-1.5 px-2 rounded font-semibold text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-2xs"
+                >
+                  <User className="w-3 h-3 text-emerald-700" />
+                  <span>Citizen</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('officer')}
+                  className="bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-300 py-1.5 px-2 rounded font-semibold text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-2xs"
+                >
+                  <Briefcase className="w-3 h-3 text-blue-700" />
+                  <span>Officer</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('admin')}
+                  className="bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-300 py-1.5 px-2 rounded font-semibold text-[11px] flex items-center justify-center gap-1 transition cursor-pointer shadow-2xs"
+                >
+                  <ShieldCheck className="w-3 h-3 text-purple-700" />
+                  <span>Admin</span>
+                </button>
+              </div>
+            </div>
+          )}
         </form>
 
         {/* Toggle between Login and Register */}

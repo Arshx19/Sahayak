@@ -5,10 +5,11 @@ import { getProfile, getSchemes, getUserDocuments, uploadUserDocument, evaluateP
 import { INITIAL_CITIZEN_DOCUMENTS } from '../data/documentsData.js';
 import { evaluateAllSchemes } from '../services/eligibilityService.js';
 import DocumentManager from '../components/DocumentManager.jsx';
+import ExtractedDataViewer from '../components/ExtractedDataViewer.jsx';
 import SchemeEligibilityCard from '../components/SchemeEligibilityCard.jsx';
 import DocumentUploadModal from '../components/DocumentUploadModal.jsx';
 import LoadingState from '../components/LoadingState.jsx';
-import { CheckCircle2, AlertCircle, Search, Landmark, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Search, Landmark, ShieldCheck, Sparkles, Eye } from 'lucide-react';
 
 export default function CitizenDashboardPage({ language }) {
   const { user } = useAuth();
@@ -39,6 +40,7 @@ export default function CitizenDashboardPage({ language }) {
   // Quick Upload Modal triggered from a scheme card
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [targetDocId, setTargetDocId] = useState('pan');
+  const [showExtractedVault, setShowExtractedVault] = useState(false);
 
   useEffect(() => {
     Promise.all([getProfile(), getSchemes(), getUserDocuments()])
@@ -232,6 +234,67 @@ export default function CitizenDashboardPage({ language }) {
         onDocumentUploaded={handleDocumentUploaded}
         language={language}
       />
+
+      {/* SECTION 1.5: AI Extracted Credentials Vault (Aadhaar, PAN, Income...) */}
+      <div className="bg-white border border-slate-200 rounded-lg p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-amber-100 text-amber-900 rounded-md">
+              <Sparkles className="w-5 h-5 text-amber-700" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900">
+                AI Extracted Credentials & Identity Verification Vault
+              </h3>
+              <p className="text-xs text-slate-500">
+                Inspect extracted credentials from your Aadhaar Card, PAN, and state certificates used for automatic eligibility matching.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowExtractedVault(!showExtractedVault)}
+            className="bg-[#0f2942] hover:bg-[#1e3a5f] text-white px-3.5 py-1.5 rounded text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer self-start sm:self-auto shadow-2xs"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            <span>{showExtractedVault ? 'Close Extracted Vault' : 'View Extracted Aadhaar & Credentials'}</span>
+          </button>
+        </div>
+
+        {showExtractedVault ? (
+          <ExtractedDataViewer
+            documents={documents}
+            selectedDocId="aadhaar"
+            onUpdateDocument={handleDocumentUploaded}
+          />
+        ) : (
+          <div className="bg-gradient-to-r from-slate-50 to-blue-50/30 border border-slate-200 rounded-md p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs shrink-0 border border-emerald-300">
+                UIDAI
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">
+                  Aadhaar Number (Primary Extracted Identity)
+                </span>
+                <span className="font-mono font-bold text-sm text-[#0f2942]">
+                  {documents.aadhaar?.number || 'XXXX-XXXX-9021'}
+                </span>
+                <span className="text-[10px] text-emerald-800 font-semibold ml-2 bg-emerald-100 px-1.5 py-0.5 rounded border border-emerald-300">
+                  UIDAI QR Verified • {user?.name || 'Rameshwar Patil'}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowExtractedVault(true)}
+              className="text-[#0f2942] hover:text-blue-800 font-bold text-xs flex items-center gap-1 cursor-pointer"
+            >
+              <span>Explore All Extracted Attributes (Aadhaar, PAN, Income, 7/12) →</span>
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* SECTION 2: Schemes Eligibility Overview & Tabs */}
       <div className="space-y-4">

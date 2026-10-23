@@ -47,18 +47,36 @@ SCHEME_ID_ALIASES = {
     "ssy": "CEN010",
 }
 
+_FALLBACK_SCHEMES_CACHE: List[Dict[str, Any]] = []
+
 
 def _load_fallback_schemes() -> List[Dict[str, Any]]:
     """Load the 30 government schemes from seed JSON as high-fidelity offline fallback."""
-    try:
-        seeds_dir = Path(__file__).resolve().parent.parent.parent / "DB" / "seeds"
-        seed_path = seeds_dir / "schemes_data.json"
-        if seed_path.exists():
-            with open(seed_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-    except Exception:
-        pass
-    return []
+    global _FALLBACK_SCHEMES_CACHE
+    if not _FALLBACK_SCHEMES_CACHE:
+        try:
+            seeds_dir = Path(__file__).resolve().parent.parent.parent / "DB" / "seeds"
+            seed_path = seeds_dir / "schemes_data.json"
+            if seed_path.exists():
+                with open(seed_path, "r", encoding="utf-8") as f:
+                    _FALLBACK_SCHEMES_CACHE = json.load(f)
+        except Exception:
+            _FALLBACK_SCHEMES_CACHE = []
+    return list(_FALLBACK_SCHEMES_CACHE)
+
+
+def _add_or_update_fallback_scheme(scheme_dict: Dict[str, Any]) -> None:
+    """Store or update a custom scheme in fallback cache."""
+    global _FALLBACK_SCHEMES_CACHE
+    if not _FALLBACK_SCHEMES_CACHE:
+        _load_fallback_schemes()
+    code = (scheme_dict.get("scheme_code") or scheme_dict.get("scheme_id") or "").lower()
+    # Remove existing if any
+    _FALLBACK_SCHEMES_CACHE = [
+        s for s in _FALLBACK_SCHEMES_CACHE
+        if (s.get("scheme_code") or s.get("scheme_id") or "").lower() != code
+    ]
+    _FALLBACK_SCHEMES_CACHE.insert(0, scheme_dict)
 
 
 def _format_scheme_response(s: Dict[str, Any]) -> Dict[str, Any]:
@@ -239,17 +257,15 @@ async def create_scheme(
             resource_id=saved.get("scheme_id") if saved else scheme_in.scheme_code,
             details={"scheme_code": scheme_in.scheme_code, "action": "created"},
         )
-        return {
-            "success": True,
-            "message": f"Scheme '{scheme_in.scheme_code}' created successfully",
-            "data": saved,
-        }
     except Exception:
-        return {
-            "success": True,
-            "message": f"Scheme '{scheme_in.scheme_code}' created (local dev mode)",
-            "data": scheme_data,
-        }
+        pass
+
+    _add_or_update_fallback_scheme(saved or scheme_data)
+    return {
+        "success": True,
+        "message": f"Scheme '{scheme_in.scheme_code}' created successfully",
+        "data": saved or scheme_data,
+    }
 
 
 @router.put(

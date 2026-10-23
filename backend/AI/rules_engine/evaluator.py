@@ -149,10 +149,16 @@ class SchemeEvaluator:
         # ---------------------------------------------------------------------
         exclusions = scheme.get("exclusions", [])
         for excl in exclusions:
-            field_name = excl.get("field")
-            op = excl.get("operator", "==")
-            excl_val = excl.get("value")
-            reason = excl.get("reason") or f"Exclusion criteria met: {field_name} {op} {excl_val}"
+            if isinstance(excl, str):
+                field_name = excl
+                op = "=="
+                excl_val = True
+                reason = f"Excluded by criterion: {excl}"
+            else:
+                field_name = excl.get("field")
+                op = excl.get("operator", "==")
+                excl_val = excl.get("value")
+                reason = excl.get("reason") or f"Exclusion criteria met: {field_name} {op} {excl_val}"
 
             actual_val = profile_dict.get(field_name)
             if actual_val is not None:
